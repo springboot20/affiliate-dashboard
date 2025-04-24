@@ -5,17 +5,13 @@ import withMT from "@material-tailwind/react/utils/withMT";
 /** @type {import('tailwindcss').Config} */
 export default withMT({
   important: false,
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./src/assets/svgs/*.svg",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./src/assets/svgs/*.svg"],
   theme: {
-    screens: {
-      xs: "480px",
-      ...defaultTheme.screens,
-    },
     extend: {
+      screens: {
+        xs: "480px",
+        ...defaultTheme.screens,
+      },
       backgroundImage: {
         "auth-bg": "url('/src/assets/background.svg')",
       },
@@ -32,6 +28,8 @@ export default withMT({
         ...defaultTheme.colors,
       },
       fontFamily: {
+        inter: ["Inter", ...defaultTheme.fontFamily.sans],
+        lato: ["Lato", ...defaultTheme.fontFamily.sans],
         gordita: ["Gorditas", "serif"], // Ensure fonts with spaces have " " surrounding it.
       },
     },

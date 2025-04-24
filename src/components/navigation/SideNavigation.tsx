@@ -20,7 +20,7 @@ import {
   SettingsIcon,
 } from "@/components/icons/Icons";
 import { AnimatePresence, motion } from "framer-motion";
-import { Disclosure } from "@headlessui/react";
+import { DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export const SideNavigation: React.FC<{
@@ -65,7 +65,7 @@ export const SideNavigation: React.FC<{
     <nav className="z-20">
       <>
         <div
-          className={`hidden lg:flex fixed left-0 top-0 min-h-screen bg-white w-[17rem] xl:w-[28rem] border-r-2 flex-col items-center`}
+          className={`hidden lg:flex fixed left-0 top-0 min-h-screen bg-white w-[17rem] xl:w-[25rem] border-r-2 flex-col items-center`}
         >
           <div className="flex flex-col items-center h-full w-full">
             <div className="p-4 h-32 flex w-full items-center justify-start">
@@ -81,7 +81,7 @@ export const SideNavigation: React.FC<{
                         "pl-10 flex flex-row space-x-5 py-4 px-3 hover:bg-gray-100 relative",
                         isActive
                           ? "bg-gray-100 text-[#2D60FF] before:bg-blue-500"
-                          : "text-gray-400",
+                          : "text-[#B1B1B1]",
                         "flex items-center relative transition ease delay-400",
                         "before:absolute before:content-[' '] before:h-full before:w-2 before:left-0 before:rounded-tr-2xl before:rounded-br-2xl",
                       )
@@ -110,7 +110,7 @@ export const SideNavigation: React.FC<{
         </div>
 
         <AnimatePresence initial={false} mode="wait">
-          <Disclosure.Panel
+          <DisclosurePanel
             as={motion.div}
             className={classNames(
               "lg:hidden fixed top-0 min-h-screen w-full sm:w-[30rem] bg-white",
@@ -118,10 +118,10 @@ export const SideNavigation: React.FC<{
               "transform transition-transform duration-200 ",
             )}
           >
-            <Disclosure.Button className="absolute right-8 top-8">
+            <DisclosureButton className="absolute right-8 top-8">
               <span className="sr-only">Close Side menu</span>
               <XMarkIcon className="h-8 w-8 text-gray-800" />
-            </Disclosure.Button>
+            </DisclosureButton>
 
             <div className="p-2 h-20 flex items-center justify-start">
               <img src={Logo} alt="logo" />
@@ -168,7 +168,7 @@ export const SideNavigation: React.FC<{
                 </motion.li>
               ))}
             </motion.ul>
-          </Disclosure.Panel>
+          </DisclosurePanel>
         </AnimatePresence>
       </>
     </nav>

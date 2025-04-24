@@ -1,6 +1,6 @@
 import { EyeIcon, EyeSlashIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { classNames } from "../../utils";
 import { register } from "@/features/thunks/auth.thunk";
 import { useAppDispatch } from "@/app/hook";
@@ -20,19 +20,25 @@ const initialValues: RegisterState = {
 export const Register = () => {
   const dispatch = useAppDispatch();
   const [show, setShow] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   const onSubmit = async (values: RegisterState, { resetForm }: FormikHelpers<RegisterState>) => {
     dispatch(register(values))
       .unwrap()
-      .then(async (res) => {
-        await Promise.resolve(
-          setTimeout(() => {
-            navigate("/auth/send-email");
-            resetForm();
-          }, 2000),
-        );
-        return res;
+      .then(async (response) => {
+        const { url } = response.data;
+
+        const verificationWindow = window.open(url);
+        
+        if (verificationWindow) {
+          const interval = setInterval(() => {
+            if (verificationWindow.closed) {
+              clearInterval(interval);
+            }
+          }, 1000);
+        } else {
+          console.error("Failed to open payment window.");
+        }
+        resetForm();
       })
       .catch((error) => {
         toast.error(error.message);

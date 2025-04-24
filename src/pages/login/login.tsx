@@ -25,17 +25,20 @@ export const Login = () => {
     dispatch(login(values))
       .unwrap()
       .then(async (response) => {
+
+        console.log(response)
+
+
         await Promise.resolve(
           setTimeout(() => {
             navigate("/");
             resetForm();
-          }),
+          })
         );
         return response;
+      }).catch((error)=>{
+        toast.error(error)
       })
-      .catch((error) => {
-        toast.error(`${error.statusCode}: ${error.message}`);
-      });
   }
 
   return (
@@ -79,7 +82,7 @@ export const Login = () => {
                         "block w-full px-3 rounded-md border-0 py-2.5 sm:py-4 md:py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 outline-none",
                         touched.email && errors.email
                           ? "focus:ring-red-600 ring-red-600"
-                          : "focus:ring-indigo-600",
+                          : "focus:ring-indigo-600"
                       )}
                     />
                   </div>
@@ -105,7 +108,7 @@ export const Login = () => {
                           "block w-full px-3 rounded-md border-0 py-2.5 sm:py-4 md:py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 outline-none",
                           touched.password && errors.password
                             ? "focus:ring-red-600 ring-red-600"
-                            : "focus:ring-indigo-600",
+                            : "focus:ring-indigo-600"
                         )}
                       />
                       <button
@@ -156,7 +159,9 @@ export const Login = () => {
                   {isSubmitting ? (
                     <Loader />
                   ) : (
-                    <span className="text-white text-sm font-medium uppercase tracking-wider">sign in</span>
+                    <span className="text-white text-sm font-medium uppercase tracking-wider">
+                      sign in
+                    </span>
                   )}
                 </button>
               </Form>

@@ -1,22 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Gorditas:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Goritas';
-  src: url('./fonts/Roboto-Regular.ttf');
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Black.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-Light.ttf");
+}
+
+@font-face {
+  font-family: "Inter", sans;
+  src: url("./assets/fonts/Inter-thin.ttf");
+}
+
+@font-face {
+  font-family: "Lato", sans;
+  src: url("./assets/fonts/Lato-Black.ttf");
+}
+
+@font-face {
+  font-family: "Lato", sans;
+  src: url("./assets/fonts/Lato-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Lato", sans;
+  src: url("./assets/fonts/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Lato", sans;
+  src: url("./assets/fonts/Lato-Thin.ttf");
 }
 
 @layer {
-  * {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-  }
-
   body {
-    @apply bg-[#F5F7FA];
+    @apply bg-[#F5F7FA] antialiased font-inter;
   }
 }
 
@@ -52,7 +112,7 @@
 
   .carousel-slider-track::before,
   .carousel-slider-track::after {
-    content: '';
+    content: "";
     display: table;
   }
 }

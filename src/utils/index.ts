@@ -29,3 +29,10 @@ export class LocalStorage {
     localStorage.clear();
   }
 }
+
+export const formatMoney = (price: number) => {
+  return new Intl.NumberFormat('en-US', {
+    currency: 'USD',
+    style: 'currency',
+  }).format(price);
+};

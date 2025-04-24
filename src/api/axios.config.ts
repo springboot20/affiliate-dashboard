@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosRequestConfig, AxiosInstance } from "axios";
 
 import { toast } from "react-toastify";
 export const BankAppApiClient: AxiosInstance = axios.create({
-  baseURL: "http://localhost:5010/api/v1",
+  baseURL: "http://localhost:5010/api/v1/banking",
   // import.meta.env.MODE === "production"
   //   ? import.meta.env.VITE_DEPLOYED_URL
   //   : import.meta.env.VITE_LOCAL_BASE_URL,
@@ -28,23 +28,8 @@ export const BankAppService = async ({
       return config;
     },
     (error) => {
-      if (axios.isAxiosError(error)) {
-        const errorMsg = (error.response?.data as { error?: string })?.error;
-        const errorWithMsg = (error.response?.data as { message?: string })?.message;
-
-        if (errorMsg) {
-          toast.error(errorMsg);
-        } else if (errorWithMsg) {
-          toast.error(errorWithMsg);
-        }
-      } else if (error.response.status === 401) {
-        window.location.href = "/login";
-      } else {
-        toast.error(error.message);
-      }
-
       return Promise.reject(error);
-    },
+    }
   );
 
   return BankAppApiClient({ ...options });
@@ -63,7 +48,19 @@ export const forgot_password = (data: { email: string }) =>
 
 export const verify_email = (data: { userId: string; token: string }) => {
   const { userId, token } = data;
-  return BankAppApiClient.get(`/users/verify-email/${userId}/${token}`);
+
+  console.log(data);
+
+  return BankAppApiClient.post(
+    `/users/verify-email`,
+    {},
+    {
+      params: {
+        userId,
+        token,
+      },
+    }
+  );
 };
 
 export const send_email = (data: { email: string }) =>

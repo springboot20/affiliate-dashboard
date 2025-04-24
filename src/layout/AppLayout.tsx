@@ -29,13 +29,16 @@ import { toast } from "react-toastify";
 const AppLayout = () => {
   const { pathname } = useLocation();
   const title = pathname.split("/")[1];
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const {
+    isAuthenticated,
+    data: { tokens },
+  } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = dispatch(logout());
+      const response = dispatch(logout({ token: tokens?.accessToken }));
 
       await response
         .unwrap()
@@ -43,13 +46,13 @@ const AppLayout = () => {
           await Promise.resolve(
             setTimeout(() => {
               navigate("/");
-            }),
+            })
           );
 
           return res;
         })
         .catch((error) => {
-          toast.error(`${error.statusCode}: ${error.message}`);
+          toast.error(error);
         });
     } catch (error) {}
   };
@@ -59,9 +62,9 @@ const AppLayout = () => {
       {({ open, close }) => (
         <div className="relative z-10 w-full flex lg:justify-between items-stretch h-screen">
           <SideNavigation open={open} close={close} />
-          <main className="absolute w-full left-0 lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-28rem)] xl:left-[28rem] min-h-screen right-0">
+          <main className="absolute w-full left-0 lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem] min-h-screen right-0">
             <div className="w-full relative flex flex-col justify-between h-full">
-              <nav className="top-0 left-0 right-0 fixed bg-white lg:left-[17rem] xl:left-[28rem] border-b z-10">
+              <nav className="top-0 left-0 right-0 fixed bg-white lg:left-[17rem] xl:left-[25rem] border-b z-10">
                 <div className="mx-auto px-4 sm:px-2 md:px-4 flex flex-col items-center">
                   <div className="flex items-center justify-between w-full h-24">
                     <div className="flex items-center lg:hidden">
@@ -151,7 +154,7 @@ const AppLayout = () => {
                                     onClick={handleLogout}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
-                                      "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4 w-full",
+                                      "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4 w-full"
                                     )}
                                   >
                                     <svg
@@ -176,7 +179,7 @@ const AppLayout = () => {
                                       to="/auth/register"
                                       className={classNames(
                                         active ? "bg-gray-100" : "",
-                                        "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4",
+                                        "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4"
                                       )}
                                     >
                                       <UserIcon className="h-6" />
@@ -190,7 +193,7 @@ const AppLayout = () => {
                                       to="/auth/login"
                                       className={classNames(
                                         active ? "bg-gray-100" : "",
-                                        "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4",
+                                        "flex items-center px-4 py-3 text-sm text-gray-700 space-x-4"
                                       )}
                                     >
                                       <ArrowLeftIcon className="h-6" />

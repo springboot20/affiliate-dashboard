@@ -6,6 +6,7 @@ import {
   forgot_password,
   send_email,
   verify_email,
+  BankAppApiClient,
 } from "@/api/axios.config";
 import type {
   RegisterPayloadAction,
@@ -25,10 +26,11 @@ export const register = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
+        return rejectWithValue(error?.message);
       }
+      return error;
     }
-  },
+  }
 );
 
 export const login = createAsyncThunk(
@@ -42,23 +44,28 @@ export const login = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
+        return rejectWithValue(error?.response?.data?.message);
       }
+      return error;
     }
-  },
+  }
 );
 
-export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+export const logout = createAsyncThunk("auth/logout", async (_:{token: string}, { rejectWithValue }) => {
   try {
     const response = await logout_user();
+
+    BankAppApiClient.defaults.headers.common["Authorization"] = `Bearer ${_.token}`;
 
     toast.success(response.data.message);
 
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      return rejectWithValue(error.response?.data);
+      return rejectWithValue(error?.message);
     }
+
+    return error;
   }
 });
 
@@ -70,10 +77,11 @@ export const forgot = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
+        return rejectWithValue(error?.message);
       }
+      return error;
     }
-  },
+  }
 );
 
 export const sendMail = createAsyncThunk(
@@ -84,10 +92,11 @@ export const sendMail = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
+        return rejectWithValue(error?.message);
       }
+      return error;
     }
-  },
+  }
 );
 
 export const verifyMail = createAsyncThunk(
@@ -98,8 +107,9 @@ export const verifyMail = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
+        return rejectWithValue(error?.message);
       }
+      return error;
     }
-  },
+  }
 );
