@@ -65,7 +65,7 @@ export const OverView = () => {
                     <p className="font-semibold text-base">Eddy Cusuma</p>
                   </div>
 
-                  <div className="space-y-1 ">
+                  <div>
                     <h2 className="text-xs font-normal uppercase">valid thru</h2>
                     <p className="font-semibold text-sm">12/12</p>
                   </div>
@@ -76,7 +76,7 @@ export const OverView = () => {
                 </div>
               </div>
 
-              <div className="border relative p-3.5 before:absolute before:content-[' '] font-lato before:bottom-0 before:h-12 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 flex-none flex-grow-0 w-full lg:w-1/2  bg-white">
+              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 flex-grow w-full lg:w-1/2 bg-white">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-normal">Balance</span>
@@ -87,12 +87,12 @@ export const OverView = () => {
 
                 <div className="flex items-center justify-between py-3">
                   <div>
-                    <h2 className="text-sm font-normal uppercase">card holder</h2>
+                    <h2 className="text-xs font-normal uppercase">card holder</h2>
                     <p className="font-semibold text-base">Eddy Cusuma</p>
                   </div>
 
                   <div>
-                    <h2 className="text-sm font-normal uppercase">valid thru</h2>
+                    <h2 className="text-xs font-normal uppercase">valid thru</h2>
                     <p className="font-semibold text-sm">12/12</p>
                   </div>
                 </div>

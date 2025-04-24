@@ -29,9 +29,9 @@ export const router = createBrowserRouter([
       {
         path: "/transactions",
         element: (
-          <ProtectedRoute>
             <Transactions />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
 
