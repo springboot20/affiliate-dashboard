@@ -17,7 +17,6 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 export const Transactions = () => {
   const [width, setWidth] = useState<number>(0);
   const cardSlider = useRef<HTMLDivElement>(null);
-  const [view, setView] = useState<string>("all");
 
   useEffect(() => {
     if (cardSlider.current !== null) {
@@ -208,7 +207,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("all")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -224,7 +222,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("in")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -240,7 +237,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("expense")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -496,7 +492,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("all")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -512,7 +507,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("in")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -528,7 +522,6 @@ export const Transactions = () => {
                 <Tab as={React.Fragment}>
                   {({ selected }) => (
                     <button
-                      onClick={() => setView("expense")}
                       className={classNames(
                         selected
                           ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
@@ -586,15 +579,21 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">#12548796</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            #12548796
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">Shopping</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            Shopping
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">1234 ****</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            1234 ****
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -604,7 +603,9 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">-$2,500</p>
+                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            -$2,500
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -628,15 +629,21 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">#12548796</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            #12548796
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">Transfer</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            Transfer
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">1234 ****</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            1234 ****
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -646,7 +653,9 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-green">+$750</p>
+                          <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                            +$750
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -670,15 +679,21 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">#12548796</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            #12548796
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">Service</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            Service
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">1234 ****</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            1234 ****
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -688,7 +703,9 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">-150</p>
+                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            -150
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -712,25 +729,33 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">#12548796</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">Transfer</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">1234 ****</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
                           <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                          15 Jan, 03.29 PM
+                            #12548796
                           </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">-1050</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            Transfer
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            1234 ****
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            15 Jan, 03.29 PM
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            -1050
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
@@ -754,25 +779,33 @@ export const Transactions = () => {
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">#12548796</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">Transfer</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">1234 ****</p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
                           <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                          14 Jan, 10.40 PM
+                            #12548796
                           </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-green">+840</p>
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            Transfer
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            1234 ****
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            14 Jan, 10.40 PM
+                          </p>
+                        </td>
+
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                            +840
+                          </p>
                         </td>
 
                         <td className="px-3 py-2.5 whitespace-nowrap">
