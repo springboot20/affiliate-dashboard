@@ -30,7 +30,7 @@ export const OverView = () => {
     <section className="px-2 mt-[11rem] lg:mt-28 w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
-        <div className="lg:max-w-[30rem] w-full">
+        <div className="lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
             <Button
@@ -59,7 +59,7 @@ export const OverView = () => {
                   <img src={chip} alt="chip icon" className="w-8" />
                 </div>
 
-                <div className="flex items-center justify-between py-3">
+                <div className="flex items-center justify-between py-3.5">
                   <div>
                     <h2 className="text-xs font-normal uppercase">card holder</h2>
                     <p className="font-semibold text-base">Eddy Cusuma</p>
@@ -85,7 +85,7 @@ export const OverView = () => {
                   <img src={chipBlack} alt="chip icon" className="w-8" />
                 </div>
 
-                <div className="flex items-center justify-between py-3">
+                <div className="flex items-center justify-between py-3.5">
                   <div>
                     <h2 className="text-xs font-normal uppercase">card holder</h2>
                     <p className="font-semibold text-base">Eddy Cusuma</p>
@@ -106,14 +106,14 @@ export const OverView = () => {
         </div>
 
         {/* Transaction section */}
-        <div className="mt-4 lg:mt-0 xl:mt-1.5 w-full lg:w-fit flex-grow lg:shrink-0">
+        <div className="w-full lg:w-fit flex-grow lg:shrink-0">
           <div className="flex items-center">
             <h3 className="text-base lg:text-xl font-semibold text-affiliate-blue capitalize">
               recent transactions
             </h3>
           </div>
 
-          <ul className="space-y-5 lg:space-y-[0.875rem] xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-3">
+          <ul className="space-y-5 lg:space-y-[0.875rem] xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-2.5 h-auto">
             <li className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center h-12 w-12 lg:h-10 lg:w-10 rounded-full bg-[#FFF5D9]">
@@ -207,7 +207,7 @@ export const OverView = () => {
         </div>
 
         {/* Transaction section */}
-        <div className="mt-4 w-full lg:mt-0 space-y-3 lg:max-w-[30rem]">
+        <div className="mt-4 w-full lg:mt-0 space-y-3 lg:!max-w-[30rem] xl:!max-w-2xl">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             weekly activity
           </h3>
