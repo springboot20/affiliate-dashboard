@@ -24,7 +24,7 @@ export const Transactions = () => {
     }
   }, []);
   return (
-    <section className="px-2 mt-[11rem] lg:mt-28 w-full xl:max-w-7xl xl:mx-auto">
+    <section className="px-2 mt-[11rem] lg:mt-28 w-full max-w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
         <div className="lg:!max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
@@ -115,7 +115,7 @@ export const Transactions = () => {
             height="170"
             viewBox="0 0 245 170"
             fill="none"
-            className="mt-4 xl:hidden lg:block"
+            className="mt-4 hidden xl:hidden lg:block"
           >
             <rect width="245" height="170" rx="20" fill="white" />
             <path
@@ -196,7 +196,7 @@ export const Transactions = () => {
         </div>
 
         {/*  */}
-        <div className="mt-4 lg:w-full lg:flex-grow">
+        <div className="mt-4 lg:w-full lg:flex-grow w-full">
           <h3 className="text-base lg:text-xl font-semibold text-affiliate-blue capitalize">
             recent transactions
           </h3>
@@ -252,7 +252,7 @@ export const Transactions = () => {
 
               <TabPanels className="mt-4">
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4">
+                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
                     <li className="flex items-center justify-between border-b py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
@@ -330,7 +330,7 @@ export const Transactions = () => {
                 </TabPanel>
 
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4">
+                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
                     <li className="flex items-center justify-between border-b py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
@@ -408,7 +408,7 @@ export const Transactions = () => {
                 </TabPanel>
 
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4">
+                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
                     <li className="flex items-center justify-between border-b py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
@@ -568,7 +568,7 @@ export const Transactions = () => {
                       <tr>
                         <td className="px-3 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 flex items-center justify-center rounded-full">
+                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
                               <ArrowUpIcon />
                             </span>
 
@@ -618,7 +618,7 @@ export const Transactions = () => {
                       <tr>
                         <td className="px-3 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 flex items-center justify-center rounded-full">
+                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
                               <ArrowDownIcon />
                             </span>
 
@@ -668,7 +668,7 @@ export const Transactions = () => {
                       <tr>
                         <td className="px-3 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 flex items-center justify-center rounded-full">
+                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
                               <ArrowUpIcon />
                             </span>
 
@@ -718,7 +718,7 @@ export const Transactions = () => {
                       <tr>
                         <td className="px-3 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 flex items-center justify-center rounded-full">
+                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
                               <ArrowUpIcon />
                             </span>
 
@@ -768,7 +768,7 @@ export const Transactions = () => {
                       <tr>
                         <td className="px-3 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 flex items-center justify-center rounded-full">
+                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
                               <ArrowDownIcon />
                             </span>
 
@@ -819,7 +819,7 @@ export const Transactions = () => {
                 </TabPanel>
 
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4">
+                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
                     <li className="flex items-center justify-between border-b py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
@@ -897,7 +897,7 @@ export const Transactions = () => {
                 </TabPanel>
 
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4">
+                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
                     <li className="flex items-center justify-between border-b py-3.5">
                       <div className="flex items-center gap-3">
                         <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">

@@ -56,13 +56,19 @@ const AppLayout = () => {
         });
     } catch (error) {}
   };
+  //  lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem]
 
   return (
     <Disclosure as="div">
       {({ open, close }) => (
-        <div className="relative z-10 w-full flex lg:justify-between items-stretch h-screen">
+        <div className="relative z-10 w-full flex lg:justify-between items-stretch shrink-0 h-screen">
           <SideNavigation open={open} close={close} />
-          <main className="absolute w-full left-0 lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem] min-h-screen right-0">
+          <main
+            className={classNames(
+              "w-full sticky min-h-screen right-0 overflow-x--hidden transition-all",
+              "lg:left-[17rem] lg:w-[calc(100%-17rem)] xl:left-[25rem] xl:w-[calc(100%-25rem)]"
+            )}
+          >
             <div className="w-full relative flex flex-col justify-between h-full">
               <nav className="top-0 left-0 right-0 fixed bg-white lg:left-[17rem] xl:left-[25rem] border-b z-10">
                 <div className="mx-auto px-4 sm:px-2 md:px-4 flex flex-col items-center">
