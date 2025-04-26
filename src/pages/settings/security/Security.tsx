@@ -37,7 +37,7 @@ export const Security = () => {
   return (
     <div className="mt-8 space-y-6">
       <div className="space-y-4">
-        <h1 className="text-affiliate-blue capitalize font-medium text-xl">notification</h1>
+        <h1 className="text-affiliate-blue capitalize font-medium text-sm">notification</h1>
         <ul>
           <li className="flex items-center gap-4">
             <Switch
@@ -51,14 +51,14 @@ export const Security = () => {
                 " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition",
               )}
             ></Switch>
-            <p className="text-sm sm:text-base font-normal text-affiliate-black">
+            <p className="text-xs font-normal text-affiliate-black">
               Enable or disable two factor authentication
             </p>
           </li>
         </ul>
       </div>
       <div className="space-y-3">
-        <h1 className="text-affiliate-blue capitalize font-medium text-xl">notification</h1>
+        <h1 className="text-affiliate-blue capitalize font-medium text-sm">change password</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
@@ -70,7 +70,7 @@ export const Security = () => {
                 <fieldset>
                   <label
                     htmlFor="current-password"
-                    className="capitalize text-sm font-normal text-affiliate-black"
+                    className="capitalize text-xs font-normal text-affiliate-black"
                   >
                     current password
                   </label>
@@ -82,7 +82,7 @@ export const Security = () => {
                       placeholder="**********"
                       autoComplete={"current-password"}
                       className={classNames(
-                        "block w-full lg:w-1/2 px-3 rounded-lg text-[#718EBF] border border-gray-200 py-2 shadow-sm focus:ring-2 focus:ring-inset text-sm placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
                       )}
                     />
                   </div>
@@ -91,7 +91,7 @@ export const Security = () => {
                 <fieldset>
                   <label
                     htmlFor="new-password"
-                    className="capitalize text-sm font-normal text-affiliate-black"
+                    className="capitalize text-xs font-normal text-affiliate-black"
                   >
                     new password
                   </label>
@@ -103,7 +103,7 @@ export const Security = () => {
                       placeholder="*********"
                       autoComplete={"current-password"}
                       className={classNames(
-                        "block w-full lg:w-1/2 px-3 rounded-lg text-[#718EBF] border border-gray-200 py-2 shadow-sm focus:ring-2 focus:ring-inset text-sm placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
                       )}
                     />
                   </div>

@@ -199,15 +199,15 @@ export const Accounts = () => {
                 </div>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">Shopping</p>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">1234 ****</p>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">completed</p>
               </td>
 
@@ -252,15 +252,15 @@ export const Accounts = () => {
                 </div>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">Service</p>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">1234 ****</p>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">completed</p>
               </td>
 
@@ -301,13 +301,13 @@ export const Accounts = () => {
                 </div>
               </td>
 
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">Transfer</p>
               </td>
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">1234 ****</p>
               </td>
-              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">
+              <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrapktmon">
                 <p className="text-xs font-normal text-[#718EBF]">completed</p>
               </td>
               <td className="py-2.5 px-2 xl:p-3.5 whitespace-nowrap">

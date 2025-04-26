@@ -20,11 +20,9 @@ const preferenceSchema = yup.object({
 });
 
 export const Preference = () => {
-  const [active, setActive] = useState<boolean>(false);
-
-  const handleActive = () => {
-    setActive((prev) => !prev);
-  };
+  const [receiveDigitalCurrency, setReceiveDigitalCurrency] = useState<boolean>(false);
+  const [receiveMerchant, setReceiveMerchant] = useState<boolean>(false);
+  const [recommendation, setRecommendation] = useState<boolean>(false);
 
   const { values, handleSubmit, handleChange } = useFormik({
     onSubmit: onSubmit,
@@ -44,7 +42,7 @@ export const Preference = () => {
             <fieldset className="lg:col-span-1">
               <label
                 htmlFor="currency"
-                className="capitalize text-sm font-normal text-affiliate-black"
+                className="capitalize text-xs font-normal text-affiliate-black"
               >
                 currency
               </label>
@@ -57,7 +55,7 @@ export const Preference = () => {
                   onChange={handleChange}
                   placeholder="USD"
                   className={classNames(
-                    "block w-full px-3 rounded-lg text-[#718EBF] border border-gray-200 py-2 shadow-sm  focus:ring-2 focus:ring-inset text-sm placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3"
                   )}
                 />
               </div>
@@ -66,7 +64,7 @@ export const Preference = () => {
             <fieldset className="lg:col-span-1">
               <label
                 htmlFor="time-zone"
-                className="capitalize text-sm font-normal text-affiliate-black"
+                className="capitalize text-xs font-normal text-affiliate-black"
               >
                 time zone
               </label>
@@ -79,63 +77,63 @@ export const Preference = () => {
                   name="time-zone"
                   placeholder="(GMT-12:00) International Date Line West"
                   className={classNames(
-                    "block w-full px-3 rounded-lg text-[#718EBF] border border-gray-200 py-2 shadow-sm  focus:ring-2 focus:ring-inset text-sm placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3"
                   )}
                 />
               </div>
             </fieldset>
 
-            <div className="mt-8 col-span-full">
-              <h1 className="text-affiliate-blue capitalize font-medium text-xl">notification</h1>
+            <div className="mt-3 col-span-full">
+              <h1 className="text-affiliate-blue capitalize font-medium text-sm">notification</h1>
               <div className="mt-4">
                 <ul className="space-y-5">
-                  <li className="flex items-center gap-4">
+                  <li className="flex items-center gap-2">
                     <Switch
-                      checked={active}
-                      onChange={handleActive}
+                      checked={receiveDigitalCurrency}
+                      onChange={() => setReceiveDigitalCurrency((prev) => !prev)}
                       className={classNames(
                         "relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm",
-                        active
+                        receiveDigitalCurrency
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition",
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
                       )}
                     ></Switch>
-                    <p className="text-sm sm:text-base text-balance font-normal text-affiliate-black">
-                      I send or receive digita currency
+                    <p className="text-xs text-balance font-normal text-affiliate-black">
+                      I send or receive digital currency
                     </p>
                   </li>
 
-                  <li className="flex items-center gap-4">
+                  <li className="flex items-center gap-2">
                     <Switch
-                      checked={active}
-                      onChange={handleActive}
+                      checked={receiveMerchant}
+                      onChange={() => setReceiveMerchant((prev) => !prev)}
                       className={classNames(
                         "relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm",
-                        active
+                        receiveMerchant
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition",
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
                       )}
                     ></Switch>
-                    <p className="text-sm sm:text-base text-balance font-normal text-affiliate-black">
+                    <p className="text-xs text-balance font-normal text-affiliate-black">
                       I receive merchant order
                     </p>
                   </li>
 
-                  <li className="flex items-center gap-4">
+                  <li className="flex items-center gap-2">
                     <Switch
-                      checked={active}
-                      onChange={handleActive}
+                      checked={recommendation}
+                      onChange={() => setRecommendation((prev) => !prev)}
                       className={classNames(
                         "relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm",
-                        active
+                        recommendation
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition",
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
                       )}
                     ></Switch>
-                    <p className="text-sm sm:text-base text-balance font-normal text-affiliate-black">
+                    <p className="text-xs text-balance font-normal text-affiliate-black">
                       There are recommendation for my account
                     </p>
                   </li>

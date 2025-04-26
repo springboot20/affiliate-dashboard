@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export const Settings = () => {
   return (
-    <div className="mt-[11rem] lg:mt-32 px-2 w-full">
+    <div className="mt-[11rem] lg:mt-28 px-2 w-full">
       <div className="p-4 sm:p-8 rounded-3xl bg-white max-w-7xl mx-auto">
         <TabGroup>
           <TabList className="w-full flex flex-row border-b lg:items-start">
@@ -16,13 +16,14 @@ export const Settings = () => {
                 <>
                   <button
                     className={classNames(
-                      "text-[#718EBF] w-full focus:ouline-none focus:ring-0 border-0 text-sm capitalize font-medium py-2 px-2",
-                      selected &&
-                        "select-none cursor-pointer text-affiliate-deep-blue border-b-2 lg:border-b-4 shadow-none border-affiliate-deep-blue ",
+                      "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
                   >
                     edit profile
                   </button>
+                  {selected && (
+                    <span className="select-none cursor-pointer bg-affiliate-deep-blue w-full rounded-t-3xl block  h-0.5 absolute bottom-0 shadow-none"></span>
+                  )}
                 </>
               )}
             </Tab>
@@ -31,13 +32,14 @@ export const Settings = () => {
                 <>
                   <button
                     className={classNames(
-                      "text-[#718EBF] w-full focus:ouline-none focus:ring-0 border-0 text-sm capitalize font-medium py-2 px-2",
-                      selected &&
-                        "select-none cursor-pointer text-affiliate-deep-blue border-b-2 lg:border-b-4 shadow-none border-affiliate-deep-blue ",
+                      "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
                   >
                     preference
                   </button>
+                  {selected && (
+                    <span className="select-none cursor-pointer bg-affiliate-deep-blue w-full rounded-t-3xl block  h-0.5 absolute bottom-0 shadow-none"></span>
+                  )}
                 </>
               )}
             </Tab>
@@ -46,13 +48,14 @@ export const Settings = () => {
                 <>
                   <button
                     className={classNames(
-                      "text-[#718EBF] w-full focus:ouline-none focus:ring-0 border-0 text-sm capitalize font-medium py-2 px-2",
-                      selected &&
-                        "select-none cursor-pointer text-affiliate-deep-blue border-b-2 lg:border-b-4 shadow-none border-affiliate-deep-blue ",
+                      "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
                   >
                     security
                   </button>
+                  {selected && (
+                    <span className="select-none cursor-pointer bg-affiliate-deep-blue w-full rounded-t-3xl block  h-0.5 absolute bottom-0 shadow-none"></span>
+                  )}
                 </>
               )}
             </Tab>
