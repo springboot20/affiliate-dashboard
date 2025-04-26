@@ -54,7 +54,7 @@ export const SideNavigation: React.FC<{
     { to: "/service", name: "services", current: true, Icon: ServiceIcon },
     {
       to: "/privileges",
-      name: "service",
+      name: "my privileges",
       current: true,
       Icon: EconometricsIcon,
     },
@@ -97,7 +97,7 @@ export const SideNavigation: React.FC<{
                             )}
                           />
                         </motion.div>
-                        <motion.span className="text-sm font-semibold capitalize">
+                        <motion.span className="text-sm font-medium capitalize">
                           {name}
                         </motion.span>
                       </>
