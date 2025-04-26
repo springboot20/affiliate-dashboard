@@ -1,20 +1,30 @@
 import { Button, IconButton, IconButtonProps } from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { classNames } from "@/utils";
 
 export const Pagination = () => {
+  const [page, setPage] = useState(1);
+
+  let totalPages = 4;
+
   const getItemProps = (index: number) => ({
     variant: 3 === index ? "filled" : ("text" as IconButtonProps["variant"]),
+    className: classNames(
+      `flex items-center justify-center text-xs font-medium`,
+      page === index ? "text-white bg-affiliate-deep-blue " : "text-affiliate-deep-blue !bg-transparent !shadow-none"
+    ),
     // color: "text-affiliate-deep-blue",
     onClick: () => console.log("clicked"),
     children: index + 1,
   });
 
   const next = () => {
-    console.log("next");
+    setPage((prev) => Math.min(prev + 1, totalPages));
   };
 
   const prev = () => {
-    console.log("prev");
+    if (page > 1) setPage((prev) => prev - 1);
   };
 
   return (
@@ -24,20 +34,20 @@ export const Pagination = () => {
           placeholder={"previous"}
           onClick={prev}
           variant="text"
-          className="flex items-center gap-3 capitalize text-affiliate-deep-blue text-sm"
+          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
           onPointerEnterCapture={undefined}
+          ripple={false}
           onPointerLeaveCapture={undefined}
         >
           <ChevronLeftIcon strokeWidth={2} className="h-5 w-5" /> Previous
         </Button>
         <div className="flex items-center gap-2">
-          {Array.from({ length: 2 }, (_, index) => (
+          {Array.from({ length: totalPages }, (_, index) => (
             <IconButton
               onPointerEnterCapture={undefined}
               onPointerLeaveCapture={undefined}
               placeholder={""}
               key={index}
-              className="text-affiliate-deep-blue flex items-center justify-center text-sm font-medium"
               {...getItemProps(index + 1)}
             >
               {index + 1}
@@ -47,8 +57,9 @@ export const Pagination = () => {
         <Button
           placeholder={"next"}
           variant="text"
-          className="flex items-center gap-3 capitalize text-affiliate-deep-blue text-sm"
+          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
           onClick={next}
+          ripple={false}
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >

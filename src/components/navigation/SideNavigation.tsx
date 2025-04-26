@@ -83,7 +83,7 @@ export const SideNavigation: React.FC<{
                           ? "bg-gray-100 text-[#2D60FF] before:bg-blue-500"
                           : "text-[#B1B1B1]",
                         "flex items-center relative transition ease delay-400",
-                        "before:absolute before:content-[' '] before:h-full before:w-2 before:left-0 before:rounded-tr-2xl before:rounded-br-2xl",
+                        "before:absolute before:content-[' '] before:h-full before:w-1.5 before:left-0 before:rounded-tr-2xl before:rounded-br-2xl",
                       )
                     }
                   >
@@ -158,7 +158,7 @@ export const SideNavigation: React.FC<{
                         </motion.div>
                         <motion.span
                           {...framerText(idx, open)}
-                          className="text-base font-semibold capitalize"
+                          className="text-sm font-medium capitalize"
                         >
                           {name}
                         </motion.span>

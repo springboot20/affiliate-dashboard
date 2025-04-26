@@ -96,7 +96,7 @@ export const Preference = () => {
                         receiveDigitalCurrency
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
                       )}
                     ></Switch>
                     <p className="text-xs text-balance font-normal text-affiliate-black">
@@ -113,7 +113,7 @@ export const Preference = () => {
                         receiveMerchant
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
                       )}
                     ></Switch>
                     <p className="text-xs text-balance font-normal text-affiliate-black">
@@ -130,7 +130,7 @@ export const Preference = () => {
                         recommendation
                           ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                           : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition"
+                        " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
                       )}
                     ></Switch>
                     <p className="text-xs text-balance font-normal text-affiliate-black">
