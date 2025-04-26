@@ -30,7 +30,7 @@ export const OverView = () => {
     <section className="px-2 mt-[11rem] lg:mt-28 w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
-        <div className="lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
+        <div className="flex-grow shrink-0 md:max-w-full lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
             <Button
@@ -50,7 +50,7 @@ export const OverView = () => {
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 lg:w-full flex-1 font-lato"
             >
-              <div className="relative before:absolute before:content-[' '] before:bottom-0 before:h-12 before:bg-white/20 before:left-0 before:right-0 p-3.5 rounded-2xl space-y-4 lg:space-y-2 flex-none flex-grow-0 w-full lg:w-1/2 bg-gradient-to-br from-[#4C49ED] to-[#0A06F4] text-white">
+              <div className="before:bg-white/20 border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-gradient-to-br from-[#4C49ED] to-[#0A06F4] text-white">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-normal">Balance</span>
@@ -76,7 +76,7 @@ export const OverView = () => {
                 </div>
               </div>
 
-              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 flex-grow w-full lg:w-1/2 bg-white">
+              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-white">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-normal">Balance</span>
@@ -113,8 +113,8 @@ export const OverView = () => {
             </h3>
           </div>
 
-          <ul className="space-y-5 lg:space-y-[0.875rem] xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-2.5 h-auto">
-            <li className="flex items-center justify-between">
+          <ul className="space-y-5 lg:space-y-[0.875rem] xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-3.5 h-auto">
+            <li className="xl:py-1.5 xl:px-2.5 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center h-12 w-12 lg:h-10 lg:w-10 rounded-full bg-[#FFF5D9]">
                   <svg
@@ -149,7 +149,7 @@ export const OverView = () => {
               <p className="text-affiliate-red text-xs font-medium">-$54.09</p>
             </li>
 
-            <li className="flex items-center justify-between">
+            <li className="xl:py-1.5 xl:px-2.5 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center h-12 w-12 lg:h-10 lg:w-10 rounded-full bg-[#E7EDFF]">
                   <svg
@@ -177,7 +177,7 @@ export const OverView = () => {
               <p className="text-affiliate-green text-xs font-medium">+$2,500</p>
             </li>
 
-            <li className="flex items-center justify-between">
+            <li className="xl:py-1.5 xl:px-2.5 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center h-12 w-12 lg:h-10 lg:w-10 rounded-full bg-[#DCFAF8]">
                   <svg

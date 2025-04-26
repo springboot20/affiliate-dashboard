@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import chip from "@/assets/Chip_Card.png";
 import chipBlack from "@/assets/Chip_Card_b.png";
@@ -27,7 +27,7 @@ export const Transactions = () => {
     <section className="px-2 mt-[11rem] lg:mt-28 w-full max-w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
-        <div className="lg:!max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
+        <div className="shrink-0 flex-grow md:max-w-full lg:!max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
             <h3
@@ -44,7 +44,7 @@ export const Transactions = () => {
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 max-w-full flex-1 font-lato"
             >
-              <div className="before:bg-white/20 border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full lg:w-1/2 bg-gradient-to-br from-[#4C49ED] to-[#0A06F4] text-white">
+              <div className="before:bg-white/20 border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-gradient-to-br from-[#4C49ED] to-[#0A06F4] text-white">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-normal">Balance</span>
@@ -70,7 +70,7 @@ export const Transactions = () => {
                 </div>
               </div>
 
-              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full lg:w-1/2 bg-white">
+              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-white">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-normal">Balance</span>
@@ -203,49 +203,58 @@ export const Transactions = () => {
 
           <div className="mt-4">
             <TabGroup className="lg:hidden">
-              <TabList className="rounded-none bg-transparent border-b border-gray-200 flex items-center justify-center lg:justify-start gap-12">
-                <Tab as={React.Fragment}>
+              <TabList className="rounded-none bg-transparent border-b border-gray-200 flex items-center justify-start gap-12">
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        all transactions
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      all transactions
-                    </button>
+                    </>
                   )}
                 </Tab>
 
-                <Tab as={React.Fragment}>
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        income
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      income
-                    </button>
+                    </>
                   )}
                 </Tab>
 
-                <Tab as={React.Fragment}>
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        expense
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      expense
-                    </button>
+                    </>
                   )}
                 </Tab>
               </TabList>
@@ -489,48 +498,57 @@ export const Transactions = () => {
 
             <TabGroup className="hidden lg:block">
               <TabList className="rounded-none bg-transparent border-b border-gray-200 flex items-center justify-center lg:justify-start gap-12">
-                <Tab as={React.Fragment}>
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        all transactions
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      all transactions
-                    </button>
+                    </>
                   )}
                 </Tab>
 
-                <Tab as={React.Fragment}>
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        income
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      income
-                    </button>
+                    </>
                   )}
                 </Tab>
 
-                <Tab as={React.Fragment}>
+                <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "text-affiliate-deep-blue border-b border-affiliate-deep-blue"
-                          : "text-[#8BA3CB] border-none",
-                        "text-xs xl:text-base px-0 py-2 capitalize outline-none focus:outline-none"
+                    <>
+                      <button
+                        className={classNames(
+                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
+                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                        )}
+                      >
+                        expense
+                      </button>
+                      {selected && (
+                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
                       )}
-                    >
-                      expense
-                    </button>
+                    </>
                   )}
                 </Tab>
               </TabList>
