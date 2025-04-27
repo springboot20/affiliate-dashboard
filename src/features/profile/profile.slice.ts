@@ -24,7 +24,7 @@ export const ProfileApiSlice = ApiService.injectEndpoints({
       query: (data) => ({
         url: "/profile",
         body: data,
-        method: "POST",
+        method: "PATCH",
       }),
     }),
 
