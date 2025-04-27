@@ -163,7 +163,7 @@ export const Profile = () => {
                       placeholder="Charlene Reed"
                       className={classNames(
                         "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
-                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
+                        editing ? "border border-[#DFEAF2]" : ""
                       )}
                       disabled={!editing}
                     />
@@ -203,10 +203,9 @@ export const Profile = () => {
                       autoComplete="username"
                       placeholder="Charlene Reed"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
-                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 disabled:bg-gray-50 border-0"
                       )}
-                      disabled={!editing}
+                      disabled={true}
                     />
                   </fieldset>
 
@@ -223,10 +222,9 @@ export const Profile = () => {
                       name="email"
                       placeholder="charlenereed@gmail.com "
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
-                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 disabled:bg-gray-50 border-0"
                       )}
-                      disabled={!editing}
+                      disabled={true}
                     />
                   </fieldset>
 
@@ -244,10 +242,9 @@ export const Profile = () => {
                       autoComplete="current-password"
                       placeholder="**********"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF]  py-2 focus:ring-2 placeholder:leading-[0] focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none",
-                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF]  py-2 focus:ring-2 placeholder:leading-[0] focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none disabled:bg-gray-50 border-0"
                       )}
-                      disabled={!editing}
+                      disabled={true}
                     />
                   </fieldset>
 
