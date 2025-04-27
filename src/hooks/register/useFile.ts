@@ -41,6 +41,7 @@ export const useFile = () => {
     handleDrop,
     handleDragLeave,
     handleDragEnter,
+    setSelectedFile,
     handleFileChange,
     isFileExtValid,
     selectedFile,

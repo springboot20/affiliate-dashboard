@@ -9,7 +9,7 @@ import { Loader } from "@/components/Loader";
 import { DocumentDuplicateIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export const Profile = () => {
-  const { handleFileChange, selectedFile } = useFile();
+  const { handleFileChange, selectedFile, setSelectedFile } = useFile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [updateProfile] = useUpdateProfileMutation();
@@ -52,8 +52,7 @@ export const Profile = () => {
         avatarData = selectedFile;
       }
 
-
-      console.log(selectedFile)
+      console.log(avatarData);
 
       // Submit form with all values
       const response = await updateProfile({
