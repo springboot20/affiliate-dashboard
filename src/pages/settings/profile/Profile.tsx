@@ -376,7 +376,7 @@ export const Profile = () => {
                     />
                   </fieldset>
 
-                  <div className="mt-8 md:col-span-full md:flex md:items-center md:justify-end">
+                  <div className="mt-8 md:col-span-full flex items-center md:justify-end">
                     {editing ? (
                       <>
                         <button
