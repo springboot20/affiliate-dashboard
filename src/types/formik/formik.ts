@@ -10,15 +10,15 @@ export interface LoginState {
 }
 
 export type ProfileValues = {
+  firstname: string;
   username: string;
   email: string;
+  lastname: string;
+  phoneNumber: string;
   password: string;
-  "date-of-birth": string;
-  address: {
-    present: string;
-    permanent: string;
-  };
   city: string;
-  "postal-code": string;
-  country:string
+  country: string;
+  postal_code: string;
+  present_address: string;
+  permanent_address: string;
 };

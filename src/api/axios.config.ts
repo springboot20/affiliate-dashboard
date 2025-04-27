@@ -1,16 +1,17 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosInstance } from "axios";
-
 import { toast } from "react-toastify";
+
+console.log(import.meta.env);
+
 export const BankAppApiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_DEPLOYED_URL
-    : import.meta.env.VITE_LOCAL_BASE_URL,
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? import.meta.env.VITE_LOCAL_BASE_URL
+      : import.meta.env.VITE_DEPLOYED_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
-
-
 
 interface BankAppServiceProps extends AxiosRequestConfig {
   showSuccessNotification?: boolean;
