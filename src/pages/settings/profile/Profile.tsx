@@ -44,25 +44,34 @@ export const Profile = () => {
   };
 
   async function onSubmit(values: ProfileValues) {
-    const formData = new FormData();
-    formData.append("avatar", selectedFile as Blob);
-
-    console.log({ ...values, avatar: selectedFile });
     try {
+      // Create form data for file upload if a new file was selected
+      let avatarData = undefined;
+
+      if (selectedFile) {
+        avatarData = selectedFile;
+      }
+
+
+      console.log(selectedFile)
+
+      // Submit form with all values
       const response = await updateProfile({
         ...values,
-        present_address: values?.present_address,
-        permanent_address: values?.permanent_address,
       }).unwrap();
 
-      const { data, message } = response;
-
-      console.log(data);
+      const { message } = response;
       toast(message, { type: "success" });
 
+      // Reset editing state after successful submission
       setEditing(false);
+      setSelectedFile(null);
+
+      // Refresh profile data if needed - depends on your RTK setup
+      // refetchProfile();
     } catch (error: any) {
-      toast(error?.response?.data, { type: "error" });
+      const errorMessage = error?.response?.data || "Failed to update profile";
+      toast(errorMessage, { type: "error" });
     }
   }
 
@@ -142,7 +151,7 @@ export const Profile = () => {
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {() => {
+        {({ isSubmitting }) => {
           return (
             <Form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 md:mt-8 gap-4 lg:gap-6 flex-shrink-0 w-full lg:col-span-2">
               {isLoading || isFetching ? (
@@ -369,24 +378,26 @@ export const Profile = () => {
                   </fieldset>
 
                   <div className="mt-8 md:col-span-full md:flex md:items-center md:justify-end">
-                    {editing && (
-                      <button
-                        type="button"
-                        onClick={() => setEditing(false)}
-                        className="py-2 w-full mr-2 sm:w-28 px-4 flex items-center gap-3 text-white bg-affiliate-red rounded-md text-base font-medium capitalize"
-                      >
-                        cancel
-                        <XMarkIcon className="h-6 w-6 shrink-0" />
-                      </button>
-                    )}
                     {editing ? (
-                      <button
-                        type="submit"
-                        className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-affiliate-deep-blue rounded-md text-base font-medium capitalize"
-                      >
-                        <span>save</span>
-                        <DocumentDuplicateIcon className="h-6 w-6 shrink-0" />
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setEditing(false)}
+                          className="py-2 w-full mr-2 sm:w-28 px-4 flex items-center gap-3 text-white bg-affiliate-red rounded-md text-base font-medium capitalize"
+                        >
+                          cancel
+                          <XMarkIcon className="h-6 w-6 shrink-0" />
+                        </button>
+
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-affiliate-deep-blue rounded-md text-base font-medium capitalize disabled:bg-gray-400"
+                        >
+                          {isSubmitting ? "Saving..." : "Save"}
+                          <DocumentDuplicateIcon className="h-6 w-6 shrink-0" />
+                        </button>
+                      </>
                     ) : (
                       <button
                         type="button"
