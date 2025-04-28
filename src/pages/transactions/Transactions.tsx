@@ -24,7 +24,7 @@ export const Transactions = () => {
     }
   }, []);
   return (
-    <section className="px-2 mt-[11rem] lg:mt-28 w-full max-w-full xl:max-w-7xl xl:mx-auto">
+    <section className="px-2 mt-[9rem] lg:mt-[5.5rem] w-full max-w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
         <div className="shrink-0 flex-grow md:max-w-full lg:!max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
@@ -162,9 +162,9 @@ export const Transactions = () => {
                 width="92"
                 height="169"
                 filterUnits="userSpaceOnUse"
-                color-interpolation-filters="sRGB"
+                colorInterpolationFilters="sRGB"
               >
-                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
                 <feColorMatrix
                   in="SourceAlpha"
                   type="matrix"

@@ -4,10 +4,29 @@ import { Profile } from "./profile/Profile";
 import { Preference } from "./preference/Preference";
 import { Security } from "./security/Security";
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Settings = () => {
+  const [currentTab, setCurrentTab] = useState<"profile" | "preference" | "security">("profile");
+  const navigate = useNavigate();
+
+  console.log(window.history.state);
+
+  const tabs = [
+    <Profile key="profile" />,
+    <Preference key="preference" />,
+    <Security key="security" />,
+  ];
+
+  useEffect(() => {
+    console.log(currentTab);
+
+    navigate(`/settings?tab=${currentTab}`);
+  }, [currentTab, navigate]);
+
   return (
-    <div className="mt-[11rem] lg:mt-28 px-2 w-full">
+    <div className="mt-[9rem] lg:mt-[5.5rem] px-2 w-full overflow-x-hidden">
       <div className="p-4 sm:p-8 rounded-3xl bg-white max-w-7xl mx-auto">
         <TabGroup>
           <TabList className="w-full flex flex-row border-b lg:items-start">
@@ -15,6 +34,7 @@ export const Settings = () => {
               {({ selected }) => (
                 <>
                   <button
+                    onClick={() => setCurrentTab("profile")}
                     className={classNames(
                       "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
@@ -31,6 +51,7 @@ export const Settings = () => {
               {({ selected }) => (
                 <>
                   <button
+                    onClick={() => setCurrentTab("preference")}
                     className={classNames(
                       "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
@@ -47,6 +68,7 @@ export const Settings = () => {
               {({ selected }) => (
                 <>
                   <button
+                    onClick={() => setCurrentTab("security")}
                     className={classNames(
                       "text-[#718EBF] select-none w-full focus:ouline-none focus:outline-none border-0 text-xs capitalize font-medium py-2 px-2"
                     )}
@@ -62,39 +84,21 @@ export const Settings = () => {
           </TabList>
           <TabPanels>
             <AnimatePresence initial={false}>
-              <TabPanel
-                as={motion.div}
-                initial={{
-                  left: 0,
-                }}
-                animate={{
-                  left: "-100%",
-                }}
-              >
-                <Profile />
-              </TabPanel>
-              <TabPanel
-                as={motion.div}
-                initial={{
-                  left: 0,
-                }}
-                animate={{
-                  left: "-100%",
-                }}
-              >
-                <Preference />
-              </TabPanel>
-              <TabPanel
-                as={motion.div}
-                initial={{
-                  left: 0,
-                }}
-                animate={{
-                  left: "-100%",
-                }}
-              >
-                <Security />
-              </TabPanel>
+              {React.Children.toArray(
+                tabs.map((tab) => (
+                  <TabPanel
+                    as={motion.div}
+                    initial={{
+                      x: "-100%",
+                    }}
+                    animate={{
+                      x: 0,
+                    }}
+                  >
+                    {tab}
+                  </TabPanel>
+                ))
+              )}
             </AnimatePresence>
           </TabPanels>
         </TabGroup>

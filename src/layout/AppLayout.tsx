@@ -72,7 +72,7 @@ const AppLayout = () => {
             <div className="w-full relative flex flex-col justify-between h-full">
               <nav className="top-0 left-0 right-0 fixed bg-white lg:left-[17rem] xl:left-[25rem] border-b z-10">
                 <div className="mx-auto px-4 sm:px-2 md:px-4 flex flex-col items-center">
-                  <div className="flex items-center justify-between w-full h-24">
+                  <div className="flex items-center justify-between w-full h-20">
                     <div className="flex items-center lg:hidden">
                       <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-900 bg-gray-50 hover:dark:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-black/20">
                         <span className="sr-only">Open main menu</span>
@@ -85,7 +85,7 @@ const AppLayout = () => {
                     </div>
 
                     <div className="flex flex-1 lg:flex-none items-center justify-center lg:justify-start">
-                      <h1 className="text-affiliate-blue text-lg lg:text-2xl xl:text-3xl font-semibold capitalize">
+                      <h1 className="text-affiliate-blue text-lg lg:text-2xl font-semibold capitalize">
                         {pathname === "/"
                           ? "overview"
                           : pathname === "/transactions"

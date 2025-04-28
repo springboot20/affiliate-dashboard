@@ -8,9 +8,9 @@ import chip from "@/assets/Chip_Card.png";
 
 export const Accounts = () => {
   return (
-    <div className="px-2 w-full mt-[10rem] lg:mt-28 gap-3 lg:gap-y-2 flex flex-wrap lg:max-w-6xl xl:max-w-7xl lg:mx-auto">
+    <div className="px-2 w-full mt-[9rem] lg:mt-[5.5rem] gap-3 lg:gap-y-2 flex flex-wrap lg:max-w-6xl xl:max-w-7xl lg:mx-auto">
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:!grid-cols-4 gap-3 max-w-full flex-grow">
-        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-28 sm:col-span-1 gap-2 w-full">
+        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-24 sm:col-span-1 gap-2 w-full">
           <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#FFF5D9]">
             <svg
               width="22"
@@ -39,16 +39,16 @@ export const Accounts = () => {
           </span>
 
           <div className="flex flex-col w-full">
-            <h5 className="text-xs xl:!text-xl text-[#8BA3CB] font-normal capitalize">
+            <h5 className="text-xs xl:!text-sm text-[#8BA3CB] font-normal capitalize">
               my balance
             </h5>
-            <small className="text-base xl:text-2xl text-affiliate-black font-medium">
+            <small className="text-base xl:text-lg text-affiliate-black font-medium">
               $12,750
             </small>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-28 sm:col-span-1 gap-2 w-full">
+        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-24 sm:col-span-1 gap-2 w-full">
           <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#E7EDFF]">
             <svg
               width="22"
@@ -74,14 +74,14 @@ export const Accounts = () => {
           </span>
 
           <div className="flex flex-col gap-1 w-full">
-            <h5 className="text-xs xs:text-sm xl:!text-xl text-[#8BA3CB] font-normal capitalize">
+            <h5 className="text-xs xs:text-sm xl:!text-sm text-[#8BA3CB] font-normal capitalize">
               income
             </h5>
-            <small className="text-base xl:text-2xl text-affiliate-black font-medium">$5,600</small>
+            <small className="text-base xl:text-lg text-affiliate-black font-medium">$5,600</small>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-28 sm:col-span-1 gap-2 w-full">
+        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-24 sm:col-span-1 gap-2 w-full">
           <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#FFE0EB]">
             <svg
               width="22"
@@ -107,14 +107,14 @@ export const Accounts = () => {
           </span>
 
           <div className="flex flex-col gap-1 w-full">
-            <h5 className="text-xs xs:text-sm xl:!text-xl text-[#8BA3CB] font-normal capitalize">
+            <h5 className="text-xs xs:text-sm xl:!text-sm text-[#8BA3CB] font-normal capitalize">
               expense
             </h5>
-            <small className="text-base xl:text-2xl text-affiliate-black font-medium">$3,460</small>
+            <small className="text-base xl:text-lg text-affiliate-black font-medium">$3,460</small>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-28 sm:col-span-1 gap-2 w-full">
+        <div className="bg-white rounded-2xl border h-24 p-3 flex items-center lg:h-[5.5rem] xl:h-24 sm:col-span-1 gap-2 w-full">
           <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#DCFAF8]">
             <svg
               width="22"
@@ -143,10 +143,10 @@ export const Accounts = () => {
           </span>
 
           <div className="flex flex-col gap-1 w-full">
-            <h5 className="text-xs xs:text-sm xl:!text-xl text-[#8BA3CB] font-normal capitalize">
+            <h5 className="text-xs xs:text-sm xl:!text-sm text-[#8BA3CB] font-normal capitalize">
               total saving
             </h5>
-            <small className="text-base xl:text-2xl text-affiliate-black font-medium">$3,460</small>
+            <small className="text-base xl:text-lg text-affiliate-black font-medium">$3,460</small>
           </div>
         </div>
       </div>

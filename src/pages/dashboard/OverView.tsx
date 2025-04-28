@@ -27,7 +27,7 @@ export const OverView = () => {
   }, []);
 
   return (
-    <section className="px-2 mt-[11rem] lg:mt-28 w-full xl:max-w-7xl xl:mx-auto">
+    <section className="px-2 mt-[9rem] lg:mt-[5.5rem] w-full xl:max-w-7xl xl:mx-auto">
       <div className="w-full flex flex-wrap gap-2.5">
         {/* Card section */}
         <div className="flex-grow shrink-0 md:max-w-full lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
@@ -254,7 +254,7 @@ export const OverView = () => {
         </div>
 
         {/* Quick section */}
-        <div className="space-y-4 w-full lg:max-w-xs ">
+        <div className="space-y-4 w-full lg:max-w-xs">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             quick transfer
           </h3>
@@ -504,28 +504,28 @@ export const OverView = () => {
                 fill="#718EBF"
                 mask="url(#path-36-inside-12_150_88)"
               />
-              <path d="M56 180H403" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M56 140H403" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M56 100H403" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M56 60H403" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M56 20H403" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M56 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M105.571 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M155.143 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M204.714 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M254.286 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M303.857 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
-              <path d="M353.428 20V180" stroke="#DFE5EE" stroke-dasharray="4 4" />
+              <path d="M56 180H403" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M56 140H403" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M56 100H403" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M56 60H403" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M56 20H403" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M56 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M105.571 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M155.143 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M204.714 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M254.286 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M303.857 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
+              <path d="M353.428 20V180" stroke="#DFE5EE" strokeDasharray="4 4" />
               <path d="M402.937 20V180" stroke="#EFF3F9" />
               <path
                 d="M79.9206 120.112C68.1117 126.771 63.267 148.134 56 161.729V180H403V67.6746C399.972 67.6746 388.466 54.7734 377.868 60.5997C367.271 66.4261 364.243 134.678 346.075 137.175C327.908 139.672 319.429 70.1717 297.325 72.6687C275.222 75.1656 280.672 139.458 260.082 141.753C239.492 144.047 222.233 28.5548 204.065 33.1326C185.898 37.7104 185.292 89.3154 174.997 97.2226C164.702 105.13 155.316 85.9861 144.718 89.7316C134.12 93.4771 129.881 134.678 118.981 136.343C108.08 138.007 91.7295 113.453 79.9206 120.112Z"
                 fill="url(#paint0_linear_150_88)"
-                fill-opacity="0.5"
+                fillOpacity="0.5"
               />
               <path
                 d="M56 161.729C63.267 148.134 68.1117 126.771 79.9206 120.112C91.7295 113.453 108.08 138.007 118.981 136.343C129.881 134.678 134.12 93.4771 144.718 89.7316C155.316 85.9861 164.702 105.13 174.997 97.2226C185.292 89.3154 185.898 37.7104 204.065 33.1326C222.233 28.5548 239.492 144.047 260.082 141.753C280.672 139.458 275.222 75.1656 297.325 72.6687C319.429 70.1717 327.908 139.672 346.075 137.175C364.243 134.678 367.27 66.4261 377.868 60.5998C388.466 54.7734 399.972 67.6746 403 67.6746"
                 stroke="#1814F3"
-                stroke-width="3"
+                strokeWidth="3"
               />
               <defs>
                 <linearGradient
@@ -536,8 +536,8 @@ export const OverView = () => {
                   y2="180"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stop-color="#2D60FF" stop-opacity="0.5" />
-                  <stop offset="1" stop-color="#2D60FF" stop-opacity="0" />
+                  <stop stopColor="#2D60FF" stopOpacity="0.5" />
+                  <stop offset="1" stopColor="#2D60FF" stopOpacity="0" />
                 </linearGradient>
               </defs>
             </svg>

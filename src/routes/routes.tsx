@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/credit-card",
+        path: "/credit-cards",
         element: (
           <ProtectedRoute>
             <CreditCards />
