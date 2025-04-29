@@ -1,10 +1,14 @@
 import { useAppDispatch } from "@/app/hook";
+import { Button } from "@/components/button/Button";
+import { InputField } from "@/components/input/InputField";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 import { CardApiSlice, useCreateNewCardMutation } from "@/features/cards/card.slice";
 import { classNames } from "@/utils";
+import { Switch } from "@headlessui/react";
 import { Field, Form, Formik, FormikErrors } from "formik";
 import React, { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 interface InitialValues {
   card_number: string;
@@ -15,13 +19,31 @@ interface InitialValues {
   cvv: string;
 }
 
-export const CardForm = () => {
+const validationSchema = Yup.object().shape({
+  card_name: Yup.string().required("card name is required"),
+  card_number: Yup.string()
+    .required("card number is required")
+    .matches(/^(\d{4}\s?){4}$/, "invalid card number format"),
+  type: Yup.string().required("card type is required"),
+  primary_account: Yup.string().required("Primary account is required"),
+  cvv: Yup.string()
+    .required("cvv is required")
+    .matches(/^\d{3,4}$/, "cvv must be 3 or 4 digits"),
+  valid_thru: Yup.string()
+    .required("expiry date is required")
+    .matches(/^\d{2}\/\d{2}$/, "invalid expiry date format (MM/YY)"),
+});
+
+export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
   const [generatingCardDetails, setGeneratingCardDetails] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [formKey, setFormKey] = useState(0);
   const [cardNumberDetails, setCardNumberDetails] = useState<any>(null);
   const [createNewCard] = useCreateNewCardMutation();
   const { data } = useGetUserAccountsQuery();
+
+  const [generatePlatformCardOrAddPersonalCard, setGeneratePlatformCardOrAddPersonalCard] =
+    useState(false);
 
   const userAccounts = useMemo(() => data?.data?.accounts, [data]);
 
@@ -53,12 +75,12 @@ export const CardForm = () => {
     try {
       const api = dispatch(CardApiSlice.endpoints.generateCardNumberDetails.initiate());
       const response = (await api).data;
-      setFormKey((prev) => prev + 1);
 
       if (response?.success) {
         setTimeout(() => {
           setCardNumberDetails(response?.data);
           setGeneratingCardDetails(false);
+          setFormKey((prev) => prev + 1);
         }, 2000);
       }
     } catch (error: any) {
@@ -113,6 +135,17 @@ export const CardForm = () => {
     setFieldValue("card_number", formatCardNumber(event.target.value));
   };
 
+  const handleValidThruFormat = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: (
+      field: string,
+      value: any,
+      shouldValidate?: boolean
+    ) => Promise<void | FormikErrors<InitialValues>>
+  ) => {
+    setFieldValue("valid_thru", formatCardExpiry(event.target.value));
+  };
+
   const initialValues: InitialValues = {
     card_number: formatCardNumber(cardNumberDetails?.card_number) || "",
     cvv: cardNumberDetails?.cvv || "",
@@ -130,18 +163,40 @@ export const CardForm = () => {
           to a Cardholder, with a credit limit, that can be used to purchase goods and services on
           credit or obtain cash advances.
         </p>
+        <div className="flex items-center gap-2 mt-2">
+          <h3 className="text-[#718EBF] text-sm font-medium">
+           {generatePlatformCardOrAddPersonalCard ? " Generate Platform card" : " Add Personal card"}
+          </h3>
+          <Switch
+          checked={generatePlatformCardOrAddPersonalCard}
+          onChange={() => setGeneratePlatformCardOrAddPersonalCard((prev) => !prev)}
+          className={classNames(
+            "relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm",
+            generatePlatformCardOrAddPersonalCard
+              ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
+              : "after:left-0 bg-[#DFEAF2] after:bg-white border",
+            " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
+          )}
+        ></Switch>
+        </div>
       </div>
       <Formik
         key={formKey}
         initialValues={initialValues}
         enableReinitialize={true}
+        validationSchema={validationSchema}
         onSubmit={async (values, { resetForm }) => {
           console.log(values);
           try {
-            const response = await createNewCard({ ...values }).unwrap();
+            const response = await createNewCard({
+              ...values,
+              card_number: values?.card_number.split(" ").join(""),
+            }).unwrap();
             const { message } = response;
-
+            setCardNumberDetails({});
             toast(message, { type: "success" });
+            refetch();
+
             resetForm();
           } catch (error: any) {
             const errorMessage = error?.data?.message || "Failed to create card";
@@ -149,27 +204,18 @@ export const CardForm = () => {
           }
         }}
       >
-        {({ setFieldValue, isSubmitting, values }) => {
+        {({ setFieldValue, isSubmitting, values, errors, touched }) => {
           return (
             <Form>
               <div className="grid grid-cols-3 gap-2">
-                <fieldset className="col-span-full md:col-span-2">
-                  <label
-                    htmlFor="card_name"
-                    className="capitalize text-xs font-normal text-affiliate-black"
-                  >
-                    Card Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="card_name"
-                    className={classNames(
-                      "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
-                    )}
-                  />
-                </fieldset>
+                <div className="col-span-full md:col-span-2">
+                  <InputField label="card name" name="card_name" />
+                  {errors.card_name && touched.card_name && (
+                    <div className="text-red-500 text-xs mt-1">{errors.card_name}</div>
+                  )}
+                </div>
 
-                <fieldset className="col-span-full md:col-span-1">
+                <fieldset className="col-span-full md:col-span-1 relative">
                   <label
                     htmlFor="primary_account"
                     className="capitalize text-xs font-normal text-affiliate-black"
@@ -183,19 +229,23 @@ export const CardForm = () => {
                     onChange={(event) => {
                       setFieldValue("primary_account", event.target.value);
                     }}
-                    className="block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
+                    className="block w-full px-3 appearance-none rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
                   >
                     <option>select a default account to link to card</option>
                     {React.Children.toArray(
-                      (userAccounts ?? [])?.map((type: any) => (
+                      (userAccounts ?? [])?.map((acc: any) => (
                         <option
-                          value={type?.account?._id}
-                        >{`${type?.account?.user?.firstname} ${type?.account?.user?.lastname}`}</option>
+                          value={acc?.account?._id}
+                        >{`${acc?.account?.user?.firstname} ${acc?.account?.user?.lastname}`}</option>
                       ))
                     )}
                   </select>
+
+                  {errors.primary_account && touched.primary_account && (
+                    <div className="text-red-500 text-xs mt-1">{errors.primary_account}</div>
+                  )}
                 </fieldset>
-                <fieldset className="col-span-full md:col-span-1">
+                <fieldset className="col-span-full md:col-span-1 relative">
                   <label
                     htmlFor="type"
                     className="capitalize text-xs font-normal text-affiliate-black"
@@ -203,128 +253,119 @@ export const CardForm = () => {
                     Card Type
                   </label>
                   <select
-                    id="type"
                     name="type"
                     value={values?.type}
                     onChange={(event) => {
                       setFieldValue("type", event.target.value);
                     }}
-                    className="block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
+                    className="block w-full px-3 rounded-lg appearance-none relative text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
                   >
                     <option>select a card to continue</option>
                     {React.Children.toArray(
                       cardTypes.map((type) => <option value={type.value}>{type.type}</option>)
                     )}
                   </select>
+
+                  {errors.type && touched.type && (
+                    <div className="text-red-500 text-xs mt-1">{errors.type}</div>
+                  )}
                 </fieldset>
 
-                <fieldset className="col-span-full lg:col-span-2">
-                  <label
-                    htmlFor="card_number"
-                    className="capitalize text-xs font-normal text-affiliate-black"
-                  >
-                    Card Number
-                  </label>
-                  <div className="w-full flex items-center gap-3">
-                    <input
-                      type="text"
-                      name="card_number"
-                      value={values?.card_number}
-                      // disabled={true}
-                      maxLength={19}
-                      onChange={(event) => {
-                        console.log(event);
-                        handleCardNumberFormat(event, setFieldValue);
-                      }}
-                      className={classNames(
-                        "block flex-1 shrink-0 w-auto px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 placeholder:leading-[0] focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none disabled:bg-gray-50 disabled:border disabled:cursor-not-allowed"
-                      )}
-                    />
-
-                    <button
-                      type="button"
-                      className={classNames(
-                        "py-2 lg:py-3 w-full sm:w-auto px-4 text-white bg-affiliate-green rounded-md text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed",
-                        generatingCardDetails
-                          ? "flex items-center gap-3 justify-center"
-                          : "text-center"
-                      )}
-                      onClick={handleGenerateCardNumberDetails}
-                      disabled={generatingCardDetails}
-                    >
-                      {generatingCardDetails ? "generate..." : "generate"}
-                      {generatingCardDetails && (
-                        <svg className="h-5 w-5 animate-spin" viewBox="3 3 18 18">
-                          <path
-                            className="fill-white"
-                            d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z"
-                          ></path>
-                          <path
-                            className="fill-gray-400"
-                            d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z"
-                          ></path>
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </fieldset>
-                <div className="w-full col-span-full grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="col-span-full md:col-span-2">
                   <fieldset>
                     <label
-                      htmlFor="cvv"
-                      className="uppercase text-xs font-normal text-affiliate-black"
+                      htmlFor="card_number"
+                      className="capitalize text-xs font-normal text-affiliate-black"
                     >
-                      cvv
+                      Card Number
                     </label>
-                    <Field
-                      type="text"
-                      name="cvv"
-                      disabled={true}
-                      className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 placeholder:leading-[0] focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none disabled:bg-gray-50 disabled:border disabled:cursor-not-allowed"
-                      )}
-                    />
-                  </fieldset>
-                  <fieldset>
-                    <label
-                      htmlFor="valid_thru"
-                      className="uppercase text-xs font-normal text-affiliate-black"
-                    >
-                      valid thru
-                    </label>
-                    <Field
-                      type="text"
-                      name="valid_thru"
-                      disabled={true}
-                      className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 placeholder:leading-[0] focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none disabled:bg-gray-50 disabled:border disabled:cursor-not-allowed"
-                      )}
-                    />
+                    {generatePlatformCardOrAddPersonalCard ? (
+                      <div className="flex items-center gap-3">
+                        <Field
+                          type="text"
+                          name="card_number"
+                          id="card_number"
+                          disabled={true}
+                          maxLength={19}
+                          className="block flex-1 px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none bg-gray-50 border cursor-not-allowed"
+                        />
+                        <Button
+                          onClick={handleGenerateCardNumberDetails}
+                          loading={generatingCardDetails}
+                          className="w-auto bg-affiliate-green text-white"
+                        >
+                          Generate
+                        </Button>
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        name="card_number"
+                        id="card_number"
+                        value={values?.card_number}
+                        onChange={(event) => {
+                          handleCardNumberFormat(event, setFieldValue);
+                        }}
+                        maxLength={19}
+                        className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
+                      />
+                    )}
+                    {errors.card_number && touched.card_number && (
+                      <div className="text-red-500 text-xs mt-1">{errors.card_number}</div>
+                    )}
                   </fieldset>
                 </div>
+
+                <div className="w-full col-span-full grid grid-cols-1 md:grid-cols-3 gap-2">
+                  <div>
+                    {generatePlatformCardOrAddPersonalCard ? (
+                      <InputField name="cvv" label="CVV" disabled={true} />
+                    ) : (
+                      <InputField name="cvv" label="CVV" />
+                    )}
+                    {errors.cvv && touched.cvv && (
+                      <div className="text-red-500 text-xs mt-1">{errors.cvv}</div>
+                    )}
+                  </div>
+
+                  <div>
+                    {generatePlatformCardOrAddPersonalCard ? (
+                      <InputField name="valid_thru" label="Valid Thru" disabled={true} />
+                    ) : (
+                      <fieldset>
+                        <label
+                          htmlFor="valid_thru"
+                          className="capitalize text-xs font-normal text-affiliate-black"
+                        >
+                          valid thru
+                        </label>
+                        <input
+                          type="text"
+                          name="valid_thru"
+                          value={values?.valid_thru}
+                          onChange={(event) => {
+                            handleValidThruFormat(event, setFieldValue);
+                          }}
+                          className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
+                        />
+                      </fieldset>
+                    )}
+                    {errors.valid_thru && touched.valid_thru && (
+                      <div className="text-red-500 text-xs mt-1">{errors.valid_thru}</div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={classNames(
-                  "py-2 w-full sm:w-auto px-4 mt-3 text-white bg-affiliate-deep-blue rounded-md text-sm font-medium disabled:bg-gray-400",
-                  isSubmitting ? "flex items-center gap-3 justify-center" : "text-center"
-                )}
-              >
-                {isSubmitting ? "adding..." : "Add Card "}
-                {isSubmitting && (
-                  <svg className="h-5 w-5 animate-spin" viewBox="3 3 18 18">
-                    <path
-                      className="fill-white"
-                      d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z"
-                    ></path>
-                    <path
-                      className="fill-gray-400"
-                      d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z"
-                    ></path>
-                  </svg>
-                )}
-              </button>
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  loading={isSubmitting}
+                  disabled={!values.card_name || !values.type || !values.primary_account}
+                  className="w-full sm:w-auto bg-affiliate-deep-blue text-white"
+                >
+                  Add Card
+                </Button>
+              </div>
             </Form>
           );
         }}
