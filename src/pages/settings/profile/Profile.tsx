@@ -69,7 +69,7 @@ export const Profile = () => {
       // Refresh profile data if needed - depends on your RTK setup
       // refetchProfile();
     } catch (error: any) {
-      const errorMessage = error?.response?.data || "Failed to update profile";
+      const errorMessage = error?.data || "Failed to update profile";
       toast(errorMessage, { type: "error" });
     }
   }

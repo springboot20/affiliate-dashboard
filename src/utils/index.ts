@@ -36,3 +36,20 @@ export const formatMoney = (price: number) => {
     style: 'currency',
   }).format(price);
 };
+
+
+// Format card number with spaces after every 4 digits
+ export const formatCardNumber = (cardNumber?: string): string => {
+    if (!cardNumber) return "";
+    const digitsOnly = cardNumber.replace(/\D/g, "").slice(0, 16);
+    return digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+  };
+
+  // Format expiry date as MM/YY
+export  const formatCardExpiry = (expiry?: string): string => {
+    if (!expiry) return "";
+    const digitsOnly = expiry.replace(/\D/g, "").slice(0, 4);
+    return digitsOnly.length > 2
+      ? `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2)}`
+      : digitsOnly;
+  };
