@@ -68,7 +68,7 @@ export const SideNavigation: React.FC<{
           className={`hidden lg:flex fixed left-0 top-0 min-h-screen bg-white w-[17rem] xl:w-[25rem] border-r-2 flex-col items-center`}
         >
           <div className="flex flex-col items-center h-full w-full">
-            <div className="p-4 h-32 flex w-full items-center justify-start">
+            <div className="p-4 h-20 flex w-full items-center justify-start">
               <img src={Logo} alt="logo" />
             </div>
             <motion.ul className="w-full h-full">
@@ -118,7 +118,7 @@ export const SideNavigation: React.FC<{
               "transform transition-transform duration-200 ",
             )}
           >
-            <DisclosureButton className="absolute right-8 top-8">
+            <DisclosureButton className="absolute right-4 top-6">
               <span className="sr-only">Close Side menu</span>
               <XMarkIcon className="h-8 w-8 text-gray-800" />
             </DisclosureButton>
