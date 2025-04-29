@@ -209,7 +209,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         all transactions
@@ -227,7 +227,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         income
@@ -245,7 +245,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         expense
@@ -503,7 +503,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         all transactions
@@ -521,7 +521,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         income
@@ -539,7 +539,7 @@ export const Transactions = () => {
                       <button
                         className={classNames(
                           selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs xl:text-base px-0 h-10 capitalize outline-none focus:outline-none"
+                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
                         )}
                       >
                         expense
@@ -554,29 +554,29 @@ export const Transactions = () => {
 
               <TabPanels className="mt-4">
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <div className="overflow-x-scroll bg-white p-5 rounded-2xl">
+                  <div className="overflow-x-auto bg-white p-5 rounded-2xl">
                     <table className="!w-full">
                       <thead>
                         <tr>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Description
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Transaction ID
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Type
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Card
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Date
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Amount
                           </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
                             Reciept
                           </th>
                         </tr>
@@ -590,44 +590,44 @@ export const Transactions = () => {
                                 <ArrowUpIcon />
                               </span>
 
-                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
                                 spotify subscription
                               </p>
                             </div>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               #12548796
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               Shopping
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               1234 ****
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               28 Jan, 12.30 AM
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            <p className="text-xs font-medium text-affiliate-red">
                               -$2,500
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
                               Download
                             </button>
                           </td>
@@ -640,44 +640,44 @@ export const Transactions = () => {
                                 <ArrowDownIcon />
                               </span>
 
-                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
                                 Freepik Sales
                               </p>
                             </div>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               #12548796
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               Transfer
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               1234 ****
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               25 Jan, 10.40 PM
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                            <p className="text-xs font-medium text-affiliate-green">
                               +$750
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
                               Download
                             </button>
                           </td>
@@ -690,44 +690,44 @@ export const Transactions = () => {
                                 <ArrowUpIcon />
                               </span>
 
-                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
                                 Mobile Service
                               </p>
                             </div>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               #12548796
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               Service
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               1234 ****
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               20 Jan, 10.40 PM
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            <p className="text-xs font-medium text-affiliate-red">
                               -150
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
                               Download
                             </button>
                           </td>
@@ -740,44 +740,44 @@ export const Transactions = () => {
                                 <ArrowUpIcon />
                               </span>
 
-                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
                                 Wilson
                               </p>
                             </div>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               #12548796
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               Transfer
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               1234 ****
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               15 Jan, 03.29 PM
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                            <p className="text-xs font-medium text-affiliate-red">
                               -1050
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
                               Download
                             </button>
                           </td>
@@ -790,44 +790,44 @@ export const Transactions = () => {
                                 <ArrowDownIcon />
                               </span>
 
-                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
                                 Emilly
                               </p>
                             </div>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               #12548796
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               Transfer
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               1234 ****
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                            <p className="text-xs font-normal text-affiliate-black">
                               14 Jan, 10.40 PM
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                            <p className="text-xs font-medium text-affiliate-green">
                               +840
                             </p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
                               Download
                             </button>
                           </td>
