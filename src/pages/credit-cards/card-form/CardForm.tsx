@@ -292,7 +292,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                         <Button
                           onClick={handleGenerateCardNumberDetails}
                           loading={generatingCardDetails}
-                          className="w-auto bg-affiliate-green text-white"
+                          className="w-auto bg-[#16DBCC] text-white"
                         >
                           Generate
                         </Button>

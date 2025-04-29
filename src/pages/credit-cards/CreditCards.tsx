@@ -1,5 +1,5 @@
 import chip from "@/assets/Chip_Card.png";
-import chipBlack from "@/assets/Chip_Card_b.png";
+import chipGray from "@/assets/Chip_Card-gray.png";
 
 import { CardTypeBlackIcon, CardTypeIcon } from "@/components/icons/Icons";
 import { CardForm } from "./card-form/CardForm";
@@ -54,7 +54,7 @@ export const CreditCards = () => {
                         <span className="text-sm lg:text-base font-semibold">$5,764</span>
                       </div>
                       {card?.type?.includes("DEBIT") ? (
-                        <img src={chipBlack} alt="chip icon" className="w-8" />
+                        <img src={chipGray} alt="chip icon" className="w-8" />
                       ) : (
                         <img src={chip} alt="chip icon" className="w-8" />
                       )}

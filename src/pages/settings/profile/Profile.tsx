@@ -69,7 +69,7 @@ export const Profile = () => {
       // Refresh profile data if needed - depends on your RTK setup
       // refetchProfile();
     } catch (error: any) {
-      const errorMessage = error?.data || "Failed to update profile";
+      const errorMessage = error?.data?.message || "Failed to update profile";
       toast(errorMessage, { type: "error" });
     }
   }
@@ -401,7 +401,7 @@ export const Profile = () => {
                       <button
                         type="button"
                         onClick={handleEditing}
-                        className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-affiliate-green rounded-md text-base font-medium capitalize"
+                        className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-[#16DBCC] rounded-md text-base font-medium capitalize"
                       >
                         edit
                         <PencilSquareIcon className="h-6 w-6 shrink-0" />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import chip from "@/assets/Chip_Card.png";
 import chipBlack from "@/assets/Chip_Card_b.png";
 import imgOne from "@/assets/img-01.jpg";
@@ -15,10 +15,15 @@ import {
   WeeklyActivityDesktop,
 } from "@/components/icons/Icons";
 import { Button } from "@material-tailwind/react";
+import { useGetUserCardsQuery } from "@/features/cards/card.slice";
+import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
 
 export const OverView = () => {
   const [width, setWidth] = useState<number>(0);
   const cardSlider = useRef<HTMLDivElement>(null);
+
+  const { data } = useGetUserCardsQuery();
+  const cards = useMemo(() => data?.data?.cards, [data]);
 
   useEffect(() => {
     if (cardSlider.current !== null) {
@@ -50,57 +55,52 @@ export const OverView = () => {
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 lg:w-full flex-1 font-lato"
             >
-              <div className="before:bg-white/20 border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-gradient-to-br from-[#4C49ED] to-[#0A06F4] text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex flex-col items-start">
-                    <span className="text-xs font-normal">Balance</span>
-                    <span className="text-sm font-semibold">$5,764</span>
-                  </div>
-                  <img src={chip} alt="chip icon" className="w-8" />
-                </div>
+              {React.Children.toArray(
+                (cards ?? [])?.slice(0, 2)?.map((card: any) => {
+                  return (
+                    <div
+                      className={classNames(
+                        "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 ",
+                        card?.type?.includes("DEBIT")
+                          ? "bg-white text-affiliate-black before:border-t"
+                          : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
+                      )}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs font-normal">Balance</span>
+                          <span className="text-sm lg:text-base font-semibold">$5,764</span>
+                        </div>
+                        {card?.type?.includes("DEBIT") ? (
+                          <img src={chipBlack} alt="chip icon" className="w-8" />
+                        ) : (
+                          <img src={chip} alt="chip icon" className="w-8" />
+                        )}
+                      </div>
 
-                <div className="flex items-center justify-between py-3.5">
-                  <div>
-                    <h2 className="text-xs font-normal uppercase">card holder</h2>
-                    <p className="font-semibold text-base">Eddy Cusuma</p>
-                  </div>
+                      <div className="flex items-center justify-between py-3.5">
+                        <div>
+                          <h2 className="text-xs font-normal uppercase">card holder</h2>
+                          <p className="font-semibold text-base">{card?.card_name}</p>
+                        </div>
 
-                  <div>
-                    <h2 className="text-xs font-normal uppercase">valid thru</h2>
-                    <p className="font-semibold text-sm">12/12</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-base font-bold uppercase">3778 **** **** 1234 </p>
-                  <CardTypeIcon />
-                </div>
-              </div>
-
-              <div className="border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:border-t before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 bg-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex flex-col items-start">
-                    <span className="text-xs font-normal">Balance</span>
-                    <span className="text-sm font-semibold">$5,764</span>
-                  </div>
-                  <img src={chipBlack} alt="chip icon" className="w-8" />
-                </div>
-
-                <div className="flex items-center justify-between py-3.5">
-                  <div>
-                    <h2 className="text-xs font-normal uppercase">card holder</h2>
-                    <p className="font-semibold text-base">Eddy Cusuma</p>
-                  </div>
-
-                  <div>
-                    <h2 className="text-xs font-normal uppercase">valid thru</h2>
-                    <p className="font-semibold text-sm">12/12</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-base font-bold uppercase">3778 **** **** 1234 </p>
-                  <CardTypeBlackIcon />
-                </div>
-              </div>
+                        <div>
+                          <h2 className="text-xs font-normal uppercase">valid thru</h2>
+                          <p className="font-semibold text-sm">
+                            {formatCardExpiry(card?.valid_thru)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-base font-bold uppercase">
+                          {formatCardNumber(card?.card_number)}{" "}
+                        </p>
+                        {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </motion.div>
           </motion.div>
         </div>
