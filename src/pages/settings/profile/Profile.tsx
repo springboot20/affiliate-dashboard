@@ -382,7 +382,7 @@ export const Profile = () => {
                         <button
                           type="button"
                           onClick={() => setEditing(false)}
-                          className="py-2 w-full mr-2 sm:w-28 px-4 flex items-center gap-3 text-white bg-affiliate-red rounded-md text-base font-medium capitalize"
+                          className="py-2 w-full mr-2 sm:w-28 px-4 flex items-center justify-center gap-3 text-white bg-affiliate-red rounded-md text-base font-medium capitalize"
                         >
                           cancel
                           <XMarkIcon className="h-6 w-6 shrink-0" />
@@ -391,7 +391,7 @@ export const Profile = () => {
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-affiliate-deep-blue rounded-md text-base font-medium capitalize disabled:bg-gray-400"
+                          className="py-2 w-full sm:w-24 px-4 flex items-center justify-center gap-3 text-white bg-affiliate-deep-blue rounded-md text-base font-medium capitalize disabled:bg-gray-400"
                         >
                           {isSubmitting ? "Saving..." : "Save"}
                           <DocumentDuplicateIcon className="h-6 w-6 shrink-0" />
@@ -401,7 +401,7 @@ export const Profile = () => {
                       <button
                         type="button"
                         onClick={handleEditing}
-                        className="py-2 w-full sm:w-24 px-4 flex items-center gap-3 text-white bg-[#16DBCC] rounded-md text-base font-medium capitalize"
+                        className="py-2 w-full sm:w-24 px-4 flex items-center justify-center  gap-3 text-white bg-[#16DBCC] rounded-md text-base font-medium capitalize"
                       >
                         edit
                         <PencilSquareIcon className="h-6 w-6 shrink-0" />

@@ -50,8 +50,8 @@ export const SideNavigation: React.FC<{
       current: true,
       Icon: CreditCardIcon,
     },
-    { to: "/loan", name: "loans", current: true, Icon: LoanIcon },
-    { to: "/service", name: "services", current: true, Icon: ServiceIcon },
+    { to: "/loans", name: "loans", current: true, Icon: LoanIcon },
+    { to: "/services", name: "services", current: true, Icon: ServiceIcon },
     {
       to: "/privileges",
       name: "my privileges",

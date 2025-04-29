@@ -554,285 +554,287 @@ export const Transactions = () => {
 
               <TabPanels className="mt-4">
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <table className="!w-full bg-white p-5 rounded-2xl overflow-auto">
-                    <thead>
-                      <tr>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Description
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Transaction ID
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Type
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Card
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Amount
-                        </th>
-                        <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
-                          Reciept
-                        </th>
-                      </tr>
-                    </thead>
+                  <div className="overflow-x-scroll bg-white p-5 rounded-2xl">
+                    <table className="!w-full">
+                      <thead>
+                        <tr>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Description
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Transaction ID
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Type
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Card
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Amount
+                          </th>
+                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs xl:text-base capitalize min-w-auto tracking-wider">
+                            Reciept
+                          </th>
+                        </tr>
+                      </thead>
 
-                    <tbody>
-                      <tr>
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                              <ArrowUpIcon />
-                            </span>
+                      <tbody>
+                        <tr>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
+                                <ArrowUpIcon />
+                              </span>
 
-                            <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                              spotify subscription
+                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                                spotify subscription
+                              </p>
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              #12548796
                             </p>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            #12548796
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            Shopping
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            1234 ****
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            28 Jan, 12.30 AM
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
-                            -$2,500
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
-                            Download
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                              <ArrowDownIcon />
-                            </span>
-
-                            <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                              Freepik Sales
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              Shopping
                             </p>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            #12548796
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            Transfer
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            1234 ****
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            25 Jan, 10.40 PM
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-green">
-                            +$750
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
-                            Download
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                              <ArrowUpIcon />
-                            </span>
-
-                            <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                              Mobile Service
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              1234 ****
                             </p>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            #12548796
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            Service
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            1234 ****
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            20 Jan, 10.40 PM
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
-                            -150
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
-                            Download
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                              <ArrowUpIcon />
-                            </span>
-
-                            <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                              Wilson
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              28 Jan, 12.30 AM
                             </p>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            #12548796
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            Transfer
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            1234 ****
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            15 Jan, 03.29 PM
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-red">
-                            -1050
-                          </p>
-                        </td>
-
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
-                            Download
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                              <ArrowDownIcon />
-                            </span>
-
-                            <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                              Emilly
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                              -$2,500
                             </p>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            #12548796
-                          </p>
-                        </td>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            Transfer
-                          </p>
-                        </td>
+                        <tr>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
+                                <ArrowDownIcon />
+                              </span>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            1234 ****
-                          </p>
-                        </td>
+                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                                Freepik Sales
+                              </p>
+                            </div>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-normal text-affiliate-black">
-                            14 Jan, 10.40 PM
-                          </p>
-                        </td>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              #12548796
+                            </p>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <p className="text-xs xl:text-base font-medium text-affiliate-green">
-                            +840
-                          </p>
-                        </td>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              Transfer
+                            </p>
+                          </td>
 
-                        <td className="px-3 py-2.5 whitespace-nowrap">
-                          <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
-                            Download
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              1234 ****
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              25 Jan, 10.40 PM
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                              +$750
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
+                                <ArrowUpIcon />
+                              </span>
+
+                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                                Mobile Service
+                              </p>
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              #12548796
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              Service
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              1234 ****
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              20 Jan, 10.40 PM
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                              -150
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
+                                <ArrowUpIcon />
+                              </span>
+
+                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                                Wilson
+                              </p>
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              #12548796
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              Transfer
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              1234 ****
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              15 Jan, 03.29 PM
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-medium text-affiliate-red">
+                              -1050
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
+                                <ArrowDownIcon />
+                              </span>
+
+                              <p className="text-xs xl:text-base capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                                Emilly
+                              </p>
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              #12548796
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              Transfer
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              1234 ****
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-normal text-affiliate-black">
+                              14 Jan, 10.40 PM
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <p className="text-xs xl:text-base font-medium text-affiliate-green">
+                              +840
+                            </p>
+                          </td>
+
+                          <td className="px-3 py-2.5 whitespace-nowrap">
+                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-affiliate-blue text-affiliate-blue text-xs xl:text-sm font-normal">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </TabPanel>
 
                 <TabPanel className="p-0 bg-transparent font-inter">

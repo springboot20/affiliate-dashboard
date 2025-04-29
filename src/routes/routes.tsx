@@ -15,6 +15,8 @@ import { PublicRoute } from "@/components/Public";
 import { EmailVerification } from "@/pages/verify/EmailVerification";
 import { EmailSentMessage } from "@/pages/verify/EmailSent";
 import { Settings } from "@/pages/settings/Settings";
+import { Loans } from "@/pages/loans/Loans";
+import { Services } from "@/pages/services/Services";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +60,24 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CreditCards />
+          </ProtectedRoute>
+        ),
+      },
+
+      {
+        path: "/loans",
+        element: (
+          <ProtectedRoute>
+            <Loans />
+          </ProtectedRoute>
+        ),
+      },
+
+      {
+        path: "/services",
+        element: (
+          <ProtectedRoute>
+            <Services />
           </ProtectedRoute>
         ),
       },

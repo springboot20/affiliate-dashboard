@@ -171,11 +171,11 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
           checked={generatePlatformCardOrAddPersonalCard}
           onChange={() => setGeneratePlatformCardOrAddPersonalCard((prev) => !prev)}
           className={classNames(
-            "relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm",
+            "relative appearance-none flex-shrink-0 w-[50px] h-[24px] rounded-[20px] shadow-sm",
             generatePlatformCardOrAddPersonalCard
-              ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
+              ? "after:left-[calc(100%-24px)] bg-[#16DBCC] after:bg-white"
               : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-            " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
+            " after:absolute after:h-[24px] after:w-[24px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
           )}
         ></Switch>
         </div>
@@ -280,7 +280,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                       Card Number
                     </label>
                     {generatePlatformCardOrAddPersonalCard ? (
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center flex-wrap gap-3">
                         <Field
                           type="text"
                           name="card_number"
@@ -316,7 +316,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                   </fieldset>
                 </div>
 
-                <div className="w-full col-span-full grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="w-full col-span-full grid grid-cols-3 gap-2">
                   <div>
                     {generatePlatformCardOrAddPersonalCard ? (
                       <InputField name="cvv" label="CVV" disabled={true} />

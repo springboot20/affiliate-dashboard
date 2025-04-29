@@ -94,6 +94,10 @@ const AppLayout = () => {
                           ? title
                           : pathname === "/investments"
                           ? title
+                          : pathname === "/loans"
+                          ? title
+                          : pathname === "/services"
+                          ? title
                           : pathname === "/credit-cards"
                           ? title.split("-").join(" ")
                           : pathname === "/settings"
