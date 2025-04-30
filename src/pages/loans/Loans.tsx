@@ -193,7 +193,7 @@ export const Loans = () => {
               </thead>
 
               <tbody>
-                <tr className="border-b border-[#F2F4F7]">
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">01.</p>
                   </td>
@@ -221,13 +221,13 @@ export const Loans = () => {
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-auto">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
                       Repay
                     </button>
                   </td>
                 </tr>
 
-                <tr className="border-b border-[#F2F4F7]">
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">02.</p>
                   </td>
@@ -255,13 +255,13 @@ export const Loans = () => {
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-auto">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
                       Repay
                     </button>
                   </td>
                 </tr>
 
-                <tr className="border-b border-[#F2F4F7]">
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">03.</p>
                   </td>
@@ -289,25 +289,25 @@ export const Loans = () => {
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-auto">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
                       Repay
                     </button>
                   </td>
                 </tr>
 
-                <tr className="border-b border-[#F2F4F7]">
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">04.</p>
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                      $500,000
+                      $50,000
                     </p>
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <p className="text-xs font-normal text-affiliate-black">$50,000</p>
+                    <p className="text-xs font-normal text-affiliate-black">$45,500</p>
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
@@ -323,7 +323,147 @@ export const Loans = () => {
                   </td>
 
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-auto">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
+                      Repay
+                    </button>
+                  </td>
+                </tr>
+
+                
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">05.</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                      $50,000
+                    </p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$45,500</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">5 months</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">16%</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$10,000 / month</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
+                      Repay
+                    </button>
+                  </td>
+                </tr>
+
+                
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">06.</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                      $80,000
+                    </p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$50,000</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">14 months</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">8%</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$2,000 / month</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
+                      Repay
+                    </button>
+                  </td>
+                </tr>
+
+                
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">07.</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                      $12,000
+                    </p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$5,500</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">9 months</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">13%</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$500 / month</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
+                      Repay
+                    </button>
+                  </td>
+                </tr>
+
+                
+                <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">08.</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
+                      $160,000
+                    </p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$100,800</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">3 months</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">12%</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <p className="text-xs font-normal text-affiliate-black">$900 / month</p>
+                  </td>
+
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal w-full">
                       Repay
                     </button>
                   </td>

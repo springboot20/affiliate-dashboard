@@ -583,7 +583,7 @@ export const Transactions = () => {
                       </thead>
 
                       <tbody>
-                        <tr>
+                        <tr className="hover:bg-gray-50">
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3">
                               <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
@@ -633,7 +633,7 @@ export const Transactions = () => {
                           </td>
                         </tr>
 
-                        <tr>
+                        <tr className="hover:bg-gray-50">
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3">
                               <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
@@ -683,7 +683,7 @@ export const Transactions = () => {
                           </td>
                         </tr>
 
-                        <tr>
+                        <tr className="hover:bg-gray-50">
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3">
                               <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
@@ -733,7 +733,7 @@ export const Transactions = () => {
                           </td>
                         </tr>
 
-                        <tr>
+                        <tr className="hover:bg-gray-50">
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3">
                               <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
@@ -783,7 +783,7 @@ export const Transactions = () => {
                           </td>
                         </tr>
 
-                        <tr>
+                        <tr className="hover:bg-gray-50">
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3">
                               <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">

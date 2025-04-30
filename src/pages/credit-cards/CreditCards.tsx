@@ -86,7 +86,7 @@ export const CreditCards = () => {
           </div>
         </div>
 
-        <div className="w-full lg:max-w-xs">
+        <div className="w-full lg:max-w-xs xl:max-w-sm">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             card expense statistics
           </h3>

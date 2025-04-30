@@ -165,19 +165,21 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
         </p>
         <div className="flex items-center gap-2 mt-2">
           <h3 className="text-[#718EBF] text-sm font-medium">
-           {generatePlatformCardOrAddPersonalCard ? " Generate Platform card" : " Add Personal card"}
+            {generatePlatformCardOrAddPersonalCard
+              ? " Generate Platform card"
+              : " Add Personal card"}
           </h3>
           <Switch
-          checked={generatePlatformCardOrAddPersonalCard}
-          onChange={() => setGeneratePlatformCardOrAddPersonalCard((prev) => !prev)}
-          className={classNames(
-            "relative appearance-none flex-shrink-0 w-[50px] h-[24px] rounded-[20px] shadow-sm",
-            generatePlatformCardOrAddPersonalCard
-              ? "after:left-[calc(100%-24px)] bg-[#16DBCC] after:bg-white"
-              : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-            " after:absolute after:h-[24px] after:w-[24px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
-          )}
-        ></Switch>
+            checked={generatePlatformCardOrAddPersonalCard}
+            onChange={() => setGeneratePlatformCardOrAddPersonalCard((prev) => !prev)}
+            className={classNames(
+              "relative appearance-none flex-shrink-0 w-[50px] h-[24px] rounded-[20px] shadow-sm",
+              generatePlatformCardOrAddPersonalCard
+                ? "after:left-[calc(100%-24px)] bg-[#16DBCC] after:bg-white"
+                : "after:left-0 bg-[#DFEAF2] after:bg-white border",
+              " after:absolute after:h-[24px] after:w-[24px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150"
+            )}
+          ></Switch>
         </div>
       </div>
       <Formik
@@ -229,7 +231,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                     onChange={(event) => {
                       setFieldValue("primary_account", event.target.value);
                     }}
-                    className="block w-full px-3 appearance-none rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
+                    className="block w-full px-3 appearance-none rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 border border-[#DFEAF2]"
                   >
                     <option>select a default account to link to card</option>
                     {React.Children.toArray(
@@ -258,7 +260,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                     onChange={(event) => {
                       setFieldValue("type", event.target.value);
                     }}
-                    className="block w-full px-3 rounded-lg appearance-none relative text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]"
+                    className="block w-full px-3 rounded-lg appearance-none relative text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 border border-[#DFEAF2]"
                   >
                     <option>select a card to continue</option>
                     {React.Children.toArray(
@@ -287,7 +289,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                           id="card_number"
                           disabled={true}
                           maxLength={19}
-                          className="block flex-1 px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none bg-gray-50 border cursor-not-allowed"
+                          className="block flex-1 px-3 rounded-lg text-[#718EBF] py-2 lg:py-2.5 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none bg-gray-50 border cursor-not-allowed"
                         />
                         <Button
                           onClick={handleGenerateCardNumberDetails}
@@ -307,7 +309,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                           handleCardNumberFormat(event, setFieldValue);
                         }}
                         maxLength={19}
-                        className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
+                        className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-2.5 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
                       />
                     )}
                     {errors.card_number && touched.card_number && (
@@ -346,7 +348,7 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                           onChange={(event) => {
                             handleValidThruFormat(event, setFieldValue);
                           }}
-                          className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-3 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
+                          className="block w-full px-3 rounded-lg text-[#718EBF] py-2 lg:py-2.5 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none border border-[#DFEAF2]"
                         />
                       </fieldset>
                     )}

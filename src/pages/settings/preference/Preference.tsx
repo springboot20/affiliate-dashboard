@@ -55,7 +55,7 @@ export const Preference = () => {
                   onChange={handleChange}
                   placeholder="USD"
                   className={classNames(
-                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3"
+                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5"
                   )}
                 />
               </div>
@@ -77,7 +77,7 @@ export const Preference = () => {
                   name="time-zone"
                   placeholder="(GMT-12:00) International Date Line West"
                   className={classNames(
-                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3"
+                    "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5"
                   )}
                 />
               </div>

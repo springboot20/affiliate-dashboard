@@ -30,7 +30,7 @@ export const InputField: React.FC<{
         disabled={disabled}
         maxLength={maxLength}
         className={classNames(
-          "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 border border-[#DFEAF2]",
+          "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 border border-[#DFEAF2]",
           disabled ? "bg-gray-50 cursor-not-allowed" : "",
           className
         )}

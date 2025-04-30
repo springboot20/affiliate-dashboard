@@ -154,7 +154,9 @@ export const Profile = () => {
           return (
             <Form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 md:mt-8 gap-4 lg:gap-6 flex-shrink-0 w-full lg:col-span-2">
               {isLoading || isFetching ? (
-                <Loader />
+                <div className="col-span-full flex items-cente h-[40vh] justify-center">
+                  <Loader />
+                </div>
               ) : (
                 <>
                   <fieldset className="lg:col-span-1">
@@ -170,7 +172,7 @@ export const Profile = () => {
                       name="firstname"
                       placeholder="Charlene Reed"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5",
                         editing ? "border border-[#DFEAF2]" : ""
                       )}
                       disabled={!editing}
@@ -190,7 +192,7 @@ export const Profile = () => {
                       name="lastname"
                       placeholder="Charlene Reed"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5",
                         editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
                       )}
                       disabled={!editing}
@@ -211,7 +213,7 @@ export const Profile = () => {
                       autoComplete="username"
                       placeholder="Charlene Reed"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 disabled:bg-gray-50 border-0"
                       )}
                       disabled={true}
                     />
@@ -230,7 +232,7 @@ export const Profile = () => {
                       name="email"
                       placeholder="charlenereed@gmail.com "
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3 disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 disabled:bg-gray-50 border-0"
                       )}
                       disabled={true}
                     />

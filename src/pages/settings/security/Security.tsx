@@ -25,7 +25,7 @@ const preferenceSchema = yup.object({
 });
 
 async function onSubmit(values: InitialValues) {
-  console.log(values)
+  console.log(values);
 }
 
 export const Security = () => {
@@ -48,7 +48,7 @@ export const Security = () => {
                 active
                   ? "after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white"
                   : "after:left-0 bg-[#DFEAF2] after:bg-white border",
-                " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all",
+                " after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all"
               )}
             ></Switch>
             <p className="text-xs font-normal text-affiliate-black">
@@ -82,7 +82,7 @@ export const Security = () => {
                       placeholder="**********"
                       autoComplete={"current-password"}
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5"
                       )}
                     />
                   </div>
@@ -103,7 +103,7 @@ export const Security = () => {
                       placeholder="*********"
                       autoComplete={"current-password"}
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-3",
+                        "block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5"
                       )}
                     />
                   </div>

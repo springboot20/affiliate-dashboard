@@ -20,7 +20,7 @@ export const Button = ({
     onClick={onClick}
     disabled={disabled || loading}
     className={classNames(
-      "py-2 lg:py-3 px-4 rounded-md text-sm font-medium",
+      "py-2 lg:py-2.5 px-4 rounded-md text-sm font-medium",
       loading ? "flex items-center gap-3 justify-center" : "text-center",
       disabled || loading ? "bg-gray-400 cursor-not-allowed" : "",
       className

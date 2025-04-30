@@ -115,7 +115,7 @@ export const SideNavigation: React.FC<{
             className={classNames(
               "lg:hidden fixed top-0 min-h-screen w-full sm:w-[30rem] bg-white",
               open ? "translate-x-0" : "-translate-x-full",
-              "transform transition-transform duration-200 ",
+              "transform transition-transform duration-200 border-r-2",
             )}
           >
             <DisclosureButton className="absolute right-4 top-6">
