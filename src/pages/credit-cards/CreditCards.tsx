@@ -1,14 +1,17 @@
 import chip from "@/assets/Chip_Card.png";
 import chipGray from "@/assets/Chip_Card-gray.png";
+import { motion } from "framer-motion";
 
 import { CardTypeBlackIcon, CardTypeIcon } from "@/components/icons/Icons";
 import { CardForm } from "./card-form/CardForm";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import React, { useMemo } from "react";
 import { classNames } from "@/utils";
+import { CreditCardLoader } from "@/components/loaders/credit-card.loader";
+import DashboardChart from "@/components/statistics/DashboardChart";
 
 export const CreditCards = () => {
-  const { data, refetch } = useGetUserCardsQuery();
+  const { data, refetch, isLoading } = useGetUserCardsQuery();
 
   const formatCardNumber = (number: string) => {
     const value = number?.replace(/\s/, "");
@@ -26,71 +29,131 @@ export const CreditCards = () => {
     }
   };
 
-  const cards = useMemo(() => data?.data?.cards, [data]);
+  const options = useMemo(
+    () => ({
+      labels: ["ABM Bank", "BRC Bank", "MCP Bank", "DBL Bank"],
+      colors: ["#16DBCC", "#FF82AC", "#FFBB38", "#4C78FF"],
+      legend: {
+        show: true,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+    }),
+    []
+  );
+
+  const cards = useMemo(() => data?.data?.cards ?? [], [data]);
 
   return (
-    <section className="px-2 w-full mt-[9rem] lg:mt-[5.5rem] xl:max-w-7xl xl:mx-auto">
-      <div className="flex flex-wrap gap-2.5">
+    <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
+      <motion.div
+        initial={{
+          scale: 0,
+          opacity: 0.3,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "tween",
+          },
+        }}
+        className="flex flex-wrap gap-2.5 w-full max-w-7xl mx-auto"
+      >
         <div className="flex-grow shrink-0 md:max-w-full w-full">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
           </nav>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-hidden w-full mt-2.5">
-            {React.Children.toArray(
-              (cards ?? [])?.slice(0, 3)?.map((card: any) => {
-                return (
-                  <div
-                    className={classNames(
-                      "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full",
+            {isLoading || cards?.length === 0 || !data ? (
+              <CreditCardLoader length={3} classname="w-full h-52" />
+            ) : (
+              React.Children.toArray(
+                (cards ?? [])?.slice(0, 3)?.map((card: any) => {
+                  return (
+                    <div
+                      className={classNames(
+                        "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full",
 
-                      card?.type?.includes("DEBIT")
-                        ? "bg-white text-affiliate-black before:border-t"
-                        : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
-                    )}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex flex-col items-start">
-                        <span className="text-xs font-normal">Balance</span>
-                        <span className="text-sm lg:text-base font-semibold">$5,764</span>
-                      </div>
-                      {card?.type?.includes("DEBIT") ? (
-                        <img src={chipGray} alt="chip icon" className="w-8" />
-                      ) : (
-                        <img src={chip} alt="chip icon" className="w-8" />
+                        card?.type?.includes("DEBIT")
+                          ? "bg-white text-affiliate-black before:border-t"
+                          : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
                       )}
-                    </div>
-
-                    <div className="flex items-center justify-between py-3.5">
-                      <div>
-                        <h2 className="text-xs font-normal uppercase">card holder</h2>
-                        <p className="font-semibold text-base">{card?.card_name}</p>
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs font-normal">Balance</span>
+                          <span className="text-sm lg:text-base font-semibold">$5,764</span>
+                        </div>
+                        {card?.type?.includes("DEBIT") ? (
+                          <img src={chipGray} alt="chip icon" className="w-8" />
+                        ) : (
+                          <img src={chip} alt="chip icon" className="w-8" />
+                        )}
                       </div>
 
-                      <div>
-                        <h2 className="text-xs font-normal uppercase">valid thru</h2>
-                        <p className="font-semibold text-sm">
-                          {formatCardExpiry(card?.valid_thru)}
+                      <div className="flex items-center justify-between py-3.5">
+                        <div>
+                          <h2 className="text-xs font-normal uppercase">card holder</h2>
+                          <p className="font-semibold text-base">{card?.card_name}</p>
+                        </div>
+
+                        <div>
+                          <h2 className="text-xs font-normal uppercase">valid thru</h2>
+                          <p className="font-semibold text-sm">
+                            {formatCardExpiry(card?.valid_thru)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-base font-bold uppercase">
+                          {formatCardNumber(card?.card_number)}{" "}
                         </p>
+                        {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-base font-bold uppercase">
-                        {formatCardNumber(card?.card_number)}{" "}
-                      </p>
-                      {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                })
+              )
             )}
           </div>
         </div>
 
-        <div className="w-full lg:max-w-xs xl:max-w-sm">
+        <div className="w-full lg:max-w-xs">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             card expense statistics
           </h3>
-          <div className="bg-white rounded-2xl p-5"></div>
+          <div className="bg-white rounded-3xl p-5 mt-3">
+            <DashboardChart
+              type="donut"
+              series={[25, 25, 25, 25]}
+              options={{
+                ...options,
+                tooltip: {
+                  style: {
+                    fontFamily: "Inter, sans",
+                    fontSize: "14px",
+                  },
+                },
+                legend: {
+                  ...options.legend,
+                  fontFamily: "Inter, sans",
+                  fontWeight: 600,
+                  fontSize: "12px",
+                  position: "bottom",
+                  horizontalAlign: "center",
+                },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: "55%",
+                    },
+                  },
+                },
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex-grow w-full lg:w-fit shrink-0">
@@ -98,7 +161,7 @@ export const CreditCards = () => {
             card lists
           </h3>
 
-          <ul className="space-y-2">
+          <ul className="space-y-2 mt-3">
             {React.Children.toArray(
               (cards ?? [])?.slice(0, 3)?.map((card: any) => (
                 <li className="py-2.5 px-3 rounded-2xl bg-white flex justify-between items-center">
@@ -186,7 +249,7 @@ export const CreditCards = () => {
             add new card
           </h3>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

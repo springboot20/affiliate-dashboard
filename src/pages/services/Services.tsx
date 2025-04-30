@@ -1,7 +1,22 @@
+import { motion } from "framer-motion";
+
 export const Services = () => {
   return (
     <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
-      <div className="w-full lg:max-w-6xl xl:max-w-7xl lg:mx-auto">
+      <motion.div
+        initial={{
+          scale: 0,
+          opacity: 0.3,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "tween",
+          },
+        }}
+        className="w-full lg:max-w-6xl xl:max-w-7xl lg:mx-auto"
+      >
         <div className="flex items-center overflow-x-auto gap-3 max-w-full flex-grow">
           <div className="bg-white rounded-3xl border h-24 p-8 flex items-center lg:h-28 gap-4 w-full max-w-64 md:max-w-[23.86rem] shrink-0">
             <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#e7edff]">
@@ -119,7 +134,7 @@ export const Services = () => {
 
           <ul className="space-y-2 mt-2">
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#FFE0EB]">
                   <svg
                     width="60"
@@ -184,7 +199,7 @@ export const Services = () => {
             </li>
 
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#FFF5D9]">
                   <svg
                     width="25"
@@ -244,7 +259,7 @@ export const Services = () => {
             </li>
 
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#FFE0EB]">
                   <svg
                     width="23"
@@ -301,7 +316,7 @@ export const Services = () => {
             </li>
 
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#E7EDFF]">
                   <svg
                     width="20"
@@ -363,7 +378,7 @@ export const Services = () => {
             </li>
 
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#DCFAF8]">
                   <svg
                     width="20"
@@ -430,7 +445,7 @@ export const Services = () => {
               </button>
             </li>
             <li className="py-3.5 px-3 rounded-2xl bg-white flex justify-between items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3.5">
                 <span className="h-11 w-11 md:w-14 md:h-14 rounded-2xl flex items-center justify-center bg-[#FFE0EB]">
                   <svg
                     width="60"
@@ -495,7 +510,7 @@ export const Services = () => {
             </li>
           </ul>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

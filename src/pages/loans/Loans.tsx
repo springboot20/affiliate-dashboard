@@ -1,7 +1,22 @@
+import { motion } from "framer-motion";
+
 export const Loans = () => {
   return (
     <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
-      <div className="w-full lg:max-w-6xl xl:max-w-7xl lg:mx-auto">
+      <motion.div
+        initial={{
+          scale: 0,
+          opacity: 0.3,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "tween",
+          },
+        }}
+        className="w-full lg:max-w-6xl xl:max-w-7xl lg:mx-auto"
+      >
         <div className="flex items-center overflow-x-auto gap-3 max-w-full flex-grow">
           <div className="bg-white rounded-3xl border h-24 p-8 flex items-center lg:h-28 w-full max-w-64 md:max-w-[17.90rem] shrink-0 gap-4">
             <span className="flex items-center justify-center h-14 w-14 lg:h-10 lg:w-10 xl:h-14 xl:w-14 flex-shrink-0 rounded-full bg-[#E7EDFF]">
@@ -329,7 +344,6 @@ export const Loans = () => {
                   </td>
                 </tr>
 
-                
                 <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">05.</p>
@@ -364,7 +378,6 @@ export const Loans = () => {
                   </td>
                 </tr>
 
-                
                 <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">06.</p>
@@ -399,7 +412,6 @@ export const Loans = () => {
                   </td>
                 </tr>
 
-                
                 <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">07.</p>
@@ -434,7 +446,6 @@ export const Loans = () => {
                   </td>
                 </tr>
 
-                
                 <tr className="border-b border-[#F2F4F7] hover:bg-gray-50">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p className="text-xs font-normal text-affiliate-black">08.</p>
@@ -498,7 +509,7 @@ export const Loans = () => {
             </table>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

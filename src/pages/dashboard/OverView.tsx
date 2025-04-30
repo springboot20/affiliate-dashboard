@@ -10,6 +10,7 @@ import { Button } from "@material-tailwind/react";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
 import DashboardChart from "@/components/statistics/DashboardChart";
+import { CreditCardLoader } from "@/components/loaders/credit-card.loader";
 
 export const OverView = () => {
   const [width, setWidth] = useState<number>(0);
@@ -29,8 +30,8 @@ export const OverView = () => {
     []
   );
 
-  const { data } = useGetUserCardsQuery();
-  const cards = useMemo(() => data?.data?.cards, [data]);
+  const { data, isLoading } = useGetUserCardsQuery();
+  const cards = useMemo(() => data?.data?.cards ?? [], [data]);
 
   useEffect(() => {
     if (cardSlider.current !== null) {
@@ -39,8 +40,21 @@ export const OverView = () => {
   }, []);
 
   return (
-    <section className="px-2 mt-[9rem] lg:mt-[5.5rem] w-full xl:max-w-7xl xl:mx-auto">
-      <div className="w-full flex flex-wrap gap-2.5">
+    <motion.section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
+      <motion.div
+        initial={{
+          scale: 0,
+          opacity: 0.3,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "tween",
+          },
+        }}
+        className="w-full flex flex-wrap gap-2.5 xl:max-w-7xl xl:mx-auto "
+      >
         {/* Card section */}
         <div className="flex-grow shrink-0 md:max-w-full lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
           <nav className="flex justify-between items-center">
@@ -62,51 +76,55 @@ export const OverView = () => {
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 lg:w-full flex-1 font-lato"
             >
-              {React.Children.toArray(
-                (cards ?? [])?.slice(0, 2)?.map((card: any) => {
-                  return (
-                    <div
-                      className={classNames(
-                        "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 ",
-                        card?.type?.includes("DEBIT")
-                          ? "bg-white text-affiliate-black before:border-t"
-                          : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
-                      )}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex flex-col items-start">
-                          <span className="text-xs font-normal">Balance</span>
-                          <span className="text-sm lg:text-base font-semibold">$5,764</span>
-                        </div>
-                        {card?.type?.includes("DEBIT") ? (
-                          <img src={chipBlack} alt="chip icon" className="w-8" />
-                        ) : (
-                          <img src={chip} alt="chip icon" className="w-8" />
+              {isLoading || cards?.length === 0 || !data ? (
+                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-52" />
+              ) : (
+                React.Children.toArray(
+                  (cards ?? [])?.slice(0, 2)?.map((card: any) => {
+                    return (
+                      <div
+                        className={classNames(
+                          "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-3xl space-y-4 lg:space-y-2 xl:space-y-6 w-full md:w-1/2",
+                          card?.type?.includes("DEBIT")
+                            ? "bg-white text-affiliate-black before:border-t"
+                            : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
                         )}
-                      </div>
-
-                      <div className="flex items-center justify-between py-3.5">
-                        <div>
-                          <h2 className="text-xs font-normal uppercase">card holder</h2>
-                          <p className="font-semibold text-base">{card?.card_name}</p>
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex flex-col items-start">
+                            <span className="text-xs font-normal">Balance</span>
+                            <span className="text-sm font-semibold">$5,764</span>
+                          </div>
+                          {card?.type?.includes("DEBIT") ? (
+                            <img src={chipBlack} alt="chip icon" className="w-8" />
+                          ) : (
+                            <img src={chip} alt="chip icon" className="w-8" />
+                          )}
                         </div>
 
-                        <div>
-                          <h2 className="text-xs font-normal uppercase">valid thru</h2>
-                          <p className="font-semibold text-sm">
-                            {formatCardExpiry(card?.valid_thru)}
+                        <div className="flex items-center justify-between py-3.5">
+                          <div>
+                            <h2 className="text-xs font-normal uppercase">card holder</h2>
+                            <p className="font-semibold text-sm">{card?.card_name}</p>
+                          </div>
+
+                          <div>
+                            <h2 className="text-xs font-normal uppercase">valid thru</h2>
+                            <p className="font-semibold text-sm">
+                              {formatCardExpiry(card?.valid_thru)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-bold uppercase">
+                            {formatCardNumber(card?.card_number)}{" "}
                           </p>
+                          {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-base font-bold uppercase">
-                          {formatCardNumber(card?.card_number)}{" "}
-                        </p>
-                        {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
-                      </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
+                )
               )}
             </motion.div>
           </motion.div>
@@ -214,7 +232,7 @@ export const OverView = () => {
         </div>
 
         {/* Transaction section */}
-        <div className="mt-4 w-full lg:mt-0 space-y-3 lg:!max-w-[30rem] xl:!max-w-2xl">
+        <div className="mt-4 w-full lg:mt-0 space-y-3 lg:!max-w-[30rem] xl:!max-w-[39rem]">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             weekly activity
           </h3>
@@ -227,7 +245,7 @@ export const OverView = () => {
             expense statics
           </h3>
 
-          <div className="bg-white rounded-2xl p-5 mt-3">
+          <div className="bg-white rounded-3xl p-5 mt-3">
             <DashboardChart
               type="pie"
               series={[15, 35, 20, 30]}
@@ -406,7 +424,7 @@ export const OverView = () => {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 };

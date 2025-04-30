@@ -14,13 +14,14 @@ import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
 import { Pagination } from "@/components/Pagination";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
+import { CreditCardLoader } from "@/components/loaders/credit-card.loader";
 
 export const Transactions = () => {
   const [width, setWidth] = useState<number>(0);
   const cardSlider = useRef<HTMLDivElement>(null);
 
-  const { data } = useGetUserCardsQuery();
-  const cards = useMemo(() => data?.data?.cards, [data]);
+  const { data, isLoading } = useGetUserCardsQuery();
+  const cards = useMemo(() => data?.data?.cards ?? [], [data]);
 
   useEffect(() => {
     if (cardSlider.current !== null) {
@@ -28,8 +29,21 @@ export const Transactions = () => {
     }
   }, []);
   return (
-    <section className="px-2 mt-[9rem] lg:mt-[5.5rem] w-full max-w-full xl:max-w-7xl xl:mx-auto">
-      <div className="w-full flex flex-wrap gap-2.5">
+    <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
+      <motion.div
+        initial={{
+          scale: 0,
+          opacity: 0.3,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "tween",
+          },
+        }}
+        className="w-full flex flex-wrap gap-2.5 max-w-full xl:max-w-7xl xl:mx-auto"
+      >
         {/* Card section */}
         <div className="shrink-0 flex-grow md:max-w-full lg:!max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
           <nav className="flex justify-between items-center">
@@ -48,51 +62,55 @@ export const Transactions = () => {
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 max-w-full flex-1 font-lato"
             >
-              {React.Children.toArray(
-                (cards ?? [])?.slice(0, 2)?.map((card: any) => {
-                  return (
-                    <div
-                      className={classNames(
-                        "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-2xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 ",
-                        card?.type?.includes("DEBIT")
-                          ? "bg-white text-affiliate-black before:border-t"
-                          : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
-                      )}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex flex-col items-start">
-                          <span className="text-xs font-normal">Balance</span>
-                          <span className="text-sm lg:text-base font-semibold">$5,764</span>
-                        </div>
-                        {card?.type?.includes("DEBIT") ? (
-                          <img src={chipGray} alt="chip icon" className="w-8" />
-                        ) : (
-                          <img src={chip} alt="chip icon" className="w-8" />
+              {isLoading || cards?.length === 0 || !data ? (
+                <CreditCardLoader />
+              ) : (
+                React.Children.toArray(
+                  (cards ?? [])?.slice(0, 2)?.map((card: any) => {
+                    return (
+                      <div
+                        className={classNames(
+                          "border flex-grow shrink-0 relative p-3.5 font-lato before:absolute before:content-[' '] before:bottom-0 before:h-12 xl:before:h-14 before:left-0 before:right-0 rounded-3xl space-y-4 lg:space-y-2 xl:space-y-6 flex-grow w-full md:w-1/2 ",
+                          card?.type?.includes("DEBIT")
+                            ? "bg-white text-affiliate-black before:border-t"
+                            : "before:bg-white/20 bg-gradient-to-br from-[#2D60FF] to-[#539BFF] text-white"
                         )}
-                      </div>
-
-                      <div className="flex items-center justify-between py-3.5">
-                        <div>
-                          <h2 className="text-xs font-normal uppercase">card holder</h2>
-                          <p className="font-semibold text-base">{card?.card_name}</p>
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex flex-col items-start">
+                            <span className="text-xs font-normal">Balance</span>
+                            <span className="text-sm lg:text-base font-semibold">$5,764</span>
+                          </div>
+                          {card?.type?.includes("DEBIT") ? (
+                            <img src={chipGray} alt="chip icon" className="w-8" />
+                          ) : (
+                            <img src={chip} alt="chip icon" className="w-8" />
+                          )}
                         </div>
 
-                        <div>
-                          <h2 className="text-xs font-normal uppercase">valid thru</h2>
-                          <p className="font-semibold text-sm">
-                            {formatCardExpiry(card?.valid_thru)}
+                        <div className="flex items-center justify-between py-3.5">
+                          <div>
+                            <h2 className="text-xs font-normal uppercase">card holder</h2>
+                            <p className="font-semibold text-base">{card?.card_name}</p>
+                          </div>
+
+                          <div>
+                            <h2 className="text-xs font-normal uppercase">valid thru</h2>
+                            <p className="font-semibold text-sm">
+                              {formatCardExpiry(card?.valid_thru)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-base font-bold uppercase">
+                            {formatCardNumber(card?.card_number)}
                           </p>
+                          {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-base font-bold uppercase">
-                          {formatCardNumber(card?.card_number)}
-                        </p>
-                        {card?.type?.includes("DEBIT") ? <CardTypeBlackIcon /> : <CardTypeIcon />}
-                      </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
+                )
               )}
             </motion.div>
           </motion.div>
@@ -597,21 +615,15 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              #12548796
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              Shopping
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">Shopping</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              1234 ****
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -621,9 +633,7 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">
-                              -$2,500
-                            </p>
+                            <p className="text-xs font-medium text-affiliate-red">-$2,500</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -647,21 +657,15 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              #12548796
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              Transfer
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              1234 ****
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -671,9 +675,7 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-green">
-                              +$750
-                            </p>
+                            <p className="text-xs font-medium text-affiliate-green">+$750</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -697,21 +699,15 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              #12548796
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              Service
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">Service</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              1234 ****
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -721,9 +717,7 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">
-                              -150
-                            </p>
+                            <p className="text-xs font-medium text-affiliate-red">-150</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -747,21 +741,15 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              #12548796
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              Transfer
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              1234 ****
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -771,9 +759,7 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">
-                              -1050
-                            </p>
+                            <p className="text-xs font-medium text-affiliate-red">-1050</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -797,21 +783,15 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              #12548796
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              Transfer
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              1234 ****
-                            </p>
+                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -821,9 +801,7 @@ export const Transactions = () => {
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-green">
-                              +840
-                            </p>
+                            <p className="text-xs font-medium text-affiliate-green">+840</p>
                           </td>
 
                           <td className="px-3 py-2.5 whitespace-nowrap">
@@ -997,7 +975,7 @@ export const Transactions = () => {
             <Pagination />
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
