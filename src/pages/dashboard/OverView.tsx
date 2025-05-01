@@ -292,12 +292,39 @@ export const OverView = () => {
                 legend: {
                   show: false,
                 },
+                plotOptions: {
+                  bar: {
+                    borderRadius: 15,
+                    columnWidth: "55%",
+                  },
+                },
                 chart: {
                   ...bar_options.chart,
                   animations: {
                     animateGradually: {
                       delay: 300,
                     },
+                  },
+                },
+                grid: {
+                  show: true,
+                  borderColor: "#E5E7EB",
+                  strokeDashArray: 4,
+                  xaxis: {
+                    lines: {
+                      show: true,
+                    },
+                  },
+                  yaxis: {
+                    lines: {
+                      show: true,
+                    },
+                  },
+                  padding: {
+                    top: 0,
+                    right: 10,
+                    bottom: 0,
+                    left: 10,
                   },
                 },
               }}
@@ -490,6 +517,27 @@ export const OverView = () => {
                   },
                   zoom: {
                     enabled: false,
+                  },
+                },
+                grid: {
+                  show: true,
+                  borderColor: "#E5E7EB",
+                  strokeDashArray: 4,
+                  xaxis: {
+                    lines: {
+                      show: true,
+                    },
+                  },
+                  yaxis: {
+                    lines: {
+                      show: true,
+                    },
+                  },
+                  padding: {
+                    top: 0,
+                    right: 10,
+                    bottom: 0,
+                    left: 10,
                   },
                 },
               }}
