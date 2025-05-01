@@ -287,7 +287,7 @@ export const OverView = () => {
               options={{
                 ...bar_options,
                 xaxis: {
-                  categories: [],
+                  categories: [""],
                 },
                 legend: {
                   show: false,
@@ -304,11 +304,11 @@ export const OverView = () => {
               series={[
                 {
                   name: "",
-                  data: [100, 200, 400, 600],
+                  data: [500, 320, 320, 595, 170, 400, 400],
                 },
                 {
                   name: "",
-                  data: [50, 20, 45, 60],
+                  data: [220, 105, 280, 495, 210, 250, 325],
                 },
               ]}
               height={"100%"}
