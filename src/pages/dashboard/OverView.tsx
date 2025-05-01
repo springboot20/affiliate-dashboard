@@ -295,7 +295,7 @@ export const OverView = () => {
                 plotOptions: {
                   bar: {
                     borderRadius: 15,
-                    columnWidth: "55%",
+                    distributed: true,
                   },
                 },
                 chart: {
