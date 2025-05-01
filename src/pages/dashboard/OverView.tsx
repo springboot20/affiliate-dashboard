@@ -30,6 +30,36 @@ export const OverView = () => {
     []
   );
 
+  const bar_options = useMemo(
+    () => ({
+      // title: {
+      //   text: "Order Counts",
+      //   style: {
+      //     fontFamily: "Inter, sans",
+      //     fontSize: "20px",
+      //   },
+      // },
+      colors: ["#28A745", "#FF5733"],
+      chart: {
+        toolbar: {
+          show: false,
+        },
+        zoom: {
+          enabled: false,
+        },
+      },
+      tooltip: {
+        style: {
+          fontFamily: "Poppins, sans-serif",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+    }),
+    []
+  );
+
   const { data, isLoading } = useGetUserCardsQuery();
   const cards = useMemo(() => data?.data?.cards ?? [], [data]);
 
@@ -37,6 +67,16 @@ export const OverView = () => {
     if (cardSlider.current !== null) {
       setWidth(cardSlider.current?.scrollWidth - cardSlider.current?.offsetWidth);
     }
+
+    // Update width calculation on window resize
+    const handleResize = () => {
+      if (cardSlider.current !== null) {
+        setWidth(cardSlider.current?.scrollWidth - cardSlider.current?.offsetWidth);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -53,10 +93,10 @@ export const OverView = () => {
             type: "tween",
           },
         }}
-        className="w-full flex flex-wrap gap-2.5 xl:max-w-7xl xl:mx-auto "
+        className="w-full grid grid-cols-1 lg:grid-cols-3 gap-2.5 xl:max-w-7xl xl:mx-auto"
       >
         {/* Card section */}
-        <div className="flex-grow shrink-0 md:max-w-full lg:max-w-[30rem] xl:!max-w-2xl 2xl:!max-w-3xl w-full">
+        <div className="col-span-full lg:col-span-2">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
             <Button
@@ -70,14 +110,14 @@ export const OverView = () => {
               See All
             </Button>
           </nav>
-          <motion.div ref={cardSlider} className="overflow-hidden w-full mt-2.5">
+          <motion.div ref={cardSlider} className="overflow-hidden w-full mt-2.5 pb-2">
             <motion.div
               drag={"x"}
               dragConstraints={{ right: 0, left: -width }}
               className="flex items-start gap-3 lg:w-full flex-1 font-lato"
             >
               {isLoading || cards?.length === 0 || !data ? (
-                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-52" />
+                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-full lg:h-40 xl:h-48" />
               ) : (
                 React.Children.toArray(
                   (cards ?? [])?.slice(0, 2)?.map((card: any) => {
@@ -131,14 +171,14 @@ export const OverView = () => {
         </div>
 
         {/* Transaction section */}
-        <div className="w-full lg:w-fit flex-grow lg:shrink-0">
+        <div className="col-span-1">
           <div className="flex items-center">
             <h3 className="text-base lg:text-xl font-semibold text-affiliate-blue capitalize">
               recent transactions
             </h3>
           </div>
 
-          <ul className="space-y-5 lg:space-y-[0.875rem] xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-3.5 h-auto">
+          <ul className="space-y-3 lg:space-y-2 xs:bg-white p-3 xs:rounded-xl lg:border lg:shadow-sm mt-3.5 h-auto">
             <li className="xl:py-1.5 xl:px-2.5 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center h-12 w-12 lg:h-10 lg:w-10 rounded-full bg-[#FFF5D9]">
@@ -231,21 +271,58 @@ export const OverView = () => {
           </ul>
         </div>
 
-        {/* Transaction section */}
-        <div className="mt-4 w-full lg:mt-0 space-y-3 lg:!max-w-[30rem] xl:!max-w-[39rem]">
+        {/* weekly section */}
+        <div className="col-span-1 lg:col-span-2">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             weekly activity
           </h3>
-          <div className="relative bg-white p-4 rounded-3xl h-auto"></div>
+          <div
+            className="relative bg-white p-2 rounded-3xl min-h-52 md:min-h-80 mt-3"
+            style={{
+              height: "inherit",
+            }}
+          >
+            <DashboardChart
+              type="bar"
+              options={{
+                ...bar_options,
+                xaxis: {
+                  categories: [],
+                },
+                legend: {
+                  show: false,
+                },
+                chart: {
+                  ...bar_options.chart,
+                  animations: {
+                    animateGradually: {
+                      delay: 300,
+                    },
+                  },
+                },
+              }}
+              series={[
+                {
+                  name: "",
+                  data: [100, 200, 400, 600],
+                },
+                {
+                  name: "",
+                  data: [50, 20, 45, 60],
+                },
+              ]}
+              height={"100%"}
+            />
+          </div>
         </div>
 
         {/* Expense section */}
-        <div className=" w-full lg:w-fit lg:flex-grow lg:shrink-0 h-full flex-grow">
+        <div className="col-span-1 h-full">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             expense statics
           </h3>
 
-          <div className="bg-white rounded-3xl p-5 mt-3">
+          <div className="bg-white rounded-3xl p-5 mt-3 min-h-52 md:min-h-80">
             <DashboardChart
               type="pie"
               series={[15, 35, 20, 30]}
@@ -277,16 +354,17 @@ export const OverView = () => {
                   },
                 },
               }}
+              height={"100%"}
             />
           </div>
         </div>
 
         {/* Quick section */}
-        <div className="space-y-4 w-full lg:max-w-xs xl:max-w-md">
+        <div className="space-y-4 col-span-1">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             quick transfer
           </h3>
-          <div className="relative xs:bg-white xs:p-4 rounded-3xl lg:shadow-sm lg:h-56 flex flex-col justify-between">
+          <div className="relative xs:bg-white xs:p-4 rounded-3xl lg:shadow-sm min-h-48 md:min-h-52 xl:min-h-72 flex flex-col justify-between">
             <div className="place-items-center grid grid-cols-3 max-w-[17rem] lg:max-w-[15rem] w-full">
               <div className="flex items-center flex-col gap-1 w-max">
                 <div className="h-12 w-12 xs:h-20 xs:w-20 lg:!w-12 lg:!h-12 rounded-full border overflow-hidden relative">
@@ -343,11 +421,11 @@ export const OverView = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between mt-8">
+            <div className="flex flex-col gap-3 xl:gap-0 items-start xl:flex-row xl:items-center xl:justify-between ">
               <button className="text-sm lg:text-xs font-medium text-[#718EBF] capitalize shrink-0">
                 write amount
               </button>
-              <div className="w-48 h-12 xs:w-52 lg:!w-44 shrink-0 rounded-[5rem] bg-[#EDF1F7] flex items-center justify-between sm:justify-normal relative p-3">
+              <div className="w-full xl:w-44 h-9 shrink-0 rounded-[5rem] bg-[#EDF1F7] flex items-center justify-between sm:justify-normal relative p-3">
                 <span className="text-[#718EBF] ml-2 text-sm lg:text-xs font-medium">525.05</span>
                 <button className="py-1.5 h-full flex items-center space-x-3 px-5 lg:px-3.5 rounded-[5rem] bg-affiliate-deep-blue text-white absolute right-0">
                   <span className="capitalize text-sm lg:text-xs font-semibold">send</span>
@@ -359,14 +437,14 @@ export const OverView = () => {
         </div>
 
         {/* Quick section */}
-        <div className="space-y-4 flex-grow w-full lg:w-fit shrink-0">
+        <div className="space-y-4 col-span-1 lg:col-span-2">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             balance history
           </h3>
 
           {/* <BalanceHistory className="w-full lg:hidden" /> */}
 
-          <div className="rounded-3xl bg-white">
+          <div className="rounded-3xl bg-white min-h-48 md:min-h-52 xl:min-h-72">
             <DashboardChart
               type="area"
               options={{
@@ -415,7 +493,7 @@ export const OverView = () => {
                   },
                 },
               }}
-              height={210}
+              height={"100%"}
               series={[
                 {
                   data: [0, 80, 340, 205, 415, 390, 780, 200, 560, 210, 600],

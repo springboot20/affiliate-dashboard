@@ -27,7 +27,18 @@ export const Transactions = () => {
     if (cardSlider.current !== null) {
       setWidth(cardSlider.current?.scrollWidth - cardSlider.current?.offsetWidth);
     }
+
+    // Update width calculation on window resize
+    const handleResize = () => {
+      if (cardSlider.current !== null) {
+        setWidth(cardSlider.current?.scrollWidth - cardSlider.current?.offsetWidth);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
       <motion.div
@@ -63,7 +74,7 @@ export const Transactions = () => {
               className="flex items-start gap-3 max-w-full flex-1 font-lato"
             >
               {isLoading || cards?.length === 0 || !data ? (
-                <CreditCardLoader />
+                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-full lg:h-40 xl:h-48" />
               ) : (
                 React.Children.toArray(
                   (cards ?? [])?.slice(0, 2)?.map((card: any) => {

@@ -59,15 +59,15 @@ export const CreditCards = () => {
             type: "tween",
           },
         }}
-        className="flex flex-wrap gap-2.5 w-full max-w-7xl mx-auto"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-2.5 w-full max-w-7xl mx-auto"
       >
-        <div className="flex-grow shrink-0 md:max-w-full w-full">
+        <div className="col-span-full md:max-w-full w-full">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
           </nav>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-hidden w-full mt-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 pb-2 overflow-hidden w-full mt-2.5">
             {isLoading || cards?.length === 0 || !data ? (
-              <CreditCardLoader length={3} classname="w-full h-52" />
+              <CreditCardLoader length={3} classname="w-full h-full lg:h-40 xl:h-48" />
             ) : (
               React.Children.toArray(
                 (cards ?? [])?.slice(0, 3)?.map((card: any) => {
@@ -120,11 +120,11 @@ export const CreditCards = () => {
           </div>
         </div>
 
-        <div className="w-full lg:max-w-xs">
+        <div className="col-span-1">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             card expense statistics
           </h3>
-          <div className="bg-white rounded-3xl p-5 mt-3">
+          <div className="bg-white rounded-3xl p-5 mt-3 min-h-48 md:min-h-52 xl:min-h-72">
             <DashboardChart
               type="donut"
               series={[25, 25, 25, 25]}
@@ -152,11 +152,12 @@ export const CreditCards = () => {
                   },
                 },
               }}
+              height="100%"
             />
           </div>
         </div>
 
-        <div className="flex-grow w-full lg:w-fit shrink-0">
+        <div className="col-span-1 lg:cols-span-2">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             card lists
           </h3>
@@ -236,7 +237,7 @@ export const CreditCards = () => {
           </ul>
         </div>
 
-        <div className="w-full lg:max-w-xl">
+        <div className="col-span-1 lg:col-span-2">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             add new card
           </h3>
@@ -244,7 +245,7 @@ export const CreditCards = () => {
           <CardForm refetch={refetch} />
         </div>
 
-        <div className="flex-grow w-full lg:w-fit shrink-0">
+        <div className="col-span-1">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             add new card
           </h3>
