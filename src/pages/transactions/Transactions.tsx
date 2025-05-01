@@ -74,7 +74,7 @@ export const Transactions = () => {
               className="flex items-start gap-3 max-w-full flex-1 font-lato"
             >
               {isLoading || cards?.length === 0 || !data ? (
-                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-full lg:h-40 xl:h-48" />
+                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-44 lg:h-40 xl:h-48" />
               ) : (
                 React.Children.toArray(
                   (cards ?? [])?.slice(0, 2)?.map((card: any) => {

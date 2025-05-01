@@ -39,7 +39,7 @@ export const OverView = () => {
       //     fontSize: "20px",
       //   },
       // },
-      colors: ["#28A745", "#FF5733"],
+      colors: ["#1814F3", "#16DBCC"],
       chart: {
         toolbar: {
           show: false,
@@ -93,7 +93,7 @@ export const OverView = () => {
             type: "tween",
           },
         }}
-        className="w-full grid grid-cols-1 lg:grid-cols-3 gap-2.5 xl:max-w-7xl xl:mx-auto"
+        className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 xl:max-w-7xl xl:mx-auto"
       >
         {/* Card section */}
         <div className="col-span-full lg:col-span-2">
@@ -117,7 +117,7 @@ export const OverView = () => {
               className="flex items-start gap-3 lg:w-full flex-1 font-lato"
             >
               {isLoading || cards?.length === 0 || !data ? (
-                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-full lg:h-40 xl:h-48" />
+                <CreditCardLoader classname="flex-grow shrink-0 w-full md:w-1/2 h-44 lg:h-40 xl:h-48" />
               ) : (
                 React.Children.toArray(
                   (cards ?? [])?.slice(0, 2)?.map((card: any) => {
@@ -171,7 +171,7 @@ export const OverView = () => {
         </div>
 
         {/* Transaction section */}
-        <div className="col-span-1">
+        <div className="col-span-1 md:col-span-full lg:col-span-1">
           <div className="flex items-center">
             <h3 className="text-base lg:text-xl font-semibold text-affiliate-blue capitalize">
               recent transactions
@@ -272,12 +272,12 @@ export const OverView = () => {
         </div>
 
         {/* weekly section */}
-        <div className="col-span-1 lg:col-span-2">
+        <div className="col-span-1 md:col-span-full lg:col-span-2">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             weekly activity
           </h3>
           <div
-            className="relative bg-white p-2 rounded-3xl min-h-52 md:min-h-80 mt-3"
+            className="relative bg-white p-2 rounded-3xl min-h-64 sm:min-h-52 md:min-h-80 mt-3"
             style={{
               height: "inherit",
             }}
@@ -322,7 +322,7 @@ export const OverView = () => {
             expense statics
           </h3>
 
-          <div className="bg-white rounded-3xl p-5 mt-3 min-h-52 md:min-h-80">
+          <div className="bg-white rounded-3xl p-5 mt-3 min-h-64 sm:min-h-52 md:min-h-80">
             <DashboardChart
               type="pie"
               series={[15, 35, 20, 30]}
@@ -360,11 +360,11 @@ export const OverView = () => {
         </div>
 
         {/* Quick section */}
-        <div className="space-y-4 col-span-1">
+        <div className="col-span-1">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             quick transfer
           </h3>
-          <div className="relative xs:bg-white xs:p-4 rounded-3xl lg:shadow-sm min-h-48 md:min-h-52 xl:min-h-72 flex flex-col justify-between">
+          <div className="relative xs:bg-white xs:p-4 rounded-3xl lg:shadow-sm min-h-48 md:min-h-[19.85rem] xl:min-h-72 flex flex-col justify-between">
             <div className="place-items-center grid grid-cols-3 max-w-[17rem] lg:max-w-[15rem] w-full">
               <div className="flex items-center flex-col gap-1 w-max">
                 <div className="h-12 w-12 xs:h-20 xs:w-20 lg:!w-12 lg:!h-12 rounded-full border overflow-hidden relative">
@@ -437,14 +437,14 @@ export const OverView = () => {
         </div>
 
         {/* Quick section */}
-        <div className="space-y-4 col-span-1 lg:col-span-2">
+        <div className="col-span-1 md:col-span-full lg:col-span-2">
           <h3 className="text-base lg:text-xl font-bold text-affiliate-blue capitalize">
             balance history
           </h3>
 
           {/* <BalanceHistory className="w-full lg:hidden" /> */}
 
-          <div className="rounded-3xl bg-white min-h-48 md:min-h-52 xl:min-h-72">
+          <div className="rounded-3xl bg-white min-h-48 md:min-h-80 xl:min-h-72">
             <DashboardChart
               type="area"
               options={{

@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
     .required("card number is required")
     .matches(/^(\d{4}\s?){4}$/, "invalid card number format"),
   type: Yup.string().required("card type is required"),
-  primary_account: Yup.string().required("Primary account is required"),
+  primary_account: Yup.string().optional(),
   cvv: Yup.string()
     .required("cvv is required")
     .matches(/^\d{3,4}$/, "cvv must be 3 or 4 digits"),
@@ -242,10 +242,6 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
                       ))
                     )}
                   </select>
-
-                  {errors.primary_account && touched.primary_account && (
-                    <div className="text-red-500 text-xs mt-1">{errors.primary_account}</div>
-                  )}
                 </fieldset>
                 <fieldset className="col-span-full md:col-span-1 relative">
                   <label
