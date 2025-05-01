@@ -39,7 +39,7 @@ export const Settings = () => {
             type: "tween",
           },
         }}
-        className=" px-2 w-full overflow-x-hidden"
+        className="px-2 w-full overflow-x-hidden"
       >
         <div className="p-4 sm:p-8 rounded-3xl bg-white max-w-7xl mx-auto">
           <TabGroup>
