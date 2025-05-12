@@ -1,7 +1,7 @@
 import { EyeIcon, EyeSlashIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { classNames } from "../../utils";
+import { classNames } from "../../../utils";
 import { register } from "@/features/thunks/auth.thunk";
 import { useAppDispatch } from "@/app/hook";
 
@@ -28,7 +28,7 @@ export const Register = () => {
         const { url } = response.data;
 
         const verificationWindow = window.open(url);
-        
+
         if (verificationWindow) {
           const interval = setInterval(() => {
             if (verificationWindow.closed) {
@@ -82,9 +82,7 @@ export const Register = () => {
                     placeholder="enter your username..."
                     className={classNames(
                       "block w-full px-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 outline-none",
-                      errors.username && touched.username
-                        ? "ring-red-600"
-                        : "focus:ring-indigo-600",
+                      errors.username && touched.username ? "ring-red-600" : "focus:ring-indigo-600"
                     )}
                   />
                 </div>
@@ -111,7 +109,7 @@ export const Register = () => {
                     autoComplete="username"
                     className={classNames(
                       "block w-full px-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 outline-none",
-                      errors.email && touched.email ? "ring-red-600" : "focus:ring-indigo-600",
+                      errors.email && touched.email ? "ring-red-600" : "focus:ring-indigo-600"
                     )}
                   />
                 </div>
@@ -132,7 +130,7 @@ export const Register = () => {
                         "block w-full px-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 outline-none",
                         errors.password && touched.password
                           ? "ring-red-600"
-                          : "focus:ring-indigo-600",
+                          : "focus:ring-indigo-600"
                       )}
                     />
                     <button
@@ -165,7 +163,7 @@ export const Register = () => {
                 {isSubmitting ? (
                   <div
                     className={classNames(
-                      "p-5 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/60",
+                      "p-5 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/60"
                     )}
                   >
                     <span className="animation1 mx-[0.5px] h-2 w-2 bg-zinc-300 rounded-full"></span>

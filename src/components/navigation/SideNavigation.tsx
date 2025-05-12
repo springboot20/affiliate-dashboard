@@ -30,35 +30,35 @@ export const SideNavigation: React.FC<{
   open: boolean;
 }> = ({ open, close }) => {
   const routes = [
-    { to: "/", name: "overview", current: true, Icon: HomeIcon },
+    { to: "/dashboard", name: "overview", current: true, Icon: HomeIcon },
     {
-      to: "/transactions",
+      to: "/dashboard/transactions",
       name: "transactions",
       current: true,
       Icon: TransactionIcon,
     },
-    { to: "/accounts", name: "accounts", current: true, Icon: UserIcon },
+    { to: "/dashboard/accounts", name: "accounts", current: true, Icon: UserIcon },
     {
-      to: "/investments",
+      to: "/dashboard/investments",
       name: "investments",
       current: true,
       Icon: InvestmentIcon,
     },
     {
-      to: "/credit-cards",
+      to: "/dashboard/credit-cards",
       name: "credit cards",
       current: true,
       Icon: CreditCardIcon,
     },
-    { to: "/loans", name: "loans", current: true, Icon: LoanIcon },
-    { to: "/services", name: "services", current: true, Icon: ServiceIcon },
+    { to: "/dashboard/loans", name: "loans", current: true, Icon: LoanIcon },
+    { to: "/dashboard/services", name: "services", current: true, Icon: ServiceIcon },
     {
-      to: "/privileges",
+      to: "/dashboard/privileges",
       name: "my privileges",
       current: true,
       Icon: EconometricsIcon,
     },
-    { to: "/settings", name: "settings", current: true, Icon: SettingsIcon },
+    { to: "/dashboard/settings", name: "settings", current: true, Icon: SettingsIcon },
   ];
 
   return (

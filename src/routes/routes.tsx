@@ -1,26 +1,26 @@
 import AppLayout from "@/layout/AppLayout";
 import { createBrowserRouter } from "react-router-dom";
 
-import { Forgot } from "@/pages/forgot-password/Forgot";
-import { Accounts } from "@/pages/account/Accounts";
-import { CreditCards } from "@/pages/credit-cards/CreditCards";
+import { Forgot } from "@/pages/auth/forgot-password/Forgot";
+import { Accounts } from "@/pages/dashboard/account/Accounts";
+import { CreditCards } from "@/pages/dashboard/credit-cards/CreditCards";
 import { OverView } from "@/pages/dashboard/OverView";
-import { Investments } from "@/pages/investments/Investments";
-import { Login } from "@/pages/login/login";
-import { Register } from "@/pages/register/register";
-import { Transactions } from "@/pages/transactions/Transactions";
-import { SendEmail } from "@/pages/verify/SendMail";
+import { Investments } from "@/pages/dashboard/investments/Investments";
+import { Login } from "@/pages/auth/login/login";
+import { Register } from "@/pages/auth/register/register";
+import { Transactions } from "@/pages/dashboard/transactions/Transactions";
+import { SendEmail } from "@/pages/auth/verify/SendMail.tsx";
 import { ProtectedRoute } from "@/components/Protected";
 import { PublicRoute } from "@/components/Public";
-import { EmailVerification } from "@/pages/verify/EmailVerification";
-import { EmailSentMessage } from "@/pages/verify/EmailSent";
-import { Settings } from "@/pages/settings/Settings";
-import { Loans } from "@/pages/loans/Loans";
-import { Services } from "@/pages/services/Services";
+import { EmailVerification } from "@/pages/auth/verify/EmailVerification";
+import { EmailSentMessage } from "@/pages/auth/verify/EmailSent";
+import { Settings } from "@/pages/dashboard/settings/Settings";
+import { Loans } from "@/pages/dashboard/loans/Loans";
+import { Services } from "@/pages/dashboard/services/Services";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dasboard",
     element: <AppLayout />,
     children: [
       {
