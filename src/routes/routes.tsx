@@ -17,10 +17,22 @@ import { EmailSentMessage } from "@/pages/auth/verify/EmailSent";
 import { Settings } from "@/pages/dashboard/settings/Settings";
 import { Loans } from "@/pages/dashboard/loans/Loans";
 import { Services } from "@/pages/dashboard/services/Services";
+import MainLayout from "@/layout/MainLayout";
+import MainAppOverview from "@/pages/main-app/overview";
 
 export const router = createBrowserRouter([
   {
-    path: "/dasboard",
+    path: "/app",
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: <MainAppOverview />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
     element: <AppLayout />,
     children: [
       {
@@ -29,7 +41,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/transactions",
+        path: "/dashboard/transactions",
         element: (
           <ProtectedRoute>
             <Transactions />
@@ -38,7 +50,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/accounts",
+        path: "/dashboard/accounts",
         element: (
           <ProtectedRoute>
             <Accounts />
@@ -47,7 +59,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/investments",
+        path: "/dashboard/investments",
         element: (
           <ProtectedRoute>
             <Investments />
@@ -56,7 +68,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/credit-cards",
+        path: "/dashboard/credit-cards",
         element: (
           <ProtectedRoute>
             <CreditCards />
@@ -65,7 +77,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/loans",
+        path: "/dashboard/loans",
         element: (
           <ProtectedRoute>
             <Loans />
@@ -74,7 +86,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/services",
+        path: "/dashboard/services",
         element: (
           <ProtectedRoute>
             <Services />
@@ -83,7 +95,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/settings",
+        path: "/dashboard/settings",
         element: (
           <ProtectedRoute>
             <Settings />
