@@ -17,8 +17,12 @@ import { EmailSentMessage } from "@/pages/auth/verify/EmailSent";
 import { Settings } from "@/pages/dashboard/settings/Settings";
 import { Loans } from "@/pages/dashboard/loans/Loans";
 import { Services } from "@/pages/dashboard/services/Services";
+
 import MainLayout from "@/layout/MainLayout";
 import MainAppOverview from "@/pages/main-app/overview";
+import MainTransactions from "@/pages/main-app/transactions/transactions";
+import MainAccounts from "@/pages/main-app/accounts/accounts";
+import MainCards from "@/pages/main-app/cards/cards";
 
 export const router = createBrowserRouter([
   {
@@ -26,8 +30,20 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        index: true,
+        path:"overiew",
         element: <MainAppOverview />,
+      },
+      {
+        path:"accounts",
+        element: <MainAccounts />,
+      },
+      {
+        path: "transactions",
+        element: <MainTransactions />,
+      },
+      {
+        path: "cards",
+        element: <MainCards />,
       },
     ],
   },
