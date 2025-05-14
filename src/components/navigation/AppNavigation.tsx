@@ -322,7 +322,7 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                           <button
                             type="button"
                             title="settings"
-                            className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium"
+                            className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium"
                           >
                             <svg
                               width="24"
