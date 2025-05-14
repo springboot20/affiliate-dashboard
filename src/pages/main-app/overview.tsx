@@ -1,5 +1,6 @@
 import { AddMoneyPanelComponent } from "@/components/panels/add-money-panel";
 import { SendMoneyPanelComponent } from "@/components/panels/send-money-panel";
+import { TableComponent } from "@/components/tables/table-component";
 import { Fragment, useState } from "react";
 
 export default function Overview() {
@@ -369,7 +370,7 @@ export default function Overview() {
                 <button
                   type="button"
                   title="add money"
-                  onClick={()=> setOpenAddPanel(true)}
+                  onClick={() => setOpenAddPanel(true)}
                   className="bg-white/30 flex items-center justify-center gap-3 px-3 py-2.5 min-w-max shrink-0 flex-grow sm:flex-grow-0"
                 >
                   <svg
@@ -640,6 +641,21 @@ export default function Overview() {
                 balance="$89,560.00"
               />
             </div>
+          </div>
+
+          <div className="mt-8 lg:mt-12">
+            <div className="flex justify-between items-center">
+              <h1 className="lg:text-xl font-medium capitalize text-[#152F00]">recents transactions</h1>
+
+              <button
+                type="button"
+                title="see all transactions"
+                className="text-sm font-normal text-[#152F00] capitalize"
+              >
+                see all
+              </button>
+            </div>
+            <TableComponent />
           </div>
         </div>
       </main>
