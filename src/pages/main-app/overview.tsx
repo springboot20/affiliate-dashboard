@@ -8,7 +8,7 @@ export default function Overview() {
 
   return (
     <Fragment>
-      <main className="relative bg-[#152F00] h-[40vh] xl:h-[55vh]">
+      <main className="relative bg-[#152F00] h-[50vh] lg:h-[55vh]">
         <div className="absolute inset-x-0 h-full w-full">
           <svg
             width="1440"
@@ -281,7 +281,7 @@ export default function Overview() {
           </svg>
         </div>
 
-        <div className="top-20 lg:top-[8rem] max-w-7xl mx-auto px-4 xl:px-0 relative">
+        <div className="top-24 lg:top-[8rem] max-w-7xl mx-auto px-4 2xl:px-0 relative">
           <div className="flex items-start flex-col sm:flex-row sm:justify-between">
             <div className="text-white flex flex-col flex-start gap-y-4 pag-x-5">
               <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
@@ -416,7 +416,7 @@ export default function Overview() {
             </div>
           </div>
 
-          <div className="mt-12">
+          <div className="mt-8 lg:mt-12">
             <div className="space-x-2 flex items-center">
               <div className="flex items-center space-x-2">
                 <svg
