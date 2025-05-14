@@ -1,6 +1,6 @@
 import { DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { classNames } from "@/utils";
 
@@ -11,6 +11,8 @@ type Routes = {
 };
 
 export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
+  const [hasScrolled, setHasScrolled] = useState(false);
+
   const navigations: Routes[] = [
     {
       title: "overview",
@@ -39,9 +41,29 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = scrollY;
+
+      if (scrollPosition > 0) {
+        setHasScrolled(true);
+      } else {
+        setHasScrolled(true);
+      }
+    };
+    addEventListener("scroll", handleScroll);
+
+    return () => removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
-      <header className="fixed inset-x-0 top-0 h-20 bg-[#152F00] z-10">
+      <header
+        className={classNames(
+          "fixed inset-x-0 top-0 h-20 z-10",
+          hasScrolled ? "bg-[#152F00] shadow-md" : "bg-transparent"
+        )}
+      >
         <div className="mx-auto max-w-7xl h-full px-4 xl:px-0">
           <div className="flex h-full items-center justify-between">
             <div className="flex-1 lg:flex-none lg:justify-start flex justiffy-center items-center">
@@ -142,9 +164,7 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                           <span
                             className={classNames(
                               "capitalize",
-                              isActive
-                                ? "font-medium"
-                                : "font-medium text-sm capitalize"
+                              isActive ? "font-medium" : "font-medium text-sm capitalize"
                             )}
                           >
                             {title}
@@ -251,7 +271,10 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
               key={item.title}
               to={item.url}
               className={({ isActive }) => {
-                return classNames(isActive ? "bg-[#A1E96F] text-[#152F00]" : "bg-transparent text-gray-50", "px-3.5 py-2.5 w-full hover:bg-[#A1E96F] hover:text-[#152F00]");
+                return classNames(
+                  isActive ? "bg-[#A1E96F] text-[#152F00]" : "bg-transparent text-gray-50",
+                  "px-3.5 py-2.5 w-full hover:bg-[#A1E96F] hover:text-[#152F00]"
+                );
               }}
               onClick={() => {
                 close();
@@ -263,9 +286,7 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                   <span
                     className={classNames(
                       "capitalize",
-                      isActive
-                        ? "font-medium"
-                        : "font-medium text-sm capitalize"
+                      isActive ? "font-medium" : "font-medium text-sm capitalize"
                     )}
                   >
                     {item.title}
