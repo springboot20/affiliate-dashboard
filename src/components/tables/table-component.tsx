@@ -1,6 +1,6 @@
 import React from "react";
 
-type TableProps = {
+export type TableProps = {
   account: number;
   account_name: string;
   referenc_id: string;
