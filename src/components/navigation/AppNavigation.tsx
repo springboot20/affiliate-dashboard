@@ -9,7 +9,7 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { Fragment, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { classNames } from "@/utils";
 
 type Routes = {
@@ -21,32 +21,37 @@ type Routes = {
 export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
   const [hasScrolled, setHasScrolled] = useState(false);
 
+  const { pathname } = useLocation();
+  const title = pathname.split("/")[2];
+
+  console.log(title);
+
   const navigations: Routes[] = [
     {
       title: "overview",
-      url: "/app",
+      url: "/app/overiew",
       current: true,
     },
     {
       title: "accounts",
-      url: "/accounts",
+      url: "/app/accounts",
       current: true,
     },
     {
       title: "transactions",
-      url: "/transactions",
+      url: "/app/transactions",
       current: true,
     },
     {
       title: "cards",
-      url: "/cards",
+      url: "/app/cards",
       current: true,
     },
-    {
-      title: "invoice",
-      url: "/invoice",
-      current: true,
-    },
+    // {
+    //   title: "invoice",
+    //   url: "/app/invoice",
+    //   current: true,
+    // },
   ];
 
   useEffect(() => {
@@ -69,7 +74,14 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
       <header
         className={classNames(
           "fixed inset-x-0 top-0 h-20 z-10",
-          hasScrolled ? "bg-[#152F00] shadow-md" : "bg-transparent"
+          hasScrolled
+            ? "bg-[#152F00] shadow-md"
+            : title === "transactions" ||
+              title === "cards" ||
+              title === "accounts" ||
+              title === "accounts"
+            ? "bg-[#152F00]"
+            : "bg-transparent"
         )}
       >
         <div className="mx-auto max-w-7xl h-full px-4 2xl:px-0">
@@ -163,7 +175,7 @@ export const AppNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                       className={({ isActive }) => {
                         return classNames(
                           isActive ? "bg-[#A1E96F] text-[#152F00]" : "bg-transparent text-gray-50",
-                          "px-3.5 py-2.5 hover:bg-[#A1E96F] hover:!text-[#152F00]"
+                          "px-3.5 py-2.5 hover:bg-[#A1E96F] hover:!text-[#152F00] transition-all"
                         );
                       }}
                     >
