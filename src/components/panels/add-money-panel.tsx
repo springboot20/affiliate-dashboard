@@ -1,16 +1,34 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Form, Formik } from "formik";
+import { Form, Formik, ErrorMessage, Field } from "formik";
+import { CustomErrorMessage } from "@/components/Error";
+import { classNames } from "@/utils";
+import { useState } from "react";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
   open: boolean;
 };
 
-type InitialValues = {};
+type InitialValues = {
+  from_account: string;
+  to_account: string;
+  amount: string;
+  narration: string;
+  category: string;
+};
 
 export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponentProps) => {
-  const initialValues: InitialValues = {};
+  const initialValues: InitialValues = {
+    from_account: "",
+    to_account: "",
+    amount: "",
+    narration: "",
+    category: "",
+  };
+
+  const MAX_NARRATION_COUNT = 150;
+  const [descriptionCount, setDescriptionCount] = useState(MAX_NARRATION_COUNT);
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-40">
@@ -36,22 +54,168 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                       </button>
                     </div>
                   </div>
-                </div>
 
-                <Formik initialValues={initialValues} onSubmit={() => {}}>
-                  {() => {
-                    return (
-                      <Form>
-                        <fieldset>
-                          <label htmlFor="account">choose account</label>
-                          <select>
-                            <option value="--select-an-account-">---select-an-account</option>
-                          </select>
-                        </fieldset>
-                      </Form>
-                    );
-                  }}
-                </Formik>
+                  <Formik initialValues={initialValues} onSubmit={() => {}}>
+                    {({ setFieldValue, values }) => {
+                      return (
+                        <Form className="mt-4">
+                          <fieldset className="mb-3">
+                            <label
+                              htmlFor="from_account"
+                              className="text-sm capitalize mb-1.5 inline-block"
+                            >
+                              from account
+                            </label>
+                            <select
+                              name="from_account"
+                              id="from_account"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
+                            >
+                              <option value="--select-an-account-">---select-an-account---</option>
+                            </select>
+                            <ErrorMessage name="from_account">
+                              {(msg) => (
+                                <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                                  {msg}
+                                </CustomErrorMessage>
+                              )}
+                            </ErrorMessage>
+                          </fieldset>
+
+                          <fieldset className="mb-3">
+                            <label
+                              htmlFor="to_account"
+                              className="text-sm capitalize mb-1.5 inline-block"
+                            >
+                              to
+                            </label>
+                            <select
+                              name="to_account"
+                              id="to_account"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
+                            >
+                              <option value="--select-an-bank-">---select-an-account---</option>
+                            </select>
+                            <ErrorMessage name="to_account">
+                              {(msg) => (
+                                <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                                  {msg}
+                                </CustomErrorMessage>
+                              )}
+                            </ErrorMessage>
+                          </fieldset>
+
+                          <fieldset className="mb-3">
+                            <label
+                              htmlFor="amount"
+                              className="text-sm capitalize mb-1.5 inline-block"
+                            >
+                              amount
+                            </label>
+                            <Field
+                              name="amount"
+                              className="w-full block border rounded px-3 py-2 text-sm"
+                            />
+
+                            <ErrorMessage name="amount">
+                              {(msg) => (
+                                <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                                  {msg}
+                                </CustomErrorMessage>
+                              )}
+                            </ErrorMessage>
+                          </fieldset>
+
+                          <fieldset className="mb-3">
+                            <label
+                              htmlFor="narration"
+                              className="text-sm capitalize mb-1.5 inline-block"
+                            >
+                              narration
+                            </label>
+                            <div>
+                              <Field
+                                as="textarea"
+                                name="narration"
+                                row={6}
+                                className="w-full block border rounded p-3"
+                                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                                  const value = event.target.value;
+
+                                  if (value.length <= MAX_NARRATION_COUNT) {
+                                    setFieldValue("narration", value);
+                                    setDescriptionCount(MAX_NARRATION_COUNT - value.length);
+                                  } else {
+                                    setFieldValue("narration", value.slice(0, MAX_NARRATION_COUNT));
+                                    setDescriptionCount(0);
+                                  }
+                                }}
+                                disabled={
+                                  descriptionCount === 0 &&
+                                  values.narration.length === MAX_NARRATION_COUNT
+                                }
+                              />
+                              <span
+                                className={classNames(
+                                  "text-right block text-sm font-normal",
+                                  descriptionCount === 0 ? "text-red-500" : ""
+                                )}
+                              >
+                                ({descriptionCount} characters remaining)
+                              </span>
+                            </div>
+
+                            <ErrorMessage name="narration">
+                              {(msg) => (
+                                <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                                  {msg}
+                                </CustomErrorMessage>
+                              )}
+                            </ErrorMessage>
+                          </fieldset>
+
+                          <fieldset className="mb-3">
+                            <label
+                              htmlFor="category"
+                              className="text-sm capitalize mb-1.5 inline-block"
+                            >
+                              category
+                            </label>
+
+                            <select
+                              name="category"
+                              id="category"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
+                            >
+                              <option value="--select-an-account-">
+                                choose category of transaction
+                              </option>
+                            </select>
+
+                            <ErrorMessage name="account">
+                              {(msg) => (
+                                <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                                  {msg}
+                                </CustomErrorMessage>
+                              )}
+                            </ErrorMessage>
+                          </fieldset>
+
+                          <button
+                            type="button"
+                            title="next"
+                            className={classNames(
+                              "capitalize font-medium text-sm w-full px-2 py-2.5 rounded mt-10 text-center bg-[#A1E96F] text-[#152F00]",
+                              "flex items-center justify-center"
+                            )}
+                          >
+                            next
+                          </button>
+                        </Form>
+                      );
+                    }}
+                  </Formik>
+                </div>
               </div>
             </DialogPanel>
           </div>

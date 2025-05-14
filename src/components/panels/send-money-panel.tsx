@@ -71,7 +71,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             <select
                               name="account"
                               id="account"
-                              className="w-full block border rounded-md px-3 py-1.5 appearance-none text-sm"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
                             >
                               <option value="--select-an-account-">---select-an-account---</option>
                             </select>
@@ -94,7 +94,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             <select
                               name="bank"
                               id="bank"
-                              className="w-full block border rounded-md px-3 py-1.5 appearance-none text-sm"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
                             >
                               <option value="--select-an-bank-">---select-an-account---</option>
                             </select>
@@ -116,7 +116,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             </label>
                             <Field
                               name="beneficiary"
-                              className="w-full block border rounded-md px-3 py-1.5"
+                              className="w-full block border rounded px-3 py-2 text-sm"
                             />
 
                             <ErrorMessage name="beneficiary">
@@ -137,7 +137,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             </label>
                             <Field
                               name="amount"
-                              className="w-full block border rounded-md px-3 py-1.5"
+                              className="w-full block border rounded px-3 py-2 text-sm"
                             />
 
                             <ErrorMessage name="amount">
@@ -161,7 +161,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 as="textarea"
                                 name="narration"
                                 row={6}
-                                className="w-full block border rounded-md p-3"
+                                className="w-full block border rounded p-3"
                                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                                   const value = event.target.value;
 
@@ -208,7 +208,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             <select
                               name="category"
                               id="category"
-                              className="w-full block border rounded-md px-3 py-1.5 appearance-none text-sm"
+                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
                             >
                               <option value="--select-an-account-">
                                 choose category of transaction
@@ -224,8 +224,15 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             </ErrorMessage>
                           </fieldset>
 
-                          <button type="submit">
-                            
+                          <button
+                            type="button"
+                            title="next"
+                            className={classNames(
+                              "capitalize font-medium text-sm w-full px-2 py-2.5 rounded mt-10 text-center bg-[#A1E96F] text-[#152F00]",
+                              "flex items-center justify-center"
+                            )}
+                          >
+                            next
                           </button>
                         </Form>
                       );
