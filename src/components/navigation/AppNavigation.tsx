@@ -265,10 +265,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                 <div className='mr-3 lg:mr-0'>
                   <MenuButton className='flex items-center space-x-3 text-gray-900'>
                     <span className='sr-only'>Open auth menu</span>
-                    <div
-        className={"text-sm text-gray-50"}>
-        Welcome, {user?.username}
-      </div>
+                    <div className={'text-sm text-gray-50'}>Welcome, {user?.username}</div>
                     <span className='flex justify-center items-center border rounded-full overflow-hidden relative h-8 w-8'>
                       <UserIcon className='text-gray-800 h-6 w-6 top-2 absolute' />
                     </span>
