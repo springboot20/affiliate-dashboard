@@ -1,14 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateNewAccountFormComponent } from './create-new-account';
 import { PinPadFormComponent } from './pinpad-form';
 import { motion } from 'framer-motion';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
 import { Formik } from 'formik';
-import { Form } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 
 export default function AccountForms() {
-  const [step, setStep] = useState(0);
+  const navigate = useNavigate();
+  const getInitialStepFromUrl = (): number => {
+    const urlParams = new URLSearchParams(location.search);
+    const stepParam = urlParams.get('step');
+    // Convert to number, validate between 1-3, default to 1 if invalid
+    const step = parseInt(stepParam || '1', 10);
+    return isNaN(step) || step < 1 || step > 2 ? 0 : step - 1; // Convert to 0-based index
+  };
+
+  const getInitialTabFromUrl = (): string => {
+    const urlParams = new URLSearchParams(location.search);
+    const tabParam = urlParams.get('tab');
+    // Validate tab value, default to "address" if invalid
+    return ['new-account', 'create-pin'].includes(tabParam || '') ? tabParam! : 'new-account';
+  };
+
+  const [step, setStep] = useState(getInitialStepFromUrl() || 0);
+  const [tab, setTab] = useState(getInitialTabFromUrl() || 'new-account');
 
   const initialValues: AccountInitialValues = {
     account_number: '',
@@ -24,12 +41,35 @@ export default function AccountForms() {
     exit: { opacity: 0, x: 100 },
   };
 
+  // Helper function to update URL
+  const updateUrl = (stepValue: number, tabValue: string): void => {
+    // Convert from 0-based index to 1-based for URL
+    const stepForUrl = Math.min(Math.max(1, stepValue + 1), 2);
+    navigate(`/app/accounts/new-account?step=${stepForUrl}&tab=${tabValue}`, { replace: true });
+  };
+
   const handleNextStep = (): void => {
-    setStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    const nextStep = Math.min(step + 1, 1);
+    const nextTab = nextStep === 1 ? 'create-pin' : 'new-account';
+
+    // Update state
+    setStep(nextStep);
+    setTab(nextTab);
+
+    // Directly update URL
+    updateUrl(nextStep, nextTab);
   };
 
   const handlePrevStep = (): void => {
-    setStep((prevStep) => Math.max(prevStep - 1, 0));
+    const prevStep = Math.max(step - 1, 0);
+    const prevTab = prevStep === 0 ? 'new-account' : 'create-pin';
+
+    // Update state
+    setStep(prevStep);
+    setTab(prevTab);
+
+    // Directly update URL
+    updateUrl(prevStep, prevTab);
   };
 
   const handleSubmit = (values: AccountInitialValues) => {
@@ -37,6 +77,11 @@ export default function AccountForms() {
     console.log('Form submitted with values:', values);
     // Here you would typically send the data to your backend
   };
+
+  // Update URL when step or tabView changes - with extra safety checks
+  useEffect(() => {
+    updateUrl(step, tab);
+  }, [step, tab, updateUrl]);
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -96,9 +141,9 @@ export default function AccountForms() {
       }}
     </Formik>
   );
-};
+}
 
-const steps = ['new-account', 'create pin'];
+const steps = ['new-account', 'create-pin'];
 
 const StepIndicator = ({ _step }: { _step: number }) => {
   return (
