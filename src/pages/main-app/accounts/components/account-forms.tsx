@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { CreateNewAccountFormComponent } from './create-new-account';
 import { PinPadFormComponent } from './pinpad-form';
 import { motion } from 'framer-motion';
@@ -42,11 +42,14 @@ export default function AccountForms() {
   };
 
   // Helper function to update URL
-  const updateUrl = (stepValue: number, tabValue: string): void => {
-    // Convert from 0-based index to 1-based for URL
-    const stepForUrl = Math.min(Math.max(1, stepValue + 1), 2);
-    navigate(`/app/accounts/new-account?step=${stepForUrl}&tab=${tabValue}`, { replace: true });
-  };
+  const updateUrl = useCallback(
+    (stepValue: number, tabValue: string): void => {
+      // Convert from 0-based index to 1-based for URL
+      const stepForUrl = Math.min(Math.max(1, stepValue + 1), 2);
+      navigate(`/app/accounts/new-account?step=${stepForUrl}&tab=${tabValue}`, { replace: true });
+    },
+    [navigate]
+  );
 
   const handleNextStep = (): void => {
     const nextStep = Math.min(step + 1, 1);
