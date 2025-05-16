@@ -1,16 +1,13 @@
 import React from "react";
 
-export type TableProps =
-  {
-    account: number;
-    account_name: string;
-    referenc: string;
-    date: string;
-    description: string;
-    [
-      key: string
-    ]: any;
-  };
+export type TableProps = {
+  account: number;
+  account_name: string;
+  referenc_id: string;
+  date: string;
+  description: string;
+  [key: string]: any;
+};
 
 export const TableComponent =
   () => {
