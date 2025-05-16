@@ -15,6 +15,7 @@ export interface User {
   createdAt: string;
   role: string;
   login_type: string;
+  [key:string]: any
 }
 
 export interface ValidationError {
