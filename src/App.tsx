@@ -21,7 +21,7 @@ const App: React.FC = () => {
     };
 
     setAuthorizationHeader();
-  }, []);
+  }, [tokens]);
 
   return <RouterProvider router={router} />;
 };

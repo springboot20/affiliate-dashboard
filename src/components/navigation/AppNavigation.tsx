@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hook';
 import { logout } from '@/features/thunks/auth.thunk';
 import { toast } from 'react-toastify';
 import { RootState } from '@/app/store';
+import { AppSwitcherButton } from '../app-switcher-button';
 
 type Routes = {
   title: string;
@@ -290,6 +291,8 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                       />
                     </svg>
                   </button>
+
+                  <AppSwitcherButton />
 
                   <Menu as='div' className='relative'>
                     <div className='mr-3 lg:mr-0'>

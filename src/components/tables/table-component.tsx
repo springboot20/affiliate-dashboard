@@ -13,7 +13,7 @@ export const TableComponent = () => {
   const heads = ['account', 'name', 'reference no', 'date', 'description'];
 
   return (
-    <table className='!w-full table-auto p-1 border-t border-[#D9DCE7] overflow-x-scroll'>
+    <table className='!w-full table-auto p-1 border-t border-[#D9DCE7] overflow-x-scroll app'>
       <thead>
         <tr>
           {React.Children.toArray(

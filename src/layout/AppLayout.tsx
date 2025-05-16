@@ -25,6 +25,7 @@ import { classNames } from '@/utils';
 import { useAppSelector, useAppDispatch } from '@/app/hook';
 import { logout } from '@/features/thunks/auth.thunk';
 import { toast } from 'react-toastify';
+import { AppSwitcherButton } from '@/components/app-switcher-button';
 
 const AppLayout = () => {
   const { pathname } = useLocation();
@@ -137,6 +138,8 @@ const AppLayout = () => {
                           <BellAlertIcon className='h-7 text-affiliate-red' />
                         </DisclosureButton>
                       </div>
+
+                      <AppSwitcherButton />
 
                       <Menu as='div' className='relative self-center'>
                         <MenuButton className='flex h-12 w-12 text-gray-900 bg-[#F5F7FA] rounded-full items-center justify-center'>

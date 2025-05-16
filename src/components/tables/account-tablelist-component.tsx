@@ -18,7 +18,7 @@ export const AccountTableListComponent = ({ datum, columns, actions }: AccountTa
   console.log(datum, columns);
 
   return (
-    <table className='!w-full table-aut0 p-1 border-t border-[#D9DCE7] overflow-x-scroll'>
+    <table className='!w-full table-aut0 p-1 border-t border-[#D9DCE7] overflow-x-scroll app'>
       <thead>
         <tr>
           {React.Children.toArray(

@@ -152,13 +152,13 @@
     display: table;
   }
 
-  table
+  table.app
     thead
     tr {
     @apply bg-[#F3F4F7] border-b border-[#D9DCE7];
   }
 
-  table
+  table.app
     tbody
     tr:nth-child(
       odd
@@ -166,7 +166,7 @@
     @apply bg-gray-50 border-b border-[#D9DCE7];
   }
 
-  table
+  table.app
     tbody
     tr:nth-child(
       even
@@ -174,7 +174,7 @@
     @apply bg-[#F3F4F7] border-b border-[#D9DCE7];
   }
 
-  table
+  table.app
     tbody
     tr:nth-child(
       :last-child
@@ -182,9 +182,9 @@
     @apply border-b-0;
   }
 
-  table
+  table.app
     td,
-  table
+  table.app
     th {
     @apply px-2 py-2.5 text-left text-[#565656] text-sm capitalize whitespace-nowrap;
   }

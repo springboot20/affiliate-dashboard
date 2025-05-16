@@ -22,7 +22,7 @@ export const Settings = () => {
   useEffect(() => {
     console.log(currentTab);
 
-    navigate(`/settings?tab=${currentTab}`);
+    navigate(`/dashboard/settings?tab=${currentTab}`);
   }, [currentTab, navigate]);
 
   return (

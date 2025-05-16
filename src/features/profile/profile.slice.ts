@@ -16,6 +16,7 @@ type ProfileRequest = {
   city: string;
   country: string;
   postal_code: string;
+  preferred_view?: "app" | "dashboard"
 };
 
 export const ProfileApiSlice = ApiService.injectEndpoints({
