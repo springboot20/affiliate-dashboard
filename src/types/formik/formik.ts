@@ -22,3 +22,11 @@ export type ProfileValues = {
   present_address: string;
   permanent_address: string;
 };
+
+export type AccountInitialValues = {
+  account_number: string;
+  type: 'NONE' | 'CURRENT' | 'NONE';
+  currency: string;
+  cards?: string[];
+  pin: string[];
+};

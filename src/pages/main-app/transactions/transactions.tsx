@@ -6,8 +6,8 @@ export default function Transactions() {
   return (
     <section className="py-24 lg:py-[8rem]">
       <div className="max-w-7xl mx-auto px-4 2xl:px-0">
-        <header className="h-20 border-b">
-          <div className="h-full flex items-center justify-between">
+        <header className="py-4 border-b">
+          <div className="h-full flex items-center sm:justify-between gap-4 flex-col sm:flex-row sm:gap-0">
             <h1 className="lg:text-xl font-medium capitalize text-[#152F00]">transactions</h1>
 
             <div className="flex items-center gap-3">
@@ -58,7 +58,7 @@ export default function Transactions() {
           </div>
         </header>
 
-        <div className="mt-6">
+        <div className="mt-4 overflow-x-scroll !w-full">
           <TableComponent />
         </div>
       </div>

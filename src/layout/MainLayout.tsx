@@ -1,14 +1,14 @@
-import { AppNavigation } from "@/components/navigation/AppNavigation";
-import { Disclosure } from "@headlessui/react";
-import { Outlet } from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
+import { AppNavigation } from '@/components/navigation/AppNavigation';
+import { Disclosure } from '@headlessui/react';
+import { Outlet } from 'react-router-dom';
+import { Fragment } from 'react/jsx-runtime';
 
 export default function MainLayout() {
   return (
-    <Disclosure as="div" className="bg-white h-screen">
-      {({ open }) => (
+    <Disclosure as='div' className='bg-white min-h-screen'>
+      {({ open, close }) => (
         <Fragment>
-          <AppNavigation open={open} />
+          <AppNavigation open={open} onClose={() => close()} />
           <Outlet />
         </Fragment>
       )}
