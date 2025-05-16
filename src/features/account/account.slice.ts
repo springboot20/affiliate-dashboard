@@ -1,4 +1,4 @@
-import { ApiService } from "@/app/service/api.service";
+import { ApiService } from '@/app/service/api.service';
 
 interface Response {
   data: any;
@@ -11,10 +11,18 @@ export const AccountApiSlice = ApiService.injectEndpoints({
   endpoints(build) {
     return {
       getUserAccounts: build.query<Response, void>({
-        query: () => "/accounts/user-accounts",
+        query: () => '/accounts/user-accounts',
+      }),
+
+      generateAccountNumber: build.mutation<Response, void>({
+        query: () => ({
+          url: '/accounts/user-account/generate-account-number',
+          method: 'POST',
+          body: {},
+        }),
       }),
     };
   },
 });
 
-export const { useGetUserAccountsQuery } = AccountApiSlice;
+export const { useGetUserAccountsQuery, useGenerateAccountNumberMutation } = AccountApiSlice;
