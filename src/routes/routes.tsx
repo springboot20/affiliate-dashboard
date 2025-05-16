@@ -76,7 +76,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        index: true,
+        path:"overview",
         element: <OverView />,
       },
 

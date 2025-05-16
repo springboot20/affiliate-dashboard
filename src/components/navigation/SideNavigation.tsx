@@ -30,7 +30,7 @@ export const SideNavigation: React.FC<{
   open: boolean;
 }> = ({ open, close }) => {
   const routes = [
-    { to: "/dashboard", name: "overview", current: true, Icon: HomeIcon },
+    { to: "/dashboard/overview", name: "overview", current: true, Icon: HomeIcon },
     {
       to: "/dashboard/transactions",
       name: "transactions",
