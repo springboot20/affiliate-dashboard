@@ -59,12 +59,12 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<AccountIni
                 </label>
                 <input
                   id={`pin-${index}`}
-                  type='number'
+                  type='text'
                   value={values.pin[index]}
                   maxLength={1}
                   inputMode='numeric'
                   autoComplete='off'
-                  pattern='\\d{1}'
+                  // pattern='\\d{1}'
                   onChange={(event) => handleChange(event.target.value, index)}
                   onKeyUp={(event) => handleKeyDown(event, index)}
                   onPaste={handlePaste}
@@ -81,7 +81,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<AccountIni
             })
           )}
 
-          <div className='w-full p-1 border rounded-md'>
+          <div className='w-full p-1 border rounded-md bg-white'>
             <button
               type='button'
               onClick={resetPin}
@@ -92,7 +92,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<AccountIni
 
           <PinPadButtonComponent value={0} onClick={handlePinButtonClick} />
 
-          <div className='w-full p-1 border rounded-md'>
+          <div className='w-full p-1 border rounded-md bg-white'>
             <button
               type='button'
               title='backspace'
@@ -117,7 +117,7 @@ const PinPadButtonComponent: React.FC<PinPadButtonComponentProps> = ({ value, on
   const displayValue = value === 0 ? 0 : value;
 
   return (
-    <div arial-label={`pin-${displayValue}`} className='w-full border rounded-md p-1'>
+    <div arial-label={`pin-${displayValue}`} className='w-full border rounded-md p-1 bg-white'>
       <button
         title={`pin-${displayValue}`}
         onClick={() => onClick(displayValue)}

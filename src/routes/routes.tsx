@@ -22,6 +22,7 @@ import MainLayout from "@/layout/MainLayout";
 import MainAppOverview from "@/pages/main-app/overview";
 import MainTransactions from "@/pages/main-app/transactions/transactions";
 import MainAccounts from "@/pages/main-app/accounts/accounts";
+import MainAccountsForm from "@/pages/main-app/accounts/components/account-forms";
 import MainCards from "@/pages/main-app/cards/cards";
 
 export const router = createBrowserRouter([
@@ -35,7 +36,16 @@ export const router = createBrowserRouter([
       },
       {
         path:"accounts",
-        element: <MainAccounts />,
+        children:[
+          {
+            index: true,
+            element: <MainAccounts />,
+          },
+          {
+            path:"new-account",
+            element: <MainAccountsForm />,
+          },
+        ]
       },
       {
         path: "transactions",

@@ -7,7 +7,7 @@ import { AccountInitialValues } from '@/types/formik/formik';
 import { Formik } from 'formik';
 import { Form } from 'react-router-dom';
 
-export const AccountForms = () => {
+export default function AccountForms() {
   const [step, setStep] = useState(0);
 
   const initialValues: AccountInitialValues = {
@@ -42,7 +42,7 @@ export const AccountForms = () => {
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {(formik) => {
         return (
-          <Form className='mt-4 max-w-xl mx-auto'>
+          <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
             <StepIndicator _step={step} />
             <motion.div
               key={step}

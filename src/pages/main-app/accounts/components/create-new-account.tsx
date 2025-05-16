@@ -4,7 +4,11 @@ import React, { useState } from 'react';
 import { classNames } from '@/utils';
 import { LinkIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
-export const CreateNewAccountFormComponent = ({formik}:{formik: FormikProps<AccountInitialValues>}) => {
+export const CreateNewAccountFormComponent = ({
+  formik,
+}: {
+  formik: FormikProps<AccountInitialValues>;
+}) => {
   const { values, setFieldValue } = formik;
 
   const [linkAccountToCard, setLinkAccountToCard] = useState(false);
@@ -18,7 +22,10 @@ export const CreateNewAccountFormComponent = ({formik}:{formik: FormikProps<Acco
           <label htmlFor='account_number' className='text-sm capitalize mb-1.5 inline-block'>
             account number
           </label>
-          <Field name='account_number' className='w-full block border rounded px-3 py-2 text-sm' />
+          <Field
+            name='account_number'
+            className='w-full block border rounded-md px-3 py-2 text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'
+          />
 
           <ErrorMessage name='account_number'>
             {(msg) => (
@@ -37,7 +44,7 @@ export const CreateNewAccountFormComponent = ({formik}:{formik: FormikProps<Acco
           <Field
             as='select'
             name='currency'
-            className='w-full block border rounded px-3 py-2 appearance-none text-sm'>
+            className='w-full block border rounded-md px-3 py-2 appearance-none text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'>
             <option value='--select-currency--'>--select-currency--</option>
             <option value='USD'>usd</option>
             <option value='NGN'>ngn</option>
@@ -53,7 +60,7 @@ export const CreateNewAccountFormComponent = ({formik}:{formik: FormikProps<Acco
             as='select'
             burton
             name='type'
-            className='w-full block border rounded px-3 py-2 appearance-none text-sm'>
+            className='w-full block border rounded-md px-3 py-2 appearance-none text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'>
             <option value='NONE'>None</option>
             <option value='CURRENT'>Current</option>
             <option value='SAVINGS'>Savings</option>
@@ -83,7 +90,7 @@ export const CreateNewAccountFormComponent = ({formik}:{formik: FormikProps<Acco
                   <Field
                     as='select'
                     name='cardSelector'
-                    className='w-full block border rounded px-3 py-2 appearance-none text-sm'>
+                    className='w-full block border rounded-md px-3 py-2 appearance-none text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'>
                     <option value='--select-currency--'>--select-currency--</option>
                     <option value='USD'>usd</option>
                     <option value='NGN'>ngn</option>

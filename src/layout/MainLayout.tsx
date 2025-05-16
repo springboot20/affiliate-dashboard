@@ -5,7 +5,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 export default function MainLayout() {
   return (
-    <Disclosure as='div' className='bg-white min-h-screen'>
+    <Disclosure as='div'>
       {({ open, close }) => (
         <Fragment>
           <AppNavigation open={open} onClose={() => close()} />
