@@ -32,7 +32,7 @@ const AppLayout = () => {
   const title = pathname.split('/')[1];
   const {
     isAuthenticated,
-    data: { tokens },
+    data: { tokens, user },
   } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -139,12 +139,16 @@ const AppLayout = () => {
                         </DisclosureButton>
                       </div>
 
-                      <AppSwitcherButton />
-
                       <Menu as='div' className='relative self-center'>
-                        <MenuButton className='flex h-12 w-12 text-gray-900 bg-[#F5F7FA] rounded-full items-center justify-center'>
+                        <MenuButton className='flex items-center space-x-3 text-gray-900'>
                           <span className='sr-only'>Open auth menu</span>
+                          <div
+        className={"text-sm text-gray-700"}>
+        Welcome, {user?.username}
+      </div>
+      <span className='flex justify-center items-center border rounded-full overflow-hidden relative h-12 w-12'>
                           <UserCircleIcon className='h-8 text-gray-400' aria-hidden={true} />
+                          </span>
                         </MenuButton>
                         <Transition
                           as={Fragment}
@@ -154,9 +158,13 @@ const AppLayout = () => {
                           leave='transition ease-in duration-75'
                           leaveFrom='transform opacity-100 scale-100'
                           leaveTo='transform opacity-0 scale-95'>
-                          <MenuItems className='absolute right-0 z-40 mt-4 w-44 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                          <MenuItems className='absolute right-0 z-40 mt-4 w-52 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                             {isAuthenticated ? (
                               <>
+                                <MenuItem>
+                                  <AppSwitcherButton />
+                                </MenuItem>
+
                                 <MenuItem>
                                   {({ active }) => (
                                     <NavLink
