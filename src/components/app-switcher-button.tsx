@@ -1,10 +1,9 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/app/hook';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 
 // This component can be added to both AppLayout.tsx and MainLayout.tsx
-export const AppSwitcherButton: React.FC = () => {
+export const AppSwitcherButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);

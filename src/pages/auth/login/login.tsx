@@ -11,7 +11,7 @@ import { classNames } from "@/utils";
 import { Loader } from "@/components/Loader";
 import { toast } from "react-toastify";
 
-let initialValues: LoginState = {
+const initialValues: LoginState = {
   email: "",
   password: "",
 };
@@ -27,7 +27,6 @@ export const Login = () => {
       .then(async (response) => {
 
         console.log(response)
-
 
         await Promise.resolve(
           setTimeout(() => {
