@@ -3,17 +3,12 @@ import { Switch } from '@headlessui/react';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as yup from 'yup';
+import { DocumentDuplicateIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 type InitialValues = {
   currency: string;
   'time-zone': string;
   prefered_view: 'app' | 'dashboard';
-};
-
-const initialValues: InitialValues = {
-  'time-zone': '',
-  currency: '',
-  prefered_view: 'app',
 };
 
 const preferenceSchema = yup.object({
@@ -24,17 +19,26 @@ const preferenceSchema = yup.object({
 export const Preference = () => {
   const [receiveDigitalCurrency, setReceiveDigitalCurrency] = useState<boolean>(false);
   const [receiveMerchant, setReceiveMerchant] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(false);
   const [recommendation, setRecommendation] = useState<boolean>(false);
 
-  const { values, handleSubmit, handleChange } = useFormik({
+  async function onSubmit(values: InitialValues) {
+    console.log(values);
+  }
+
+  const initialValues: InitialValues = {
+    'time-zone': '',
+    currency: '',
+    prefered_view: 'app',
+  };
+
+  const { values, handleSubmit, handleChange, isSubmitting } = useFormik({
     onSubmit: onSubmit,
     initialValues,
     validationSchema: preferenceSchema,
   });
 
-  async function onSubmit(values: InitialValues) {
-    console.log(values);
-  }
+  const handleEditing = () => setEditing(true);
 
   return (
     <div className='mt-8'>
@@ -48,17 +52,19 @@ export const Preference = () => {
                 currency
               </label>
               <div>
-                <input
-                  type='text'
+                <select
                   id='currency'
                   name='currency'
                   value={values.currency}
                   onChange={handleChange}
-                  placeholder='USD'
+                  disabled={!editing}
                   className={classNames(
-                    'block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5'
-                  )}
-                />
+                    'block w-full px-3 appearance-none rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5',
+                    editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-50 border-0'
+                  )}>
+                  <option value='USD'>USD</option>
+                  <option value='NGN'>NGN</option>
+                </select>
               </div>
             </fieldset>
 
@@ -75,15 +81,17 @@ export const Preference = () => {
                   value={values['time-zone']}
                   onChange={handleChange}
                   name='time-zone'
+                  disabled={!editing}
                   placeholder='(GMT-12:00) International Date Line West'
                   className={classNames(
-                    'block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5'
+                    'block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5',
+                    editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-50 border-0'
                   )}
                 />
               </div>
             </fieldset>
 
-            <div className='mt-3 col-span-full grid grid-cols-4'>
+            <div className='mt-3 col-span-full grid grid-cols-4 gap-6 lg:gap-0'>
               <div className='col-span-full md:col-span-2'>
                 <h1 className='text-affiliate-blue capitalize font-medium text-sm'>notification</h1>
 
@@ -93,12 +101,14 @@ export const Preference = () => {
                       <Switch
                         checked={receiveDigitalCurrency}
                         onChange={() => setReceiveDigitalCurrency((prev) => !prev)}
+                        disabled={!editing}
                         className={classNames(
                           'relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm',
                           receiveDigitalCurrency
                             ? 'after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white'
                             : 'after:left-0 bg-[#DFEAF2] after:bg-white border',
-                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150'
+                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150',
+                          editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-100 border-0'
                         )}></Switch>
                       <p className='text-xs text-balance font-normal text-affiliate-black'>
                         I send or receive digital currency
@@ -109,12 +119,14 @@ export const Preference = () => {
                       <Switch
                         checked={receiveMerchant}
                         onChange={() => setReceiveMerchant((prev) => !prev)}
+                        disabled={!editing}
                         className={classNames(
                           'relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm',
                           receiveMerchant
                             ? 'after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white'
                             : 'after:left-0 bg-[#DFEAF2] after:bg-white border',
-                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150'
+                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150',
+                          editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-100 border-0'
                         )}></Switch>
                       <p className='text-xs text-balance font-normal text-affiliate-black'>
                         I receive merchant order
@@ -125,12 +137,14 @@ export const Preference = () => {
                       <Switch
                         checked={recommendation}
                         onChange={() => setRecommendation((prev) => !prev)}
+                        disabled={!editing}
                         className={classNames(
                           'relative appearance-none flex-shrink-0 w-[50px] h-[28px] rounded-[20px] shadow-sm',
                           recommendation
                             ? 'after:left-[calc(100%-28px)] bg-[#16DBCC] after:bg-white'
                             : 'after:left-0 bg-[#DFEAF2] after:bg-white border',
-                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150'
+                          ' after:absolute after:h-[28px] after:w-[28px] after:rounded-full after:top-1/2 after:-translate-y-1/2 after:scale-[0.85] after:transition-all after:duration-150',
+                          editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-100 border-0'
                         )}></Switch>
                       <p className='text-xs text-balance font-normal text-affiliate-black'>
                         There are recommendation for my account
@@ -156,7 +170,11 @@ export const Preference = () => {
                     name='prefered_view'
                     value={values.prefered_view}
                     onChange={handleChange}
-                    className='block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-sm appearance-none placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5'>
+                    disabled={!editing}
+                    className={classNames(
+                      'block w-full px-3 rounded-lg text-[#718EBF] border border-[#DFEAF2] py-2 focus:ring-2 focus:ring-inset text-sm appearance-none placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5',
+                      editing ? 'border border-[#DFEAF2]' : 'disabled:bg-gray-50 border-0'
+                    )}>
                     <option value='app'>Banking App</option>
                     <option value='dashboard'>Financial Dashboard</option>
                   </select>
@@ -169,12 +187,34 @@ export const Preference = () => {
             </div>
           </div>
 
-          <div className='mt-8 w-full md:flex md:items-center md:justify-end self-end'>
-            <button
-              type='submit'
-              className='py-2 w-full sm:w-32 px-4 text-center text-white bg-affiliate-deep-blue rounded-lg text-base font-medium capitalize'>
-              save
-            </button>
+          <div className='mt-4 md:col-span-full flex items-center md:justify-end'>
+            {editing ? (
+              <>
+                <button
+                  type='button'
+                  onClick={() => setEditing(false)}
+                  className='py-2 w-full mr-2 sm:w-28 px-4 flex items-center justify-center gap-3 text-white bg-affiliate-red rounded text-sm font-medium capitalize'>
+                  cancel
+                  <XMarkIcon className='h-5 w-5 shrink-0' />
+                </button>
+
+                <button
+                  type='submit'
+                  disabled={isSubmitting}
+                  className='py-2 w-full sm:w-24 px-4 flex items-center justify-center gap-3 text-white bg-affiliate-deep-blue rounded text-sm font-medium capitalize disabled:bg-gray-400'>
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                  <DocumentDuplicateIcon className='h-5 w-5 shrink-0' />
+                </button>
+              </>
+            ) : (
+              <button
+                type='button'
+                onClick={handleEditing}
+                className='py-2 w-full sm:w-24 px-4 flex items-center justify-center  gap-3 text-white bg-[#16DBCC] rounded text-sm font-medium capitalize'>
+                edit
+                <PencilSquareIcon className='h-5 w-5 shrink-0' />
+              </button>
+            )}
           </div>
         </div>
       </form>

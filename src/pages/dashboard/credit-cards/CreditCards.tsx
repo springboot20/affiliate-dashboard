@@ -3,7 +3,6 @@ import chipGray from "@/assets/Chip_Card-gray.png";
 import { motion } from "framer-motion";
 
 import { CardTypeBlackIcon, CardTypeIcon } from "@/components/icons/Icons";
-import { CardForm } from "./card-form/CardForm";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import React, { useMemo } from "react";
 import { classNames } from "@/utils";
@@ -11,7 +10,7 @@ import { CreditCardLoader } from "@/components/loaders/credit-card.loader";
 import DashboardChart from "@/components/statistics/DashboardChart";
 
 export const CreditCards = () => {
-  const { data, refetch, isLoading } = useGetUserCardsQuery();
+  const { data, isLoading } = useGetUserCardsQuery();
 
   const formatCardNumber = (number: string) => {
     const value = number?.replace(/\s/, "");
@@ -157,7 +156,7 @@ export const CreditCards = () => {
           </div>
         </div>
 
-        <div className="col-span-1 lg:cols-span-2">
+        <div className="col-span-1 lg:col-span-2">
           <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
             card lists
           </h3>
@@ -235,20 +234,6 @@ export const CreditCards = () => {
               ))
             )}
           </ul>
-        </div>
-
-        <div className="col-span-1 md:col-span-2">
-          <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
-            add new card
-          </h3>
-
-          <CardForm refetch={refetch} />
-        </div>
-
-        <div className="col-span-1">
-          <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg capitalize">
-            add new card
-          </h3>
         </div>
       </motion.div>
     </section>

@@ -41,7 +41,7 @@ export const Settings = () => {
         }}
         className="px-2 w-full overflow-x-hidden"
       >
-        <div className="p-4 sm:p-8 rounded-3xl bg-white max-w-7xl mx-auto">
+        <div className="p-4 sm:p-8 rounded-3xl bg-white max-w-7xl mx-auto h-auto">
           <TabGroup>
             <TabList className="w-full flex flex-row border-b lg:items-start">
               <Tab as={"div"} className="w-full relative h-full lg:w-32">
