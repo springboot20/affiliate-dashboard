@@ -65,7 +65,7 @@ export const Preference = () => {
     timezone: (typeof profile?.timezone === 'string' && profile?.timezone) || '',
     currency: (typeof profile?.currency === 'string' && profile?.currency) || '',
     preferred_view:
-      ( profile?.preferred_view as PrefereViewType )|| 'app',
+      ( profile?.preferred_view as PreferredViewType )|| 'app',
   };
 
   const { values, handleSubmit, handleChange, isSubmitting, setFieldValue } = useFormik({
@@ -227,7 +227,7 @@ export const Preference = () => {
                       <option value='dashboard'>Financial Dashboard</option>
                     </select>
 
-                    <p className='mt-1 text-sm text-gray-500'>
+                    <p className='mt-1.5 text-xs text-gray-500'>
                       Choose which view you'd like to see when you first log in
                     </p>
                   </fieldset>

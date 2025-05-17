@@ -91,6 +91,15 @@ export default function AccountForms() {
       {(formik) => {
         return (
           <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
+            <button
+              title='back'
+              type='button'
+              className='flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4'
+              onClick={() => navigate(-1)}>
+              <ArrowLeftIcon className='size-4 shrink-0' />
+              back
+            </button>
+
             <StepIndicator _step={step} />
             <motion.div
               key={step}
