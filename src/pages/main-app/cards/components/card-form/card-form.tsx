@@ -84,6 +84,7 @@ export const CardForm = () => {
         }, 2000);
       }
     } catch (error: any) {
+      console.error(error)
       setGeneratingCardDetails(false);
     }
   };

@@ -1,91 +1,77 @@
-@import url("https://fonts.googleapis.com/css2?family=Gorditas:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Black.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Black.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-ExtraBold.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-ExtraBold.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Bold.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Bold.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-SemiBold.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-SemiBold.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Regular.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Regular.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Medium.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Medium.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Regular.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Regular.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-ExtraLight.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-ExtraLight.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-Light.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-Light.ttf');
 }
 
 @font-face {
-  font-family: "Inter",
-    sans;
-  src: url("./assets/fonts/Inter-thin.ttf");
+  font-family: 'Inter', sans;
+  src: url('./assets/fonts/Inter-thin.ttf');
 }
 
 @font-face {
-  font-family: "Lato",
-    sans;
-  src: url("./assets/fonts/Lato-Black.ttf");
+  font-family: 'Lato', sans;
+  src: url('./assets/fonts/Lato-Black.ttf');
 }
 
 @font-face {
-  font-family: "Lato",
-    sans;
-  src: url("./assets/fonts/Lato-Bold.ttf");
+  font-family: 'Lato', sans;
+  src: url('./assets/fonts/Lato-Bold.ttf');
 }
 
 @font-face {
-  font-family: "Lato",
-    sans;
-  src: url("./assets/fonts/Lato-Regular.ttf");
+  font-family: 'Lato', sans;
+  src: url('./assets/fonts/Lato-Regular.ttf');
 }
 
 @font-face {
-  font-family: "Lato",
-    sans;
-  src: url("./assets/fonts/Lato-Thin.ttf");
+  font-family: 'Lato', sans;
+  src: url('./assets/fonts/Lato-Thin.ttf');
 }
 
 @layer {
@@ -105,41 +91,20 @@
     -moz-user-select: none;
     user-select: none;
     touch-action: pan-y;
+    -webtkit-user-select: none;
   }
 
   .carousel-slide-list {
     @apply relative overflow-hidden m-0 p-0 block items-center;
   }
 
-  .carousel-slide
-    .carousel-slider-track,
-  .carousel-slide
-    .carousel-slide-list {
-    -webkit-transform: translate3d(
-      0px,
-      0px,
-      0px
-    );
-    -moz-transform: translate3d(
-      0px,
-      0px,
-      0px
-    );
-    -ms-transform: translate3d(
-      0px,
-      0px,
-      0px
-    );
-    -o-transform: translate3d(
-      0px,
-      0px,
-      0px
-    );
-    transform: translate3d(
-      0px,
-      0px,
-      0px
-    );
+  .carousel-slide .carousel-slider-track,
+  .carousel-slide .carousel-slide-list {
+    -webkit-transform: translate3d(0px, 0px, 0px);
+    -moz-transform: translate3d(0px, 0px, 0px);
+    -ms-transform: translate3d(0px, 0px, 0px);
+    -o-transform: translate3d(0px, 0px, 0px);
+    transform: translate3d(0px, 0px, 0px);
   }
 
   .carousel-slider-track {
@@ -148,44 +113,28 @@
 
   .carousel-slider-track::before,
   .carousel-slider-track::after {
-    content: "";
+    content: '';
     display: table;
   }
 
-  table.app
-    thead
-    tr {
+  table.app thead tr {
     @apply bg-[#F3F4F7] border-b border-[#D9DCE7];
   }
 
-  table.app
-    tbody
-    tr:nth-child(
-      odd
-    ) {
+  table.app tbody tr:nth-child(odd) {
     @apply bg-gray-50 border-b border-[#D9DCE7];
   }
 
-  table.app
-    tbody
-    tr:nth-child(
-      even
-    ) {
+  table.app tbody tr:nth-child(even) {
     @apply bg-[#F3F4F7] border-b border-[#D9DCE7];
   }
 
-  table.app
-    tbody
-    tr:nth-child(
-      :last-child
-    ) {
+  table.app tbody tr:nth-child(:last-child) {
     @apply border-b-0;
   }
 
-  table.app
-    td,
-  table.app
-    th {
+  table.app td,
+  table.app th {
     @apply px-2 py-2.5 text-left text-[#565656] text-sm capitalize whitespace-nowrap;
   }
 }

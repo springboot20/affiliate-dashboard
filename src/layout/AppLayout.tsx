@@ -142,12 +142,9 @@ const AppLayout = () => {
                       <Menu as='div' className='relative self-center'>
                         <MenuButton className='flex items-center space-x-3 text-gray-900'>
                           <span className='sr-only'>Open auth menu</span>
-                          <div
-        className={"text-sm text-gray-700"}>
-        Welcome, {user?.username}
-      </div>
-      <span className='flex justify-center items-center border rounded-full overflow-hidden relative h-12 w-12'>
-                          <UserCircleIcon className='h-8 text-gray-400' aria-hidden={true} />
+                          <div className={'text-sm text-gray-700'}>Welcome, {user?.username}</div>
+                          <span className='flex justify-center items-center border rounded-full overflow-hidden relative h-12 w-12'>
+                            <UserCircleIcon className='h-8 text-gray-400' aria-hidden={true} />
                           </span>
                         </MenuButton>
                         <Transition
@@ -168,7 +165,7 @@ const AppLayout = () => {
                                 <MenuItem>
                                   {({ active }) => (
                                     <NavLink
-                                      to='/settings?tab=profile'
+                                      to='/dashboard/settings?tab=profile'
                                       className={classNames(
                                         active ? 'bg-gray-100' : '',
                                         'flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium'

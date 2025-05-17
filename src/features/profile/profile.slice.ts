@@ -8,15 +8,17 @@ interface Response {
 }
 
 type ProfileRequest = {
-  firstname: string;
-  lastname: string;
-  phoneNumber: string;
-  present_address: string;
-  permanent_address: string;
-  city: string;
-  country: string;
-  postal_code: string;
+  firstname?: string;
+  lastname?: string;
+  phoneNumber?: string;
+  present_address?: string;
+  permanent_address?: string;
+  city?: string;
+  country?: string;
+  postal_code?: string;
   preferred_view?: "app" | "dashboard"
+  timezone?:string
+  currency?:string
 };
 
 export const ProfileApiSlice = ApiService.injectEndpoints({
