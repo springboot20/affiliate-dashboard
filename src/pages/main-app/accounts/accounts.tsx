@@ -12,6 +12,12 @@ export default function Accounts() {
 
   const columns = [
     { header: 'id', accessor: '_id' },
+    {
+      header: 'user',
+      accessor: 'user',
+      // Since your implementation uses dot notation access, we need a different approach
+      deepOneAccessor: ['firstname', "lastname"],
+    },
     { header: 'type', accessor: 'type' },
     { header: 'status', accessor: 'status' },
     { header: 'date created', accessor: 'createdAt', type: 'Date' },
@@ -34,7 +40,7 @@ export default function Accounts() {
           </button>
         </header>
 
-        <div className='mt-4 overflow-x-scroll !w-full'>
+        <div className='mt-4 overflow-x-auto !w-full'>
           <AccountTableListComponent columns={columns} datum={accounts} />
         </div>
       </div>
