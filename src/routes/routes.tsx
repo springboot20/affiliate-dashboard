@@ -40,10 +40,10 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      {
-        index: true,
-        element: <Navigate to='/app/overview' replace />,
-      },
+      // {
+      //   index: true,
+      //   element: <Navigate to='/app/overview' replace />,
+      // },
       {
         path: 'overview',
         element: <MainAppOverview />,
@@ -76,10 +76,9 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path:"overview",
+        path:'overview',
         element: <OverView />,
       },
-
       {
         path: 'transactions',
         element: (
@@ -148,9 +147,9 @@ export const router = createBrowserRouter([
   {
     path: '/auth',
     children: [
-    {
+      {
         index: true,
-        element: <Navigate to="/auth/login" replace />,
+        element: <Navigate to='/auth/login' replace />,
       },
       {
         path: 'register',
