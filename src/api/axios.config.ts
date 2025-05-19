@@ -46,7 +46,10 @@ export const login_user = (data: { password: string; email: string }) =>
 export const logout_user = () => BankAppApiClient.post("/users/logout");
 
 export const forgot_password = (data: { email: string }) =>
-  BankAppApiClient.post("/user/forgot-password", data);
+  BankAppApiClient.post("/users/forgot-password", data);
+
+export const refreshToken = (data: { inComingRefreshToken: string }) =>
+  BankAppApiClient.post("/users/refresh-token", data);
 
 export const verify_email = (data: { userId: string; token: string }) => {
   const { userId, token } = data;

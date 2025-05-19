@@ -7,6 +7,7 @@ import {
   send_email,
   verify_email,
   BankAppApiClient,
+  refreshToken
 } from "@/api/axios.config";
 import type {
   RegisterPayloadAction,
@@ -56,6 +57,25 @@ export const logout = createAsyncThunk("auth/logout", async (_:{token: string}, 
     const response = await logout_user();
 
     BankAppApiClient.defaults.headers.common["Authorization"] = `Bearer ${_.token}`;
+
+    toast.success(response.data.message);
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return rejectWithValue(error?.message);
+    }
+
+    return error;
+  }
+});
+
+
+export const refreshAccessToken = createAsyncThunk("auth/refresh-token", async (data:{inComingRefreshToken: string}, { rejectWithValue }) => {
+  try {
+    const response = await refreshToken(data);
+
+ 
 
     toast.success(response.data.message);
 
