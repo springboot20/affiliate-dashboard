@@ -7,7 +7,8 @@ import { LocalStorage } from './utils';
 import { useAppDispatch } from './app/hook';
 import { Token } from './types/auth/auth';
 import { refreshAccessToken } from './features/thunks/auth.thunk';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
+import { ProfileProvider } from './context/ProfileContext';
 
 const App: React.FC = () => {
   const { tokens } = useAppSelector((state) => state.auth.data);
@@ -69,7 +70,11 @@ const App: React.FC = () => {
     setAuthorizationHeader();
   }, [tokens]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <ProfileProvider>
+      <RouterProvider router={router} />
+    </ProfileProvider>
+  );
 };
 
 export default App;

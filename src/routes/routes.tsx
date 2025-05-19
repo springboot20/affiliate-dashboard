@@ -25,6 +25,7 @@ import MainAccounts from '@/pages/main-app/accounts/accounts';
 import MainAccountsForm from '@/pages/main-app/accounts/components/account-forms';
 import MainCards from '@/pages/main-app/cards/cards';
 import { AppSwitcher } from '@/components/app-switcher';
+import { ViewRedirector } from '@/components/view-redirector';
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +37,10 @@ export const router = createBrowserRouter([
     path: '/app',
     element: (
       <ProtectedRoute>
-        <MainLayout />
+        <>
+          <ViewRedirector />
+          <MainLayout />
+        </>
       </ProtectedRoute>
     ),
     children: [
@@ -73,10 +77,15 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <AppLayout />,
+    element: (
+      <>
+        <ViewRedirector />
+        <AppLayout />
+      </>
+    ),
     children: [
       {
-        path:'overview',
+        path: 'overview',
         element: <OverView />,
       },
       {

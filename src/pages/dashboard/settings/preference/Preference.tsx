@@ -7,6 +7,8 @@ import { DocumentDuplicateIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/r
 import { useUpdateProfileMutation, useGetProfileQuery } from '@/features/profile/profile.slice';
 import { toast } from 'react-toastify';
 import { Loader } from '@/components/Loader';
+import { useProfile } from '@/context/ProfileContext';
+import { useNavigate } from 'react-router-dom';
 
 type InitialValues = {
   currency: string;
@@ -23,6 +25,7 @@ const preferenceSchema = yup.object({
 type PreferredViewType = 'app' | 'dashboard';
 
 export const Preference = () => {
+  const navigate = useNavigate()
   const [receiveDigitalCurrency, setReceiveDigitalCurrency] = useState<boolean>(false);
   const [receiveMerchant, setReceiveMerchant] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
@@ -34,6 +37,8 @@ export const Preference = () => {
   const { data, isLoading, isFetching } = useGetProfileQuery();
   const [updateProfile] = useUpdateProfileMutation();
 
+  const { refetchProfile, updatePreferredView } = useProfile();
+
   useEffect(() => {
     if (data) {
       setProfile(data?.data?.profile);
@@ -43,6 +48,8 @@ export const Preference = () => {
 
   async function onSubmit(values: InitialValues) {
     console.log(values);
+
+    const previousView = profile?.preferredView as PreferredViewType;
 
     try {
       const response = await updateProfile({
@@ -54,6 +61,23 @@ export const Preference = () => {
       const { message } = response;
       toast(message, { type: 'success' });
 
+      // Update the context with the new preferred view
+      updatePreferredView(values.preferred_view);
+
+      // Refetch profile data to ensure everything is in sync
+      refetchProfile();
+
+      // If the view changed, redirect the user to the appropriate view
+      if (previousView !== values.preferred_view) {
+        setTimeout(() => {
+          if (values.preferred_view === 'app') {
+            navigate('/app/overview');
+          } else {
+            navigate('/dashboard/overview');
+          }
+        }, 500); // Small delay to allow the toast to be visible
+      }
+
       setEditing(false);
     } catch (error: any) {
       const errorMessage = error?.data?.message || 'Failed to update profile';
@@ -64,15 +88,14 @@ export const Preference = () => {
   const initialValues: InitialValues = {
     timezone: (typeof profile?.timezone === 'string' && profile?.timezone) || '',
     currency: (typeof profile?.currency === 'string' && profile?.currency) || '',
-    preferred_view:
-      ( profile?.preferred_view as PreferredViewType )|| 'app',
+    preferred_view: (profile?.preferred_view as PreferredViewType) || 'app',
   };
 
   const { values, handleSubmit, handleChange, isSubmitting, setFieldValue } = useFormik({
     onSubmit: onSubmit,
     initialValues,
     validationSchema: preferenceSchema,
-    enableReinitialize: true
+    enableReinitialize: true,
   });
 
   console.log(profile);
@@ -86,7 +109,7 @@ export const Preference = () => {
           <Loader />
         </div>
       ) : (
-        <form key={formKey}  className='grid md:gap-6' onSubmit={handleSubmit}>
+        <form key={formKey} className='grid md:gap-6' onSubmit={handleSubmit}>
           <div className='flex flex-col items-stretch h-[70vh] justify-between'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <fieldset className='lg:col-span-1'>

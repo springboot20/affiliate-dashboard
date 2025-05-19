@@ -1,4 +1,3 @@
-import { AccountType } from '@/types/account';
 import React from 'react';
 import moment from 'moment';
 
@@ -12,7 +11,7 @@ interface Column {
 
 type AccountTableListProps = {
   columns: Column[];
-  datum: AccountType[];
+  datum: any[];
   actions?: JSX.Element | ((row: any) => JSX.Element);
 };
 
