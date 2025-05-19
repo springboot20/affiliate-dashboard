@@ -3,19 +3,47 @@ import { SendMoneyPanelComponent } from '@/components/panels/send-money-panel';
 import { TableComponent } from '@/components/tables/table-component';
 import { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import background from '@/assets/background.svg'
+import background from '@/assets/background.svg';
 
+interface Column {
+  header: string;
+  accessor: string;
+  deepOneAccessor?: string[];
+  deepOneAccessorAlt?: string;
+  type?: string;
+}
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const columns: Column[] = [
+    {
+      header: 'account',
+      accessor: '',
+      deepOneAccessorAlt: '',
+    },
+    {
+      header: 'name',
+      accessor: '',
+    },
+    {
+      header: 'date',
+      accessor: '',
+      type: 'date',
+    },
+    {
+      header: 'description',
+      accessor: '',
+    },
+  ];
 
   return (
     <Fragment>
       <main className='relative bg-[#152F00] h-[50vh] lg:h-[55vh]'>
         <div className='absolute inset-x-0 h-full w-full'>
-        <img src={background} alt="background"  className="h-full w-full"/>
+          <img src={background} alt='background' className='h-full w-full' />
         </div>
 
         <div className='top-24 lg:top-[8rem] max-w-7xl mx-auto px-4 2xl:px-0 relative'>
@@ -377,14 +405,14 @@ export default function Overview() {
               <button
                 type='button'
                 title='see all transactions'
-                onClick={()=> navigate("/app/transactions")}
+                onClick={() => navigate('/app/transactions')}
                 className='text-sm font-normal text-[#152F00] capitalize'>
                 see all
               </button>
             </div>
 
             <div className='!w-full overflow-x-auto mt-4'>
-              <TableComponent />
+              <TableComponent columns={columns} datum={[]} />
             </div>
           </div>
         </div>
