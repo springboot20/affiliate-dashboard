@@ -4,11 +4,16 @@ import { PinPadFormComponent } from './pinpad-form';
 import { motion } from 'framer-motion';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
-import { Formik } from 'formik';
-import { Form, useNavigate } from 'react-router-dom';
+import { Formik, Form } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import {
+  useCreateNewAccountMutation,
+} from '@/features/account/account.slice';
 
 export default function AccountForms() {
   const navigate = useNavigate();
+
   const getInitialStepFromUrl = (): number => {
     const urlParams = new URLSearchParams(location.search);
     const stepParam = urlParams.get('step');
@@ -24,11 +29,13 @@ export default function AccountForms() {
     return ['new-account', 'create-pin'].includes(tabParam || '') ? tabParam! : 'new-account';
   };
 
+  const [createNewAccount] = useCreateNewAccountMutation();
+
   const [step, setStep] = useState(getInitialStepFromUrl() || 0);
   const [tab, setTab] = useState(getInitialTabFromUrl() || 'new-account');
 
+
   const initialValues: AccountInitialValues = {
-    account_number: '',
     cards: [],
     currency: '',
     type: 'NONE',
@@ -75,19 +82,33 @@ export default function AccountForms() {
     updateUrl(prevStep, prevTab);
   };
 
-  const handleSubmit = (values: AccountInitialValues) => {
-    // Handle final form submission here
-    console.log('Form submitted with values:', values);
-    // Here you would typically send the data to your backend
-  };
-
   // Update URL when step or tabView changes - with extra safety checks
   useEffect(() => {
     updateUrl(step, tab);
   }, [step, tab, updateUrl]);
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={async (values: AccountInitialValues) => {
+        // Handle final form submission here
+        console.log('Form submitted with values:', values);
+        // Here you would typically send the data to your backend
+        try {
+          const response = await createNewAccount({ ...values, pin: values.pin.join('') }).unwrap();
+
+          const { data } = response;
+
+          toast(data?.message, { type: 'success' });
+
+          console.log(data);
+        } catch (error: any) {
+          const message = error?.data?.message;
+
+          toast(message, { type: 'error' });
+        }
+      }}
+      enableReinitialize>
       {(formik) => {
         return (
           <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
@@ -95,7 +116,7 @@ export default function AccountForms() {
               title='back'
               type='button'
               className='flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4'
-              onClick={() => navigate(-1)}>
+              onClick={() => navigate('/app/accounts')}>
               <ArrowLeftIcon className='size-4 shrink-0' />
               back
             </button>
@@ -110,7 +131,9 @@ export default function AccountForms() {
               transition={{ duration: 0.5 }}
               className='w-full'>
               {step === 0 ? (
-                <CreateNewAccountFormComponent formik={formik} />
+                <CreateNewAccountFormComponent
+                  formik={formik}
+                />
               ) : (
                 <PinPadFormComponent formik={formik} />
               )}

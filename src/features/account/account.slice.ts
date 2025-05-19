@@ -10,19 +10,19 @@ interface Response {
 export const AccountApiSlice = ApiService.injectEndpoints({
   endpoints(build) {
     return {
-      getUserAccounts: build.query<Response, void>({
-        query: () => '/accounts/user-accounts',
+      createNewAccount: build.mutation<Response, { [key: string]: any }>({
+        query: (data) => ({
+          url: '/accounts/create',
+          method: 'POST',
+          body: data,
+        }),
       }),
 
-      generateAccountNumber: build.mutation<Response, void>({
-        query: () => ({
-          url: '/accounts/user-account/generate-account-number',
-          method: 'POST',
-          body: {},
-        }),
+      getUserAccounts: build.query<Response, void>({
+        query: () => '/accounts/user-accounts',
       }),
     };
   },
 });
 
-export const { useGetUserAccountsQuery, useGenerateAccountNumberMutation } = AccountApiSlice;
+export const { useGetUserAccountsQuery, useCreateNewAccountMutation } = AccountApiSlice;

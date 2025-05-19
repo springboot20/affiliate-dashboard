@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { classNames } from '@/utils';
 import { LinkIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
+
 export const CreateNewAccountFormComponent = ({
   formik,
 }: {
   formik: FormikProps<AccountInitialValues>;
+  
 }) => {
   const { values, setFieldValue } = formik;
 
@@ -18,23 +20,6 @@ export const CreateNewAccountFormComponent = ({
         <h3 className='lg:text-xl font-medium capitalize text-[#152F00]'>create new account</h3>
       </header>
       <div className='mt-6'>
-        <fieldset className='mb-3'>
-          <label htmlFor='account_number' className='text-sm capitalize mb-1.5 inline-block'>
-            account number
-          </label>
-          <Field
-            name='account_number'
-            className='w-full block border rounded-md px-3 py-2 text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'
-          />
-
-          <ErrorMessage name='account_number'>
-            {(msg) => (
-              <CustomErrorMessage className='text-sm mt-0.5 block text-red-600'>
-                {msg}
-              </CustomErrorMessage>
-            )}
-          </ErrorMessage>
-        </fieldset>
 
         <fieldset className='mb-3'>
           <label htmlFor='currency' className='text-sm capitalize mb-1.5 inline-block'>
@@ -49,6 +34,14 @@ export const CreateNewAccountFormComponent = ({
             <option value='USD'>usd</option>
             <option value='NGN'>ngn</option>
           </Field>
+
+          <ErrorMessage name='currency'>
+            {(msg) => (
+              <CustomErrorMessage className='text-sm mt-0.5 block text-red-600'>
+                {msg}
+              </CustomErrorMessage>
+            )}
+          </ErrorMessage>
         </fieldset>
 
         <fieldset className='mb-3'>
@@ -65,6 +58,14 @@ export const CreateNewAccountFormComponent = ({
             <option value='CURRENT'>Current</option>
             <option value='SAVINGS'>Savings</option>
           </Field>
+
+          <ErrorMessage name='type'>
+            {(msg) => (
+              <CustomErrorMessage className='text-sm mt-0.5 block text-red-600'>
+                {msg}
+              </CustomErrorMessage>
+            )}
+          </ErrorMessage>
         </fieldset>
 
         <div className=''>
@@ -92,8 +93,6 @@ export const CreateNewAccountFormComponent = ({
                     name='cardSelector'
                     className='w-full block border rounded-md px-3 py-2 appearance-none text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'>
                     <option value='--select-currency--'>--select-currency--</option>
-                    <option value='USD'>usd</option>
-                    <option value='NGN'>ngn</option>
                   </Field>
                   <button
                     title='link account to card'

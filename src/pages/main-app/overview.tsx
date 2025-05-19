@@ -22,7 +22,6 @@ export default function Overview() {
     {
       header: 'account',
       accessor: '',
-      deepOneAccessorAlt: '',
     },
     {
       header: 'name',

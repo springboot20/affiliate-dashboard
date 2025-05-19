@@ -15,35 +15,35 @@ type AccountTableListProps = {
   actions?: JSX.Element | ((row: any) => JSX.Element);
 };
 
-// const getNestedValue = (obj: any, accessor: string, deepAccessors?: string[]) => {
-//   try {
-//     // If we have a complex object with deep accessors
-//     if (deepAccessors && deepAccessors.length > 0) {
-//       // First get the parent object using the accessor
-//       const parentObj = obj[accessor];
-//       if (!parentObj || typeof parentObj !== 'object') return '-';
+const getNestedValue = (obj: any, accessor: string, deepAccessors?: string[]) => {
+  try {
+    // If we have a complex object with deep accessors
+    if (deepAccessors && deepAccessors.length > 0) {
+      // First get the parent object using the accessor
+      const parentObj = obj[accessor];
+      if (!parentObj || typeof parentObj !== 'object') return '-';
 
-//       // Map through the deep accessors and join them
-//       return deepAccessors
-//         .map((deep) => {
-//           const value = parentObj[deep];
-//           return value !== undefined && value !== null ? value : '-';
-//         })
-//         .join(' ');
-//     }
+      // Map through the deep accessors and join them
+      return deepAccessors
+        .map((deep) => {
+          const value = parentObj[deep];
+          return value !== undefined && value !== null ? value : '-';
+        })
+        .join(' ');
+    }
 
-//     // Simple direct access
-//     const value = obj[accessor];
+    // Simple direct access
+    const value = obj[accessor];
 
-//     // Handle different types of values
-//     if (value === undefined || value === null) return '-';
-//     if (typeof value === 'object') return JSON.stringify(value);
-//     return value;
-//   } catch (error) {
-//     console.error('Error accessing property:', error);
-//     return '-';
-//   }
-// };
+    // Handle different types of values
+    if (value === undefined || value === null) return '-';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return value;
+  } catch (error) {
+    console.error('Error accessing property:', error);
+    return '-';
+  }
+};
 
 export const TableComponent = ({ datum, columns, actions }: AccountTableListProps) => {
   console.log(datum, columns);
@@ -68,26 +68,33 @@ export const TableComponent = ({ datum, columns, actions }: AccountTableListProp
             return (
               <tr>
                 {React.Children.toArray(
-                  columns?.map((column) => {
+                  columns.map((column) => {
+                    let cellContent;
+
+                    // Handle deepOneAccessorAlt
+                    if (column.deepOneAccessorAlt) {
+                      cellContent = row?.[column.deepOneAccessorAlt];
+                    }
+                    // Handle deepOneAccessor array
+                    else if (column.deepOneAccessor) {
+                      cellContent = getNestedValue(row, column.accessor, column.deepOneAccessor);
+                    }
+                    // Handle Date type
+                    else if (column.type === 'Date' && row?.[column.accessor]) {
+                      cellContent = moment(row?.[column.accessor]).format('Do MMMM, YYYY');
+                    } else {
+                      const value = row?.[column.accessor];
+                      cellContent = value !== undefined && value !== null ? value : '-';
+                    }
+
                     return (
-                      <td>
-                        {column?.deepOneAccessorAlt ? (
-                          row[column?.deepOneAccessorAlt]
-                        ) : column?.deepOneAccessor ? (
-                          <>
-                            {column?.deepOneAccessor?.map((it) => (
-                              <>{row?.[column?.accessor]?.[it]} </>
-                            ))}
-                          </>
-                        ) : column?.type === 'Date' ? (
-                          moment(row[column.accessor]).format('Do MMMM, YYYY')
-                        ) : (
-                          row[column.accessor]
-                        )}
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                        {cellContent}
                       </td>
                     );
                   })
                 )}
+
                 {actions && (
                   <td className='px-2 py-4 border-b text-[#0B2239] min-w-[200px]'>
                     {typeof actions === 'function' ? actions(row) : actions}

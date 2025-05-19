@@ -104,7 +104,7 @@ export const Preference = () => {
 
   return (
     <div className='mt-8'>
-      {isLoading || isFetching ? (
+      {isLoading || isFetching || !data ? (
         <div className='col-span-full flex items-cente h-[40vh] justify-center'>
           <Loader />
         </div>

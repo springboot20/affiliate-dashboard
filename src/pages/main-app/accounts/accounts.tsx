@@ -1,22 +1,21 @@
-import { useGetUserAccountsQuery } from '@/features/account/account.slice';
-import { AccountType } from '@/types/account';
-import { AccountTableListComponent } from '@/components/tables/account-tablelist-component';
 import { useNavigate } from 'react-router-dom';
+import { TableComponent } from '@/components/tables/table-component';
+import { useGetUserAccountsQuery } from '@/features/account/account.slice';
 
 export default function Accounts() {
   const { data } = useGetUserAccountsQuery();
 
   console.log(data);
 
-  const accounts = data?.data?.accounts as AccountType[];
+  const accounts = data?.data;
 
   const columns = [
     { header: 'id', accessor: '_id' },
     {
       header: 'user',
-      accessor: 'user',
+      accessor: 'profile',
       // Since your implementation uses dot notation access, we need a different approach
-      deepOneAccessor: ['firstname', "lastname"],
+      deepOneAccessor: ['firstname', 'lastname'],
     },
     { header: 'type', accessor: 'type' },
     { header: 'status', accessor: 'status' },
@@ -34,14 +33,14 @@ export default function Accounts() {
 
           <button
             title='create account'
-            className='px-3 py-2.5 text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'
+            className='px-3 py-2.5 text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0 capitalize'
             onClick={() => navigate('/app/accounts/new-account')}>
             new account
           </button>
         </header>
 
         <div className='mt-4 overflow-x-auto !w-full'>
-          <AccountTableListComponent columns={columns} datum={accounts} />
+          <TableComponent columns={columns} datum={accounts?.docs} />
         </div>
       </div>
     </section>
