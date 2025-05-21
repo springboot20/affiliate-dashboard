@@ -18,8 +18,6 @@ export const Profile = () => {
   const { data: profile_data, isLoading, isFetching } = useGetProfileQuery();
   const [formKey, setFormKey] = useState(0);
 
-  console.log(profileDetail?.user?.avatar?.url);
-
   useEffect(() => {
     if (profile_data) {
       setProfileDetail(profile_data?.data?.profile);

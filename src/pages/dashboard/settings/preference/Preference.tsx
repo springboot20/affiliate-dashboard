@@ -47,8 +47,6 @@ export const Preference = () => {
   }, [data]);
 
   async function onSubmit(values: InitialValues) {
-    console.log(values);
-
     const previousView = profile?.preferredView as PreferredViewType;
 
     try {
@@ -97,8 +95,6 @@ export const Preference = () => {
     validationSchema: preferenceSchema,
     enableReinitialize: true,
   });
-
-  console.log(profile);
 
   const handleEditing = () => setEditing(true);
 

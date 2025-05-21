@@ -8,7 +8,7 @@ import { useEffect } from 'react';
  * based on their preferred view setting.
  * Place this near the top level of your application.
  */
-export const ViewRedirector: React.FC = () => {
+export const ViewRedirector: React.FC<{children: React.ReactNode}> = ({children}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { preferred_view } = useProfile();
@@ -26,14 +26,24 @@ export const ViewRedirector: React.FC = () => {
     if (preferred_view === 'dashboard' && inAppView) {
       // Map the app route to corresponding dashboard route
       const dashboardPath = location.pathname.replace('/app', '/dashboard');
-      navigate(dashboardPath, { replace: true });
+      navigate(dashboardPath, {
+        replace: true,
+        state: {
+          from: location,
+        },
+      });
     } else if (preferred_view === 'app' && inDashboard) {
       // Map the dashboard route to corresponding app route
       const appPath = location.pathname.replace('/dashboard', '/app');
-      navigate(appPath, { replace: true });
+      navigate(appPath, {
+        replace: true,
+        state: {
+          from: location,
+        },
+      });
     }
-  }, [location.pathname, preferred_view, navigate]);
+  }, [location.pathname, preferred_view, navigate, location]);
 
   // This component doesn't render anything
-  return null;
+  return <>{children}</>;
 };

@@ -38,10 +38,9 @@ export const router = createBrowserRouter([
     path: '/app',
     element: (
       <ProtectedRoute>
-        <>
-          <ViewRedirector />
+        <ViewRedirector>
           <MainLayout />
-        </>
+        </ViewRedirector>
       </ProtectedRoute>
     ),
     children: [
@@ -87,10 +86,9 @@ export const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: (
-      <>
-        <ViewRedirector />
+      <ViewRedirector>
         <AppLayout />
-      </>
+      </ViewRedirector>
     ),
     children: [
       {
