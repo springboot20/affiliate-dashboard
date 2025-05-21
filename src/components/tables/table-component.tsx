@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { classNames } from '@/utils';
+import { classNames, formatMoney } from '@/utils';
 
 interface Column {
   header: string;
@@ -95,10 +95,20 @@ export const TableComponent = ({ datum, columns, actions }: AccountTableListProp
                           <span
                             className={classNames(
                               'px-2 py-1 !font-medium !text-xs w-max !text-white rounded-xl',
-                              row['status'] === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
+                              row['status'] === 'ACTIVE'
+                                ? 'bg-green-500'
+                                : row['status'] === 'SUSPENDED' || row['status'] === 'CLOSED'
+                                ? 'bg-red-500'
+                                : 'bg-yellow-500'
                             )}>
                             {cellContent}
                           </span>
+                        ) : column.header === 'balance' ? (
+                          formatMoney(
+                            cellContent as number,
+                            row['wallet']?.currency === 'USD' ? 'USD' : 'NGN',
+                            row['wallet']?.currency === 'USD' ? 'en-US' : 'en-NG'
+                          )
                         ) : (
                           cellContent
                         )}

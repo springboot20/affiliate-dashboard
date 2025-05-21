@@ -25,6 +25,12 @@ export default function Accounts() {
       // Since your implementation uses dot notation access, we need a different approach
       deepOneAccessor: ['firstname', 'lastname'],
     },
+    {
+      header: 'balance',
+      accessor: 'wallet',
+      // Since your implementation uses dot notation access, we need a different approach
+      deepOneAccessor: ['balance'],
+    },
     { header: 'account number', accessor: 'account_number' },
     { header: 'type', accessor: 'type' },
     { header: 'status', accessor: 'status' },
@@ -83,9 +89,9 @@ export default function Accounts() {
         ) : (
           <button
             type='button'
-            title={`${
+            title={`account ${
               data?.status === 'CLOSED' ? 'closed' : data?.status === 'SUSPENDED' ? 'suspended' : ''
-            } account`}>
+            }`}>
             <ExclamationCircleIcon className='h-5 text-red-500' />
           </button>
         )}
