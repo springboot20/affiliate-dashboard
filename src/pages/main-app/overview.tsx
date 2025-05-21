@@ -1,9 +1,14 @@
 import { AddMoneyPanelComponent } from '@/components/panels/add-money-panel';
 import { SendMoneyPanelComponent } from '@/components/panels/send-money-panel';
 import { TableComponent } from '@/components/tables/table-component';
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import background from '@/assets/background.svg';
+import {
+  useGetAccountDetailsQuery,
+  useGetUserAccountsQuery,
+} from '@/features/account/account.slice';
+import { formatMoney } from '@/utils';
 
 interface Column {
   header: string;
@@ -15,6 +20,26 @@ interface Column {
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
+
+  const { data: accounts } = useGetUserAccountsQuery();
+  const [account, setAccount] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (accounts?.data && accounts?.data?.docs.length) {
+      setAccount(accounts?.data?.docs[0]?._id);
+    }
+  }, [accounts?.data]);
+
+  const {
+    data: accountDetails,
+    isLoading,
+    isFetching,
+  } = useGetAccountDetailsQuery(
+    { accountId: account! },
+    {
+      skip: !account,
+    }
+  );
 
   const navigate = useNavigate();
 
@@ -38,140 +63,191 @@ export default function Overview() {
     },
   ];
 
+  console.log(accountDetails);
+
   return (
     <Fragment>
-      <main className='relative bg-[#152F00] h-[50vh] lg:h-[55vh]'>
+      <main className='relative bg-[#152F00] h-[40vh] sm:h-[45vh] lg:h-[55vh]'>
         <div className='absolute inset-x-0 h-full w-full'>
-          <img src={background} alt='background' className='h-full w-full' />
+          <img src={background} alt='background' className='h-full w-full object-cover' />
         </div>
 
-        <div className='top-24 lg:top-[8rem] max-w-7xl mx-auto px-4 2xl:px-0 relative'>
-          <div className='flex items-start flex-col sm:flex-row sm:justify-between'>
-            <div className='text-white flex flex-col flex-start gap-y-4 pag-x-5'>
+        <div className='relative pt-6 sm:pt-12 lg:pt-[8rem] max-w-7xl mx-auto px-4 2xl:px-0'>
+          <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0'>
+            <div className='text-white flex flex-col flex-start gap-y-2 sm:gap-y-4'>
               <span className='font-normal text-xs sm:sm'>TOTAL BALANCE</span>
-              <span className='font-medium text-sm lg:text-xl xl:text-3xl'>$34,560.01</span>
+              <span className='font-medium text-sm lg:text-xl xl:text-3xl'>
+                {isLoading && isFetching
+                  ? 'loading...'
+                  : formatMoney(
+                      accountDetails?.data?.wallet?.balance,
+                      accountDetails?.data?.wallet?.currency === 'USD' ? 'USD' : 'NGN',
+                      accountDetails?.data?.wallet?.currency === 'USD' ? 'en-US' : 'en-NG'
+                    )}
+              </span>
             </div>
 
-            <div className='flex sm:self-end flex-col flex-start sm:flex-row gap-3 w-full sm:w-fit mt-4'>
-              <button
-                type='button'
-                title='view analytics'
-                className='lg:mr-3 flex items-center justify-center gap-3 px-3 py-2.5 min-w-max shrink-0 flex-grow sm:flex-grow-0'>
-                <svg
-                  width='17'
-                  height='17'
-                  viewBox='0 0 17 17'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'>
-                  <path
-                    d='M11.7201 8.49995C11.7201 9.81995 10.6534 10.8866 9.33344 10.8866C8.01344 10.8866 6.94678 9.81995 6.94678 8.49995C6.94678 7.17995 8.01344 6.11328 9.33344 6.11328C10.6534 6.11328 11.7201 7.17995 11.7201 8.49995Z'
-                    stroke='#F9F9F9'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M9.33339 14.0133C11.6867 14.0133 13.8801 12.6266 15.4067 10.2266C16.0067 9.28665 16.0067 7.70665 15.4067 6.76665C13.8801 4.36665 11.6867 2.97998 9.33339 2.97998C6.98006 2.97998 4.78673 4.36665 3.26006 6.76665C2.66006 7.70665 2.66006 9.28665 3.26006 10.2266C4.78673 12.6266 6.98006 14.0133 9.33339 14.0133Z'
-                    stroke='#F9F9F9'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                </svg>
+            <div className='flex items-end w-full sm:w-auto gap-3'>
+              <fieldset className='w-full sm:w-auto'>
+                <label className='text-xs mb-2 text-white block' htmlFor='account'>
+                  switch account
+                </label>
+                <select
+                  id='account'
+                  name='account'
+                  className='text-xs px-2 py-1.5 appearance-none border rounded w-full sm:w-auto'
+                  onChange={(event) => {
+                    const selectedAccount = accounts?.data?.docs.find((doc: any) => {
+                      return event.target.value === doc?._id;
+                    });
 
-                <span className='text-white capitalize text-sm font-normal'>view analytics</span>
-              </button>
+                    setAccount(selectedAccount?._id);
+                  }}>
+                  {React.Children.toArray(
+                    accounts?.data?.docs.length &&
+                      accounts?.data?.docs.map((doc: any, index: number) => {
+                        return (
+                          <option value={doc?._id}>
+                            account-{index + 1}{' '}
+                            {formatMoney(
+                              doc?.wallet?.balance,
+                              doc?.wallet?.currency === 'USD' ? 'USD' : 'NGN',
+                              doc?.wallet?.currency === 'USD' ? 'en-US' : 'en-NG'
+                            )}
+                          </option>
+                        );
+                      })
+                  )}
+                </select>
+              </fieldset>
 
-              <div className='lg:ml-3 flex items-start lg:items-center gap-4 w-full'>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
-                  type='button'
-                  title='send money'
-                  onClick={() => setOpenSendPanel(true)}
-                  className='bg-[#A1E96F] flex items-center justify-center gap-3 px-3 py-2.5 min-w-max shrink-0 flex-grow sm:flex-grow-0'>
+                  type="button"
+                  title="view analytics"
+                  className="flex items-center justify-center gap-2 px-3 py-2 text-white"
+                >
                   <svg
-                    width='16'
-                    height='17'
-                    viewBox='0 0 16 17'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'>
+                    width="17"
+                    height="17"
+                    viewBox="0 0 17 17"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
-                      d='M6.3335 9.6667C6.3335 10.3134 6.83351 10.8334 7.44684 10.8334H8.70015C9.23349 10.8334 9.66683 10.38 9.66683 9.81336C9.66683 9.2067 9.40017 8.9867 9.00684 8.8467L7.00016 8.1467C6.60683 8.0067 6.34017 7.79337 6.34017 7.18003C6.34017 6.62003 6.77349 6.16003 7.30682 6.16003H8.56016C9.17349 6.16003 9.6735 6.68003 9.6735 7.3267'
-                      stroke='#152F00'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
+                      d="M11.7201 8.49995C11.7201 9.81995 10.6534 10.8866 9.33344 10.8866C8.01344 10.8866 6.94678 9.81995 6.94678 8.49995C6.94678 7.17995 8.01344 6.11328 9.33344 6.11328C10.6534 6.11328 11.7201 7.17995 11.7201 8.49995Z"
+                      stroke="#F9F9F9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <path
-                      d='M8 5.5V11.5'
-                      stroke='#152F00'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M14.6668 8.50004C14.6668 12.18 11.6802 15.1667 8.00016 15.1667C4.32016 15.1667 1.3335 12.18 1.3335 8.50004C1.3335 4.82004 4.32016 1.83337 8.00016 1.83337'
-                      stroke='#152F00'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M14.6667 4.50004V1.83337H12'
-                      stroke='#152F00'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M11.3335 5.16671L14.6668 1.83337'
-                      stroke='#152F00'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
+                      d="M9.33339 14.0133C11.6867 14.0133 13.8801 12.6266 15.4067 10.2266C16.0067 9.28665 16.0067 7.70665 15.4067 6.76665C13.8801 4.36665 11.6867 2.97998 9.33339 2.97998C6.98006 2.97998 4.78673 4.36665 3.26006 6.76665C2.66006 7.70665 2.66006 9.28665 3.26006 10.2266C4.78673 12.6266 6.98006 14.0133 9.33339 14.0133Z"
+                      stroke="#F9F9F9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
-                  <span className='capitalize text-sm font-normal text-[#152F00]'>send money</span>
+                  <span className="text-white capitalize text-sm font-normal">view analytics</span>
                 </button>
 
-                <button
-                  type='button'
-                  title='add money'
-                  onClick={() => setOpenAddPanel(true)}
-                  className='bg-white/30 flex items-center justify-center gap-3 px-3 py-2.5 min-w-max shrink-0 flex-grow sm:flex-grow-0'>
-                  <svg
-                    width='16'
-                    height='17'
-                    viewBox='0 0 16 17'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'>
-                    <path
-                      d='M1.3335 6.16663H9.00016'
-                      stroke='#F9F9F9'
-                      strokeMiterlimit='10'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M4 11.5H5.33333'
-                      stroke='#F9F9F9'
-                      strokeMiterlimit='10'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M7 11.5H9.66667'
-                      stroke='#F9F9F9'
-                      strokeMiterlimit='10'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M14.6668 8.52004V11.24C14.6668 13.58 14.0735 14.1667 11.7068 14.1667H4.2935C1.92683 14.1667 1.3335 13.58 1.3335 11.24V5.76004C1.3335 3.42004 1.92683 2.83337 4.2935 2.83337H9.00016'
-                      stroke='#F9F9F9'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path d='M11 4.66663H14.6667' stroke='#F9F9F9' strokeLinecap='round' />
-                    <path d='M12.8335 6.50004V2.83337' stroke='#F9F9F9' strokeLinecap='round' />
-                  </svg>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    title="send money"
+                    onClick={() => setOpenSendPanel(true)}
+                    className="bg-[#A1E96F] flex items-center justify-center gap-2 px-3 py-2 rounded"
+                  >
+                    <svg
+                      width="16"
+                      height="17"
+                      viewBox="0 0 16 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6.3335 9.6667C6.3335 10.3134 6.83351 10.8334 7.44684 10.8334H8.70015C9.23349 10.8334 9.66683 10.380 9.66683 9.81336C9.66683 9.2067 9.40017 8.9867 9.00684 8.8467L7.00016 8.1467C6.60683 8.0067 6.34017 7.79337 6.34017 7.18003C6.34017 6.62003 6.77349 6.16003 7.30682 6.16003H8.56016C9.17349 6.16003 9.6735 6.68003 9.6735 7.3267"
+                        stroke="#152F00"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M8 5.5V11.5"
+                        stroke="#152F00"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M14.6668 8.50004C14.6668 12.18 11.6802 15.1667 8.00016 15.1667C4.32016 15.1667 1.3335 12.18 1.3335 8.50004C1.3335 4.82004 4.32016 1.83337 8.00016 1.83337"
+                        stroke="#152F00"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M14.6667 4.50004V1.83337H12"
+                        stroke="#152F00"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M11.3335 5.16671L14.6668 1.83337"
+                        stroke="#152F00"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="capitalize text-sm font-normal text-[#152F00]">send</span>
+                  </button>
 
-                  <span className='capitalize text-sm font-normal text-white'>add money</span>
-                </button>
+                  <button
+                    type="button"
+                    title="add money"
+                    onClick={() => setOpenAddPanel(true)}
+                    className="bg-white/30 flex items-center justify-center gap-2 px-3 py-2 rounded"
+                  >
+                    <svg
+                      width="16"
+                      height="17"
+                      viewBox="0 0 16 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.3335 6.16663H9.00016"
+                        stroke="#F9F9F9"
+                        strokeMiterlimit="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4 11.5H5.33333"
+                        stroke="#F9F9F9"
+                        strokeMiterlimit="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M7 11.5H9.66667"
+                        stroke="#F9F9F9"
+                        strokeMiterlimit="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M14.6668 8.52004V11.24C14.6668 13.58 14.0735 14.1667 11.7068 14.1667H4.2935C1.92683 14.1667 1.3335 13.58 1.3335 11.24V5.76004C1.3335 3.42004 1.92683 2.83337 4.2935 2.83337H9.00016"
+                        stroke="#F9F9F9"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path d="M11 4.66663H14.6667" stroke="#F9F9F9" strokeLinecap="round" />
+                      <path d="M12.8335 6.50004V2.83337" stroke="#F9F9F9" strokeLinecap="round" />
+                    </svg>
+                    <span className="capitalize text-sm font-normal text-white">add</span>
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* </div> */}
           </div>
 
           <div className='mt-8 lg:mt-12'>
