@@ -18,11 +18,42 @@ export const AccountApiSlice = ApiService.injectEndpoints({
         }),
       }),
 
+      deleteUserAccount: build.mutation<Response, { accountId: string }>({
+        query: ({ accountId }) => ({
+          url: `/accounts/user-account/${accountId}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      updateAccountStatus: build.mutation<
+        Response,
+        { accountId: string; type: string; status: string }
+      >({
+        query: ({ accountId, ...rest }) => {
+          console.log(rest);
+          return {
+            url: `/accounts/user-account/${accountId}`,
+            method: 'PATCH',
+            body: { ...rest },
+          };
+        },
+      }),
+
       getUserAccounts: build.query<Response, void>({
         query: () => '/accounts/user-accounts',
+      }),
+
+      getAccountDetails: build.query<Response, { accountId: string }>({
+        query: ({ accountId }) => `/accounts/user-account/${accountId}`,
       }),
     };
   },
 });
 
-export const { useGetUserAccountsQuery, useCreateNewAccountMutation } = AccountApiSlice;
+export const {
+  useGetUserAccountsQuery,
+  useDeleteUserAccountMutation,
+  useUpdateAccountStatusMutation,
+  useCreateNewAccountMutation,
+  useGetAccountDetailsQuery,
+} = AccountApiSlice;

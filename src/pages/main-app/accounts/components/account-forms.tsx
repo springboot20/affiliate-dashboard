@@ -6,13 +6,16 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import {
-  useCreateNewAccountMutation,
-} from '@/features/account/account.slice';
+import { useCreateNewAccountMutation } from '@/features/account/account.slice';
+import { SuccessModalComponent } from '@/components/modal/success-modal';
+import { ErrorModalComponent } from '@/components/modal/error-modal';
 
 export default function AccountForms() {
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const getInitialStepFromUrl = (): number => {
     const urlParams = new URLSearchParams(location.search);
@@ -33,7 +36,6 @@ export default function AccountForms() {
 
   const [step, setStep] = useState(getInitialStepFromUrl() || 0);
   const [tab, setTab] = useState(getInitialTabFromUrl() || 'new-account');
-
 
   const initialValues: AccountInitialValues = {
     cards: [],
@@ -58,7 +60,9 @@ export default function AccountForms() {
     [navigate]
   );
 
-  const handleNextStep = (): void => {
+  const handleNextStep = (event:React.MouseEvent<HTMLButtonElement>): void => {
+    event.preventDefault()
+    event.stopPropagation()
     const nextStep = Math.min(step + 1, 1);
     const nextTab = nextStep === 1 ? 'create-pin' : 'new-account';
 
@@ -70,7 +74,9 @@ export default function AccountForms() {
     updateUrl(nextStep, nextTab);
   };
 
-  const handlePrevStep = (): void => {
+  const handlePrevStep = (event:React.MouseEvent<HTMLButtonElement>): void => {
+    event.preventDefault()
+    event.stopPropagation()
     const prevStep = Math.max(step - 1, 0);
     const prevTab = prevStep === 0 ? 'new-account' : 'create-pin';
 
@@ -88,93 +94,124 @@ export default function AccountForms() {
   }, [step, tab, updateUrl]);
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={async (values: AccountInitialValues) => {
-        // Handle final form submission here
-        console.log('Form submitted with values:', values);
-        // Here you would typically send the data to your backend
-        try {
-          const response = await createNewAccount({ ...values, pin: values.pin.join('') }).unwrap();
+    <>
+      <SuccessModalComponent
+        open={open}
+        close={() => {
+          setOpen(false);
+          navigate('/app/accounts');
+        }}
+        message={message}
+      />
 
-          const { data } = response;
+      <ErrorModalComponent
+        open={openError}
+        close={() => {
+          setOpenError(false);
+          setStep(0);
+          setTab('new-account');
+        }}
+        message={message}
+      />
+      <Formik
+        initialValues={initialValues}
+        onSubmit={async (values: AccountInitialValues) => {
+          // Handle final form submission here
+          console.log('Form submitted with values:', values);
+          // Here you would typically send the data to your backend
+          try {
+            const response = await createNewAccount({
+              ...values,
+              pin: values.pin.join(''),
+            }).unwrap();
 
-          toast(data?.message, { type: 'success' });
+            const { data } = response;
 
-          console.log(data);
-        } catch (error: any) {
-          const message = error?.data?.message;
+            setMessage(data?.message);
 
-          toast(message, { type: 'error' });
-        }
-      }}
-      enableReinitialize>
-      {(formik) => {
-        return (
-          <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
-            <button
-              title='back'
-              type='button'
-              className='flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4'
-              onClick={() => navigate('/app/accounts')}>
-              <ArrowLeftIcon className='size-4 shrink-0' />
-              back
-            </button>
+            setTimeout(() => {
+              setOpen(true);
 
-            <StepIndicator _step={step} />
-            <motion.div
-              key={step}
-              initial='hidden'
-              animate='visible'
-              exit='exit'
-              variants={variants}
-              transition={{ duration: 0.5 }}
-              className='w-full'>
-              {step === 0 ? (
-                <CreateNewAccountFormComponent
-                  formik={formik}
-                />
-              ) : (
-                <PinPadFormComponent formik={formik} />
-              )}
-            </motion.div>
+              setTab('new-account');
+              setStep(0);
+            }, 1500);
 
-            <div className='mt-4 flex items-center justify-between'>
-              {step > 0 && (
-                <button
-                  type='button'
-                  onClick={handlePrevStep}
-                  className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
-                  <ArrowLeftIcon className='h-4' />
-                  Previous
-                </button>
-              )}
+            console.log(data);
+          } catch (error: any) {
+            setOpen(false);
+            setOpenError(true);
 
-              {step < steps.length - 1 ? (
-                <div className='ml-auto'>
+            const message = error?.data?.message;
+
+            setMessage(message);
+          }
+        }}
+        enableReinitialize>
+        {(formik) => {
+          return (
+            <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
+              <button
+                title='back'
+                type='button'
+                className='flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4'
+                onClick={() => navigate('/app/accounts')}>
+                <ArrowLeftIcon className='size-4 shrink-0' />
+                back
+              </button>
+
+              <StepIndicator _step={step} />
+              <motion.div
+                key={step}
+                initial='hidden'
+                animate='visible'
+                exit='exit'
+                variants={variants}
+                transition={{ duration: 0.5 }}
+                className='w-full'>
+                {step === 0 ? (
+                  <CreateNewAccountFormComponent formik={formik} />
+                ) : (
+                  <PinPadFormComponent formik={formik} />
+                )}
+              </motion.div>
+
+              <div className='mt-4 flex items-center justify-between'>
+                {step > 0 && (
                   <button
                     type='button'
-                    onClick={handleNextStep}
+                    onClick={handlePrevStep}
                     className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
-                    Next
-                    <ArrowRightIcon className='h-4' />
+                    <ArrowLeftIcon className='h-4' />
+                    Previous
                   </button>
-                </div>
-              ) : (
-                <div className='ml-auto'>
-                  <button
-                    type='submit'
-                    className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
-                    Submit
-                    <ArrowRightIcon className='h-4' />
-                  </button>
-                </div>
-              )}
-            </div>
-          </Form>
-        );
-      }}
-    </Formik>
+                )}
+
+                {step < steps.length - 1 ? (
+                  <div className='ml-auto'>
+                    <button
+                      type='button'
+                      onClick={handleNextStep}
+                      className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
+                      Next
+                      <ArrowRightIcon className='h-4' />
+                    </button>
+                  </div>
+                ) : (
+                  <div className='ml-auto'>
+                    <button
+                      type='submit'
+                      className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
+                      Submit
+                      <ArrowRightIcon className='h-4' />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
+    </>
   );
 }
 
