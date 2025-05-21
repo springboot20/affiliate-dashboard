@@ -4,7 +4,7 @@ import {
   useDeleteUserAccountMutation,
   useGetUserAccountsQuery,
 } from '@/features/account/account.slice';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ExclamationCircleIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { DeleteModalComponent } from '@/components/modal/delete-modal';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -45,12 +45,14 @@ export default function Accounts() {
       const { message } = response;
       toast(message, { type: 'success', className: 'text-xs' });
     } catch (error: any) {
-      const message = error?.message;
-      toast(message, { type: 'success', className: 'text-xs' });
+      const message = error?.data?.message;
+      toast(message, { type: 'error', className: 'text-xs' });
+      onClose(accountId!);
     }
   };
 
   const RenderActions = ({ data }: { data: any }) => {
+    console.log(data);
     return (
       <>
         <DeleteModalComponent
@@ -61,19 +63,32 @@ export default function Accounts() {
           onClose={() => onClose(data?._id as string)}
           title='account'
         />
-        <div className='flex items-center gap-2'>
-          <button type='button' title='delete account' onClick={() => onOpen(data?._id as string)}>
-            <TrashIcon className='h-5 text-red-500' />
-          </button>
+        {data?.status !== 'CLOSED' && data?.status !== 'SUSPENDED' ? (
+          <div className='flex items-center space-x-4'>
+            <button
+              type='button'
+              title='delete account'
+              onClick={() => onOpen(data?._id as string)}>
+              <TrashIcon className='h-5 text-red-500' />
+            </button>
+            <button
+              type='button'
+              title='edit account'
+              onClick={() => {
+                navigate(`/app/accounts/edit-account/${data?._id}`);
+              }}>
+              <PencilSquareIcon className='h-5 text-[#152F00]' />
+            </button>
+          </div>
+        ) : (
           <button
             type='button'
-            title='edit account'
-            onClick={() => {
-              navigate(`/app/accounts/edit-account/${data?._id}`);
-            }}>
-            <PencilSquareIcon className='h-5 text-[#152F00]' />
+            title={`${
+              data?.status === 'CLOSED' ? 'closed' : data?.status === 'SUSPENDED' ? 'suspended' : ''
+            } account`}>
+            <ExclamationCircleIcon className='h-5 text-red-500' />
           </button>
-        </div>
+        )}
       </>
     );
   };
@@ -94,7 +109,7 @@ export default function Accounts() {
 
             <button
               title='create account'
-              className='px-3 py-2.5 text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0 capitalize'
+              className='px-3 py-2.5 text-[#152F00] bg-[#A1E96F] text-sm font-semibold transition focus:outline-none focus:ring-0 capitalize'
               onClick={() => navigate('/app/accounts/new-account')}>
               new account
             </button>

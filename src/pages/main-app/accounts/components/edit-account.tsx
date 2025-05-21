@@ -59,11 +59,12 @@ export default function EditAccount() {
 
       const { message } = response;
 
-      toast(message, { type: 'success' });
+      toast(message, { type: 'success', className: 'text-xs' });
     } catch (error: any) {
-      console.log(error)
-      const message = error?.message;
-      toast(message, { type: 'error' });
+      console.log(error);
+      const message = error?.data?.message;
+      toast(message, { type: 'error', className: 'text-xs' });
+      navigate('/app/accounts');
     }
   };
 
@@ -150,10 +151,8 @@ export default function EditAccount() {
                       setFieldValue('status', value);
                     }}
                     className='w-full block border rounded-md px-3 py-2 appearance-none text-sm ring-1 ring-inset ring-[#A1E96F] placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#A1E96F] outline-none'>
-                    <option value='CLOSED'>Close</option>
                     <option value='ACTIVE'>Active</option>
                     <option value='INACTIVE'>In Active</option>
-                    <option value='SUSPENDED'>Suspended</option>
                   </Field>
 
                   <ErrorMessage name='status'>
