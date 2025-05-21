@@ -36,7 +36,7 @@ export const Login = () => {
         return response;
       })
       .catch((error) => {
-        toast.error(error, {className:"text-sm"});
+        toast.error(error, { className: 'text-xs' });
       });
   }
 
