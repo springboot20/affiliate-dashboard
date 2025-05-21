@@ -67,12 +67,12 @@ export default function Overview() {
 
   return (
     <Fragment>
-      <main className='relative bg-[#152F00] h-[40vh] sm:h-[45vh] lg:h-[55vh]'>
+      <main className='relative bg-[#152F00] h-[55vh] sm:h-[45vh] lg:h-[55vh]'>
         <div className='absolute inset-x-0 h-full w-full'>
           <img src={background} alt='background' className='h-full w-full object-cover' />
         </div>
 
-        <div className='relative pt-6 sm:pt-12 lg:pt-[8rem] max-w-7xl mx-auto px-4 2xl:px-0'>
+        <div className='relative pt-24 lg:pt-[8rem] max-w-7xl mx-auto px-4 2xl:px-0'>
           <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0'>
             <div className='text-white flex flex-col flex-start gap-y-2 sm:gap-y-4'>
               <span className='font-normal text-xs sm:sm'>TOTAL BALANCE</span>
@@ -87,8 +87,8 @@ export default function Overview() {
               </span>
             </div>
 
-            <div className='flex items-end w-full sm:w-auto gap-3'>
-              <fieldset className='w-full sm:w-auto'>
+            <div className='flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3'>
+              <fieldset className='w-fit'>
                 <label className='text-xs mb-2 text-white block' htmlFor='account'>
                   switch account
                 </label>
@@ -121,7 +121,7 @@ export default function Overview() {
                 </select>
               </fieldset>
 
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
                 <button
                   type="button"
                   title="view analytics"
