@@ -8,7 +8,7 @@ import { useEffect } from 'react';
  * based on their preferred view setting.
  * Place this near the top level of your application.
  */
-export const ViewRedirector: React.FC<{children: React.ReactNode}> = ({children}) => {
+export const ViewRedirector: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { preferred_view } = useProfile();

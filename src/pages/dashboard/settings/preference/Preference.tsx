@@ -8,7 +8,6 @@ import { useUpdateProfileMutation, useGetProfileQuery } from '@/features/profile
 import { toast } from 'react-toastify';
 import { Loader } from '@/components/Loader';
 import { useProfile } from '@/context/ProfileContext';
-import { useNavigate } from 'react-router-dom';
 
 type InitialValues = {
   currency: string;
@@ -25,7 +24,6 @@ const preferenceSchema = yup.object({
 type PreferredViewType = 'app' | 'dashboard';
 
 export const Preference = () => {
-  const navigate = useNavigate()
   const [receiveDigitalCurrency, setReceiveDigitalCurrency] = useState<boolean>(false);
   const [receiveMerchant, setReceiveMerchant] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
@@ -47,7 +45,7 @@ export const Preference = () => {
   }, [data]);
 
   async function onSubmit(values: InitialValues) {
-    const previousView = profile?.preferredView as PreferredViewType;
+    // const previousView = profile?.preferredView as PreferredViewType;
 
     try {
       const response = await updateProfile({
@@ -64,17 +62,6 @@ export const Preference = () => {
 
       // Refetch profile data to ensure everything is in sync
       refetchProfile();
-
-      // If the view changed, redirect the user to the appropriate view
-      if (previousView !== values.preferred_view) {
-        setTimeout(() => {
-          if (values.preferred_view === 'app') {
-            navigate('/app/overview');
-          } else {
-            navigate('/dashboard/overview');
-          }
-        }, 500); // Small delay to allow the toast to be visible
-      }
 
       setEditing(false);
     } catch (error: any) {
