@@ -4,7 +4,7 @@ import { PinPadFormComponent } from './pinpad-form';
 import { motion } from 'framer-motion';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { AccountInitialValues } from '@/types/formik/formik';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useCreateNewAccountMutation } from '@/features/account/account.slice';
 import { SuccessModalComponent } from '@/components/modal/success-modal';
@@ -60,9 +60,9 @@ export default function AccountForms() {
     [navigate]
   );
 
-  const handleNextStep = (event:React.MouseEvent<HTMLButtonElement>): void => {
-    event.preventDefault()
-    event.stopPropagation()
+  const handleNextStep = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    event.preventDefault();
+    event.stopPropagation();
     const nextStep = Math.min(step + 1, 1);
     const nextTab = nextStep === 1 ? 'create-pin' : 'new-account';
 
@@ -74,9 +74,9 @@ export default function AccountForms() {
     updateUrl(nextStep, nextTab);
   };
 
-  const handlePrevStep = (event:React.MouseEvent<HTMLButtonElement>): void => {
-    event.preventDefault()
-    event.stopPropagation()
+  const handlePrevStep = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    event.preventDefault();
+    event.stopPropagation();
     const prevStep = Math.max(step - 1, 0);
     const prevTab = prevStep === 0 ? 'new-account' : 'create-pin';
 
@@ -115,7 +115,10 @@ export default function AccountForms() {
       />
       <Formik
         initialValues={initialValues}
-        onSubmit={async (values: AccountInitialValues) => {
+        onSubmit={async (
+          values: AccountInitialValues,
+          { resetForm }: FormikHelpers<AccountInitialValues>
+        ) => {
           // Handle final form submission here
           console.log('Form submitted with values:', values);
           // Here you would typically send the data to your backend
@@ -134,6 +137,7 @@ export default function AccountForms() {
 
               setTab('new-account');
               setStep(0);
+              resetForm();
             }, 1500);
 
             console.log(data);
@@ -142,6 +146,14 @@ export default function AccountForms() {
             setOpenError(true);
 
             const message = error?.data?.message;
+
+            setTimeout(() => {
+              setOpenError(false);
+
+              setTab('new-account');
+              resetForm();
+              setStep(0);
+            }, 1500);
 
             setMessage(message);
           }
