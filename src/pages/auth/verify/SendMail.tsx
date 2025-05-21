@@ -39,7 +39,7 @@ export const SendEmail = () => {
         return res;
       })
       .catch((error) => {
-        toast.error(error.message);
+        toast.error(error.message, {className:'text-xs'});
       });
   }
 

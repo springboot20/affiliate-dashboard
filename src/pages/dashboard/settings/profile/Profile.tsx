@@ -60,7 +60,7 @@ export const Profile = () => {
       }).unwrap();
 
       const { message } = response;
-      toast(message, { type: 'success' });
+      toast(message, { type: 'success' , className:"text-xs" });
 
       // Reset editing state after successful submission
       setEditing(false);
@@ -70,7 +70,7 @@ export const Profile = () => {
       // refetchProfile();
     } catch (error: any) {
       const errorMessage = error?.data?.message || 'Failed to update profile';
-      toast(errorMessage, { type: 'error' });
+      toast(errorMessage, { type: 'error' , className:"text-xs" });
     }
   }
 

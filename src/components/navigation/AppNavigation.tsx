@@ -77,7 +77,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
       .then(async (res) => {
         await Promise.resolve(
           setTimeout(() => {
-            // navigate('/');
+            // navigate('/auth/login');
           })
         );
 
@@ -86,6 +86,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
       .catch((error) => {
         toast.error(error, {
           // position: 'top-center',
+          className:"text-sm"
         });
       });
   };

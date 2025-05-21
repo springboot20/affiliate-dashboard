@@ -59,7 +59,7 @@ export const Preference = () => {
       }).unwrap();
 
       const { message } = response;
-      toast(message, { type: 'success' });
+      toast(message, { type: 'success', className:"text-xs" });
 
       // Update the context with the new preferred view
       updatePreferredView(values.preferred_view);
@@ -81,7 +81,7 @@ export const Preference = () => {
       setEditing(false);
     } catch (error: any) {
       const errorMessage = error?.data?.message || 'Failed to update profile';
-      toast(errorMessage, { type: 'error' });
+      toast(errorMessage, { type: 'error', className:"text-xs" });
     }
   }
 

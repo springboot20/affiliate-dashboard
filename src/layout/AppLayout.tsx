@@ -52,7 +52,7 @@ const AppLayout = () => {
         return res;
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(error, {className:"text-xs"});
       });
   };
   //  lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem]

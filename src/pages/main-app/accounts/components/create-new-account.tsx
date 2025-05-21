@@ -74,8 +74,8 @@ export const CreateNewAccountFormComponent = ({
             <button
               type='button'
               onClick={() => setLinkAccountToCard((prev) => !prev)}
-              className='text-sm font-medium text-[#152F00] inline-flex items-center gap-2 shrink-0'
-              title={linkAccountToCard ? 'unlink account' : 'link account'}>
+      className='text-sm font-medium text-[#152F00] inline-flex items-center gap-2 shrink-0'
+      title={linkAccountToCard ? 'unlink account' : 'link account'}>
               <span>{linkAccountToCard ? 'unlink account' : 'link account'}</span>
               <LinkIcon className='h-4' />
             </button>

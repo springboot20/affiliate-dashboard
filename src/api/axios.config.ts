@@ -24,7 +24,7 @@ export const BankAppService = async ({
   BankAppApiClient.interceptors.response.use(
     (config: AxiosResponse) => {
       if (config.status.toString().startsWith("2")) {
-        showSuccessNotification ? toast.success(config.data.message) : "";
+        showSuccessNotification ? toast.success(config.data.message, { className:"text-sm"}) : "";
       }
 
       return config;

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .checkmark {
+      fill: none;
+      stroke: #4CAF50;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: draw 1s ease-in-out forwards;
+      animation-delay: 0.5s;
+    }
+    
+    .circle {
+      fill: none;
+      stroke: #4CAF50;
+      stroke-width: 4;
+      opacity: 0;
+      stroke-dasharray: 260;
+      stroke-dashoffset: 260;
+      animation: draw-circle 0.8s ease-in-out forwards;
+    }
+    
+    .particle {
+      fill: #4CAF50;
+      opacity: 0;
+    }
+    
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    @keyframes draw-circle {
+      0% {
+        opacity: 1;
+        stroke-dashoffset: 260;
+      }
+      100% {
+        opacity: 1;
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    @keyframes particle-animation-1 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(20px, -25px); opacity: 0; }
+    }
+    
+    @keyframes particle-animation-2 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-25px, -15px); opacity: 0; }
+    }
+    
+    @keyframes particle-animation-3 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(15px, 25px); opacity: 0; }
+    }
+    
+    @keyframes particle-animation-4 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-15px, 20px); opacity: 0; }
+    }
+    
+    @keyframes particle-animation-5 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(25px, 5px); opacity: 0; }
+    }
+    
+    @keyframes particle-animation-6 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-20px, -5px); opacity: 0; }
+    }
+    
+    #particle1 {
+      animation: particle-animation-1 1s ease-out forwards;
+      animation-delay: 1.5s;
+    }
+    
+    #particle2 {
+      animation: particle-animation-2 1s ease-out forwards;
+      animation-delay: 1.5s;
+    }
+    
+    #particle3 {
+      animation: particle-animation-3 1s ease-out forwards;
+      animation-delay: 1.6s;
+    }
+    
+    #particle4 {
+      animation: particle-animation-4 1s ease-out forwards;
+      animation-delay: 1.6s;
+    }
+    
+    #particle5 {
+      animation: particle-animation-5 1s ease-out forwards;
+      animation-delay: 1.7s;
+    }
+    
+    #particle6 {
+      animation: particle-animation-6 1s ease-out forwards;
+      animation-delay: 1.7s;
+    }
+  </style>
+  
+  <circle class="circle" cx="50" cy="50" r="40" />
+  <path class="checkmark" d="M30,50 L45,65 L70,35" />
+  
+  <!-- Particles -->
+  <circle id="particle1" class="particle" cx="50" cy="50" r="2" />
+  <circle id="particle2" class="particle" cx="50" cy="50" r="2" />
+  <circle id="particle3" class="particle" cx="50" cy="50" r="2" />
+  <circle id="particle4" class="particle" cx="50" cy="50" r="1.5" />
+  <circle id="particle5" class="particle" cx="50" cy="50" r="1.5" />
+  <circle id="particle6" class="particle" cx="50" cy="50" r="1.5" />
+</svg>

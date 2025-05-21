@@ -196,13 +196,13 @@ export const CardForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
             }).unwrap();
             const { message } = response;
             setCardNumberDetails({});
-            toast(message, { type: 'success' });
+            toast(message, { type: 'success' , className:"text-xs"});
             refetch();
 
             resetForm();
           } catch (error: any) {
             const errorMessage = error?.data?.message || 'Failed to create card';
-            toast(errorMessage, { type: 'error' });
+            toast(errorMessage, { type: 'error', className:"text-xs" });
           }
         }}>
         {({ setFieldValue, isSubmitting, values, errors, touched }) => {

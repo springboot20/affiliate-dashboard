@@ -19,7 +19,7 @@ export const EmailVerification = () => {
         const { data } = await verify_email({ userId, token });
 
         setStatus("success");
-        toast.success(data.message, { autoClose: 2000 });
+        toast.success(data.message, { autoClose: 2000, className:"text-xs" });
       } catch (error) {
         if (status !== "success") {
           // Only show error if status is not already "success"

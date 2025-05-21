@@ -23,6 +23,7 @@ import MainAppOverview from '@/pages/main-app/overview';
 import MainTransactions from '@/pages/main-app/transactions/transactions';
 import MainAccounts from '@/pages/main-app/accounts/accounts';
 import MainAccountsForm from '@/pages/main-app/accounts/components/account-forms';
+import EditAccount from '@/pages/main-app/accounts/components/edit-account';
 import MainCards from '@/pages/main-app/cards/cards';
 import { AppSwitcher } from '@/components/app-switcher';
 import { ViewRedirector } from '@/components/view-redirector';
@@ -62,6 +63,14 @@ export const router = createBrowserRouter([
           {
             path: 'new-account',
             element: <MainAccountsForm />,
+          },
+          {
+            path: 'edit-account/:accountId',
+            element: (
+              <ProtectedRoute>
+                <EditAccount />
+              </ProtectedRoute>
+            ),
           },
         ],
       },

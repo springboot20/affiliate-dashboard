@@ -24,8 +24,7 @@ export type ProfileValues = {
 };
 
 export type AccountInitialValues = {
-  account_number: string;
-  type: 'NONE' | 'CURRENT' | 'NONE';
+  type: 'NONE' | 'CURRENT' | 'SAVINGS';
   currency: string;
   cards?: string[];
   pin: string[];

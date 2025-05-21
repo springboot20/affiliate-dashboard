@@ -47,8 +47,8 @@ export const ErrorModalComponent: React.FC<ErrorModalComponentProps> = ({
               <DialogPanel className='pointer-events-auto grid place-items-center h-screen transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700'>
                 <div className='p-4 bg-white rounded-md max-w-md w-full relative min-h-52'>
                   <div className='flex h-7 items-center justify-between'>
-                    <DialogTitle as='h1' className='text-xl font-bold text-red-500'>
-                      Delete Product
+                    <DialogTitle as='h1' className='text-base font-bold text-red-500'>
+                      Error Notification
                     </DialogTitle>
                     <button
                       type='button'

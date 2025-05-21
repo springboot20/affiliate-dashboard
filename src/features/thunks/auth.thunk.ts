@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   login_user,
   register_new_user,
@@ -7,22 +7,22 @@ import {
   send_email,
   verify_email,
   BankAppApiClient,
-  refreshToken
-} from "@/api/axios.config";
+  refreshToken,
+} from '@/api/axios.config';
 import type {
   RegisterPayloadAction,
   LoginPayloadAction,
   ForgotPayloadAction,
-} from "@/types/auth/auth";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
+} from '@/types/auth/auth';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 export const register = createAsyncThunk(
-  "auth/register",
+  'auth/register',
   async (data: RegisterPayloadAction, { rejectWithValue }) => {
     try {
       const response = await register_new_user(data);
-      toast.success(response.data.message);
+      toast.success(response.data.message, { className: 'text-sm' });
 
       return response.data;
     } catch (error) {
@@ -35,12 +35,12 @@ export const register = createAsyncThunk(
 );
 
 export const login = createAsyncThunk(
-  "auth/login",
+  'auth/login',
   async (data: LoginPayloadAction, { rejectWithValue }) => {
     try {
       const response = await login_user(data);
 
-      toast.success(response.data.message);
+      toast.success(response.data.message, { className: 'text-sm' });
 
       return response.data;
     } catch (error) {
@@ -52,45 +52,48 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", async (_:{token: string}, { rejectWithValue }) => {
-  try {
-    const response = await logout_user();
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_: { token: string }, { rejectWithValue }) => {
+    try {
+      const response = await logout_user();
 
-    BankAppApiClient.defaults.headers.common["Authorization"] = `Bearer ${_.token}`;
+      BankAppApiClient.defaults.headers.common['Authorization'] = `Bearer ${_.token}`;
 
-    toast.success(response.data.message);
+      toast.success(response.data.message, { className: 'text-sm' });
 
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return rejectWithValue(error?.message);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error?.message);
+      }
+
+      return error;
     }
-
-    return error;
   }
-});
+);
 
+export const refreshAccessToken = createAsyncThunk(
+  'auth/refresh-token',
+  async (data: { inComingRefreshToken: string }, { rejectWithValue }) => {
+    try {
+      const response = await refreshToken(data);
 
-export const refreshAccessToken = createAsyncThunk("auth/refresh-token", async (data:{inComingRefreshToken: string}, { rejectWithValue }) => {
-  try {
-    const response = await refreshToken(data);
+      toast.success(response.data.message, { className: 'text-sm' });
 
- 
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error?.message);
+      }
 
-    toast.success(response.data.message);
-
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return rejectWithValue(error?.message);
+      return error;
     }
-
-    return error;
   }
-});
+);
 
 export const forgot = createAsyncThunk(
-  "auth/forgot",
+  'auth/forgot',
   async (data: ForgotPayloadAction, { rejectWithValue }) => {
     try {
       const response = await forgot_password(data);
@@ -105,7 +108,7 @@ export const forgot = createAsyncThunk(
 );
 
 export const sendMail = createAsyncThunk(
-  "auth/send-mail",
+  'auth/send-mail',
   async (data: { email: string }, { rejectWithValue }) => {
     try {
       const response = await send_email(data);
@@ -120,7 +123,7 @@ export const sendMail = createAsyncThunk(
 );
 
 export const verifyMail = createAsyncThunk(
-  "auth/verify-mail",
+  'auth/verify-mail',
   async (data: { userId: string; token: string }, { rejectWithValue }) => {
     try {
       const response = await verify_email(data);

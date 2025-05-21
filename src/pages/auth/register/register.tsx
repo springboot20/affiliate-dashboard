@@ -41,7 +41,7 @@ export const Register = () => {
         resetForm();
       })
       .catch((error) => {
-        toast.error(error.message);
+        toast.error(error.message, {className:"text-xs"});
       });
   };
 

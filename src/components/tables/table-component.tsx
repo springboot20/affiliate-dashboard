@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { classNames } from '@/utils';
 
 interface Column {
   header: string;
@@ -58,7 +59,7 @@ export const TableComponent = ({ datum, columns, actions }: AccountTableListProp
             })
           )}
 
-          {actions && <th className='text-[#272727] capitalize'>action</th>}
+          {actions && <th className='text-[#272727] capitalize'>actions</th>}
         </tr>
       </thead>
 
@@ -88,8 +89,19 @@ export const TableComponent = ({ datum, columns, actions }: AccountTableListProp
                     }
 
                     return (
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                        {cellContent}
+                      <td
+                        className={classNames('px-6 py-4 whitespace-nowrap text-sm text-gray-500')}>
+                        {column.header === 'status' ? (
+                          <span
+                            className={classNames(
+                              'px-2 py-1 !font-medium !text-xs w-max !text-white rounded-xl',
+                              row['status'] === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
+                            )}>
+                            {cellContent}
+                          </span>
+                        ) : (
+                          cellContent
+                        )}
                       </td>
                     );
                   })
