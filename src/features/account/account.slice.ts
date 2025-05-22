@@ -1,4 +1,4 @@
-import { ApiService } from '@/app/service/api.service';
+import { ApiService } from "@/app/service/api.service";
 
 interface Response {
   data: any;
@@ -12,8 +12,8 @@ export const AccountApiSlice = ApiService.injectEndpoints({
     return {
       createNewAccount: build.mutation<Response, { [key: string]: any }>({
         query: (data) => ({
-          url: '/accounts/create',
-          method: 'POST',
+          url: "/accounts/create",
+          method: "POST",
           body: data,
         }),
       }),
@@ -21,7 +21,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
       deleteUserAccount: build.mutation<Response, { accountId: string }>({
         query: ({ accountId }) => ({
           url: `/accounts/user-account/${accountId}`,
-          method: 'DELETE',
+          method: "DELETE",
         }),
       }),
 
@@ -33,14 +33,22 @@ export const AccountApiSlice = ApiService.injectEndpoints({
           console.log(rest);
           return {
             url: `/accounts/user-account/${accountId}`,
-            method: 'PATCH',
+            method: "PATCH",
             body: { ...rest },
           };
         },
       }),
 
       getUserAccounts: build.query<Response, void>({
-        query: () => '/accounts/user-accounts',
+        query: () => "/accounts/user-accounts",
+      }),
+
+      validateAccountNumber: build.mutation<Response, string>({
+        query: (accountNumber) => ({
+          url: "/accounts/validate-account",
+          body: { accountNumber },
+          method: "POST",
+        }),
       }),
 
       getAccountDetails: build.query<Response, { accountId: string }>({
@@ -55,5 +63,6 @@ export const {
   useDeleteUserAccountMutation,
   useUpdateAccountStatusMutation,
   useCreateNewAccountMutation,
+  useValidateAccountNumberMutation,
   useGetAccountDetailsQuery,
 } = AccountApiSlice;

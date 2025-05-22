@@ -31,6 +31,12 @@ export default function Accounts() {
       // Since your implementation uses dot notation access, we need a different approach
       deepOneAccessor: ['balance'],
     },
+    {
+      header: 'currency',
+      accessor: 'wallet',
+      // Since your implementation uses dot notation access, we need a different approach
+      deepOneAccessor: ['currency'],
+    },
     { header: 'account number', accessor: 'account_number' },
     { header: 'type', accessor: 'type' },
     { header: 'status', accessor: 'status' },

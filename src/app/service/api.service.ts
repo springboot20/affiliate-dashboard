@@ -11,7 +11,9 @@ export const ApiService = createApi({
     baseUrl: env.MODE === "development" ? env.VITE_LOCAL_BASE_URL : env.VITE_DEPLOYED_URL,
     prepareHeaders: (headers) => {
       const tokens = LocalStorage.get("tokens") as Token;
-      if (tokens) {
+      const isAuthenticated = LocalStorage.get("authentified") as boolean;
+
+      if (tokens && isAuthenticated) {
         headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
       }
 

@@ -9,7 +9,7 @@ type ViewStateContextType = {
 
 const ViewStateContext = createContext<ViewStateContextType | null>(null);
 
-export const ViewStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Pa: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [viewHistory, setViewHistory] = useState<Record<string, string>>({
     app: '/app/overview',
     dashboard: '/dashboard/overview',

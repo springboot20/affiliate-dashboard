@@ -1,9 +1,11 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { CustomErrorMessage } from "@/components/Error";
-import { classNames } from "@/utils";
-import { useState } from "react";
+import { classNames, formatMoney } from "@/utils";
+import React, { useEffect, useState } from "react";
+import { useGetUserAccountsQuery } from "@/features/account/account.slice";
+import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -20,8 +22,24 @@ type InitialValues = {
 };
 
 export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelComponentProps) => {
+  const { data: accounts } = useGetUserAccountsQuery();
+  const {
+    isValid: isAccountValid,
+    isValidating: isValidatingAccount,
+    message: validationMessage,
+    validateAccountNumber,
+    resetValidation,
+  } = useValidateAccountNumber();
+  const [account, setAccount] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (accounts?.data && accounts?.data?.docs.length) {
+      setAccount(accounts?.data?.docs[0]?._id);
+    }
+  }, [accounts?.data]);
+
   const initialValues: InitialValues = {
-    account: "",
+    account: account || "",
     bank: "",
     beneficiary: "",
     amount: "",
@@ -31,6 +49,13 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
 
   const MAX_NARRATION_COUNT = 150;
   const [descriptionCount, setDescriptionCount] = useState(MAX_NARRATION_COUNT);
+
+  // Reset validation when modal closes
+  useEffect(() => {
+    if (!open) {
+      resetValidation();
+    }
+  }, [open, resetValidation]);
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-40">
@@ -71,9 +96,32 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             <select
                               name="account"
                               id="account"
+                              // value={values.account}
+                              onChange={(event) => {
+                                const selected = accounts?.data?.docs?.find((doc: any) => {
+                                  return doc._id === event.target.value;
+                                });
+
+                                setFieldValue("account", selected?._id);
+                              }}
                               className="w-full block border rounded px-3 py-2 appearance-none text-sm"
                             >
                               <option value="--select-an-account-">---select-an-account---</option>
+                              {React.Children.toArray(
+                                accounts?.data?.docs.length &&
+                                  accounts?.data?.docs.map((doc: any) => {
+                                    return (
+                                      <option value={doc?._id}>
+                                        {doc?.type} Account -{" "}
+                                        {formatMoney(
+                                          doc?.wallet?.balance,
+                                          doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                          doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                        )}
+                                      </option>
+                                    );
+                                  })
+                              )}
                             </select>
                             <ErrorMessage name="account">
                               {(msg) => (
@@ -114,11 +162,53 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             >
                               beneficiary account number
                             </label>
-                            <Field
-                              name="beneficiary"
-                              className="w-full block border rounded px-3 py-2 text-sm"
-                            />
+                            <div className="relative">
+                              <Field
+                                name="beneficiary"
+                                className={classNames(
+                                  "w-full block border rounded px-3 py-2 text-sm",
+                                  isAccountValid === true ? "border-green-500" : "",
+                                  isAccountValid === false ? "border-red-500" : ""
+                                )}
+                                onChange={(event: any) => {
+                                  const value = event.target.value.replace(/\D/g, ""); // Only allow digits
+                                  setFieldValue("beneficiary", value);
 
+                                  // Validate as user types
+                                  if (value.length >= 10) {
+                                    validateAccountNumber(value);
+                                  } else if (value.length === 0) {
+                                    resetValidation();
+                                  }
+                                }}
+                                maxLength={10}
+                              />
+                              {/* Validation indicator */}
+                              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                {isValidatingAccount && (
+                                  <div className="animate-spin h-4 w-4 border-2 border-[#A1E96F] border-t-transparent rounded-full"></div>
+                                )}
+                                {!isValidatingAccount && isAccountValid === true && (
+                                  <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
+                                )}
+                                {!isValidatingAccount &&
+                                  isAccountValid === false &&
+                                  values.beneficiary.length >= 10 && (
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                                  )}
+                              </div>
+                            </div>
+                            {/* Validation message */}
+                            {validationMessage && (
+                              <div
+                                className={classNames(
+                                  "text-sm mt-0.5 block",
+                                  isAccountValid === true ? "text-[#A1E96F]" : "text-red-600"
+                                )}
+                              >
+                                {validationMessage}
+                              </div>
+                            )}
                             <ErrorMessage name="beneficiary">
                               {(msg) => (
                                 <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
@@ -160,8 +250,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               <Field
                                 as="textarea"
                                 name="narration"
-                                row={6}
-                                className="w-full block border rounded p-3"
+                                rows={Math.ceil(values.narration.length / 31)}
+                                className="w-full block border rounded p-3 text-xs"
                                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                                   const value = event.target.value;
 
@@ -173,10 +263,6 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                     setDescriptionCount(0);
                                   }
                                 }}
-                                disabled={
-                                  descriptionCount === 0 &&
-                                  values.narration.length === MAX_NARRATION_COUNT
-                                }
                               />
                               <span
                                 className={classNames(
@@ -225,7 +311,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                           </fieldset>
 
                           <button
-                            type="button"
+                            type="submit"
                             title="next"
                             className={classNames(
                               "capitalize font-medium text-sm w-full px-2 py-2.5 rounded mt-10 text-center bg-[#A1E96F] text-[#152F00]",

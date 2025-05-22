@@ -77,7 +77,7 @@ export default function Overview() {
             <div className='text-white flex flex-col flex-start gap-y-2 sm:gap-y-4'>
               <span className='font-normal text-xs sm:sm'>TOTAL BALANCE</span>
               <span className='font-medium text-sm lg:text-xl xl:text-3xl'>
-                {isLoading && isFetching
+                {isLoading && isFetching && !accountDetails
                   ? 'loading...'
                   : formatMoney(
                       accountDetails?.data?.wallet?.balance,
@@ -88,17 +88,19 @@ export default function Overview() {
             </div>
 
             <div className='flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3'>
-              {isLoading && isFetching ? (
+              {isLoading && isFetching && !accounts ? (
                 <span className='text-sm text-white'>loading...</span>
               ) : (
                 <fieldset className='w-fit'>
-                  <label className='text-xs mb-2 text-white block' htmlFor='account'>
+                  <label
+                    className='text-xs mb-2 text-white block capitalize font-medium'
+                    htmlFor='account'>
                     switch account
                   </label>
                   <select
                     id='account'
                     name='account'
-                    className='text-xs px-2 py-1.5 appearance-none border rounded w-full sm:w-auto'
+                    className='text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]'
                     onChange={(event) => {
                       const selectedAccount = accounts?.data?.docs.find((doc: any) => {
                         return event.target.value === doc?._id;
@@ -108,10 +110,10 @@ export default function Overview() {
                     }}>
                     {React.Children.toArray(
                       accounts?.data?.docs.length &&
-                        accounts?.data?.docs.map((doc: any, index: number) => {
+                        accounts?.data?.docs.map((doc: any) => {
                           return (
                             <option value={doc?._id}>
-                              account-{index + 1}{' '}
+                              {doc?.type} account{' '}-{' '}
                               {formatMoney(
                                 doc?.wallet?.balance,
                                 doc?.wallet?.currency === 'USD' ? 'USD' : 'NGN',
