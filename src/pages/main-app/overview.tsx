@@ -63,8 +63,6 @@ export default function Overview() {
     },
   ];
 
-  console.log(accountDetails);
-
   return (
     <Fragment>
       <main className='relative bg-[#152F00] h-[55vh] sm:h-[45vh] lg:h-[55vh]'>

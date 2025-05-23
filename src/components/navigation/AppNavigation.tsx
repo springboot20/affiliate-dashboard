@@ -33,8 +33,6 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
   const { pathname } = useLocation();
   const title = pathname.split('/')[2];
 
-  console.log(title);
-
   const navigations: Routes[] = [
     {
       title: 'overview',
@@ -140,7 +138,6 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                         );
                       }}>
                       {({ isActive }) => {
-                        console.log(isActive);
                         return (
                           <span
                             className={classNames(

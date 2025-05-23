@@ -58,7 +58,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const setAuthorizationHeader = () => {
-      console.log(tokens);
       if (tokens) {
         BankAppApiClient.defaults.headers.common['Authorization'] = `Bearer ${tokens.accessToken}`;
       } else {

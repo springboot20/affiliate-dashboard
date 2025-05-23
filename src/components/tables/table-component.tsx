@@ -47,8 +47,6 @@ const getNestedValue = (obj: any, accessor: string, deepAccessors?: string[]) =>
 };
 
 export const TableComponent = ({ datum, columns, actions }: AccountTableListProps) => {
-  console.log(datum, columns);
-
   return (
     <table className='!w-full table-aut0 p-1 border-t border-[#D9DCE7] app'>
       <thead>
