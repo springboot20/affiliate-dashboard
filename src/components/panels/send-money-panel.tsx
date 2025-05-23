@@ -1,11 +1,17 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
-import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  XMarkIcon,
+  CurrencyDollarIcon,
+} from "@heroicons/react/24/outline";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { CustomErrorMessage } from "@/components/Error";
 import { classNames, formatMoney } from "@/utils";
 import React, { useEffect, useState } from "react";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
+import { useSendTransactionMutation } from "@/features/transactions/transaction.slice";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -23,6 +29,8 @@ type InitialValues = {
 
 export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelComponentProps) => {
   const { data: accounts } = useGetUserAccountsQuery();
+  const [sendTransaction] = useSendTransactionMutation();
+
   const {
     isValid: isAccountValid,
     isValidating: isValidatingAccount,
@@ -30,6 +38,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     validateAccountNumber,
     resetValidation,
   } = useValidateAccountNumber();
+
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
@@ -57,6 +66,22 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     }
   }, [open, resetValidation]);
 
+  const handleSendTransaction = async (values: InitialValues) => {
+    try {
+      const response = await sendTransaction({
+        amount: values?.amount,
+        description: values?.narration,
+        to_account: values?.beneficiary,
+        from_account: values?.account,
+      }).unwrap();
+
+      const { data } = response;
+      console.log(data);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <Dialog open={open} onClose={onClose} className="relative z-40">
       <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0" />
@@ -82,7 +107,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                     </div>
                   </div>
 
-                  <Formik initialValues={initialValues} onSubmit={() => {}}>
+                  <Formik initialValues={initialValues} onSubmit={handleSendTransaction}>
                     {({ setFieldValue, values }) => {
                       return (
                         <Form className="mt-4">
@@ -93,36 +118,50 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             >
                               choose account
                             </label>
-                            <select
-                              name="account"
-                              id="account"
-                              // value={values.account}
-                              onChange={(event) => {
-                                const selected = accounts?.data?.docs?.find((doc: any) => {
-                                  return doc._id === event.target.value;
-                                });
+                            <div className="relative flex items-center h-full">
+                              <select
+                                name="account"
+                                id="account"
+                                // value={values.account}
+                                onChange={(event) => {
+                                  const selected = accounts?.data?.docs?.find((doc: any) => {
+                                    return doc._id === event.target.value;
+                                  });
 
-                                setFieldValue("account", selected?._id);
-                              }}
-                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
-                            >
-                              <option value="--select-an-account-">---select-an-account---</option>
-                              {React.Children.toArray(
-                                accounts?.data?.docs.length &&
-                                  accounts?.data?.docs.map((doc: any) => {
-                                    return (
-                                      <option value={doc?._id}>
-                                        {doc?.type} Account -{" "}
-                                        {formatMoney(
-                                          doc?.wallet?.balance,
-                                          doc?.wallet?.currency === "USD" ? "USD" : "NGN",
-                                          doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                                        )}
-                                      </option>
-                                    );
-                                  })
-                              )}
-                            </select>
+                                  setFieldValue("account", selected?._id);
+                                }}
+                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm"
+                              >
+                                <option value="--select-an-account-">
+                                  ---select-an-account---
+                                </option>
+                                {React.Children.toArray(
+                                  accounts?.data?.docs.length &&
+                                    accounts?.data?.docs.map((doc: any) => {
+                                      return (
+                                        <option value={doc?._id}>
+                                          {doc?.type} Account -{" "}
+                                          {formatMoney(
+                                            doc?.wallet?.balance,
+                                            doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                            doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                          )}
+                                        </option>
+                                      );
+                                    })
+                                )}
+                              </select>
+                              <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                                </svg>
+                              </div>
+                            </div>
+
                             <ErrorMessage name="account">
                               {(msg) => (
                                 <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
@@ -139,13 +178,27 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             >
                               select bank
                             </label>
-                            <select
-                              name="bank"
-                              id="bank"
-                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
-                            >
-                              <option value="--select-an-bank-">---select-an-account---</option>
-                            </select>
+
+                            <div className="relative flex items-center h-full">
+                              <select
+                                name="bank"
+                                id="bank"
+                                className="w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none focus:ring-2 focus:ring-[#A1E96F]"
+                              >
+                                <option value="--select-an-bank-">---select-an-account---</option>
+                              </select>
+
+                              <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                                </svg>
+                              </div>
+                            </div>
+
                             <ErrorMessage name="bank">
                               {(msg) => (
                                 <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
@@ -166,8 +219,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               <Field
                                 name="beneficiary"
                                 className={classNames(
-                                  "w-full block border rounded px-3 py-2 text-sm",
-                                  isAccountValid === true ? "border-green-500" : "",
+                                  "w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 text-sm",
+                                  isAccountValid === true ? "border-[#A1E96F]" : "",
                                   isAccountValid === false ? "border-red-500" : ""
                                 )}
                                 onChange={(event: any) => {
@@ -188,9 +241,11 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 {isValidatingAccount && (
                                   <div className="animate-spin h-4 w-4 border-2 border-[#A1E96F] border-t-transparent rounded-full"></div>
                                 )}
-                                {!isValidatingAccount && isAccountValid === true && (
-                                  <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
-                                )}
+                                {!isValidatingAccount &&
+                                  isAccountValid === true &&
+                                  values.beneficiary.length >= 10 && (
+                                    <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
+                                  )}
                                 {!isValidatingAccount &&
                                   isAccountValid === false &&
                                   values.beneficiary.length >= 10 && (
@@ -199,7 +254,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               </div>
                             </div>
                             {/* Validation message */}
-                            {validationMessage && (
+                            {validationMessage && values.beneficiary.length >= 10 && (
                               <div
                                 className={classNames(
                                   "text-sm mt-0.5 block",
@@ -225,10 +280,16 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             >
                               amount
                             </label>
-                            <Field
-                              name="amount"
-                              className="w-full block border rounded px-3 py-2 text-sm"
-                            />
+
+                            <div className="flex w-full items-center bg-white border rounded min-h-10 focus-within:ring-2 focus-within:ring-[#A1E96F] focus-within:border-transparent">
+                              <span className="h-10 w-10 flex items-center justify-center border-r">
+                                <CurrencyDollarIcon className="h-5" />
+                              </span>
+                              <Field
+                                name="amount"
+                                className="w-full flex-1 text-sm bg-transparent outline-none !h-full px-3 peer"
+                              />
+                            </div>
 
                             <ErrorMessage name="amount">
                               {(msg) => (
@@ -251,7 +312,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 as="textarea"
                                 name="narration"
                                 rows={Math.ceil(values.narration.length / 31)}
-                                className="w-full block border rounded p-3 text-xs"
+                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded p-3 text-xs "
                                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                                   const value = event.target.value;
 
@@ -290,16 +351,26 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             >
                               category
                             </label>
-
-                            <select
-                              name="category"
-                              id="category"
-                              className="w-full block border rounded px-3 py-2 appearance-none text-sm"
-                            >
-                              <option value="--select-an-account-">
-                                choose category of transaction
-                              </option>
-                            </select>
+                            <div className="relative flex items-center h-full">
+                              <select
+                                name="category"
+                                id="category"
+                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm"
+                              >
+                                <option value="--select-an-account-">
+                                  choose category of transaction
+                                </option>
+                              </select>
+                              <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
+                                <svg
+                                  className="fill-current h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                                </svg>
+                              </div>
+                            </div>
 
                             <ErrorMessage name="account">
                               {(msg) => (

@@ -4,7 +4,7 @@ interface Response {
   data: any;
   success: boolean;
   message: string;
-  statusCodes: number;
+  statusCode: number;
 }
 
 export const AccountApiSlice = ApiService.injectEndpoints({
