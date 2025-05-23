@@ -27,7 +27,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
 
       updateAccountStatus: build.mutation<
         Response,
-        { accountId: string; type: string; status: string }
+        { accountId: string; type: string; status: string; currency: string }
       >({
         query: ({ accountId, ...rest }) => {
           console.log(rest);
