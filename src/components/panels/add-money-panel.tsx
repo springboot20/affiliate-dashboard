@@ -2,8 +2,9 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/re
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Form, Formik, ErrorMessage, Field } from "formik";
 import { CustomErrorMessage } from "@/components/Error";
-import { classNames } from "@/utils";
-import { useState } from "react";
+import { classNames, formatMoney } from "@/utils";
+import React, { useEffect, useState } from "react";
+import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
@@ -19,9 +20,13 @@ type InitialValues = {
 };
 
 export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponentProps) => {
+  const { data: accounts } = useGetUserAccountsQuery();
+  const [fromAccount, setFromAccount] = useState<string | null>(null);
+  const [toAccount, setToAccount] = useState<string | null>(null);
+
   const initialValues: InitialValues = {
-    from_account: "",
-    to_account: "",
+    from_account: fromAccount || "",
+    to_account: toAccount || "",
     amount: "",
     narration: "",
     category: "",
@@ -29,6 +34,13 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
 
   const MAX_NARRATION_COUNT = 150;
   const [descriptionCount, setDescriptionCount] = useState(MAX_NARRATION_COUNT);
+
+  useEffect(() => {
+    if (accounts?.data && accounts?.data?.docs.length) {
+      setFromAccount(accounts?.data?.docs[0]?._id);
+      setToAccount(accounts?.data?.docs[2]?._id);
+    }
+  }, [accounts?.data]);
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-40">
@@ -70,8 +82,30 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                               name="from_account"
                               id="from_account"
                               className="w-full block border rounded px-3 py-2 appearance-none text-sm"
+                              onChange={(event) => {
+                                const selected = accounts?.data?.docs?.find((doc: any) => {
+                                  return doc._id === event.target.value;
+                                });
+
+                                setFieldValue("from_account", selected?._id);
+                              }}
                             >
                               <option value="--select-an-account-">---select-an-account---</option>
+                              {React.Children.toArray(
+                                accounts?.data?.docs.length &&
+                                  accounts?.data?.docs.map((doc: any) => {
+                                    return (
+                                      <option value={doc?._id}>
+                                        {doc?.type} Account -{" "}
+                                        {formatMoney(
+                                          doc?.wallet?.balance,
+                                          doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                          doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                        )}
+                                      </option>
+                                    );
+                                  })
+                              )}
                             </select>
                             <ErrorMessage name="from_account">
                               {(msg) => (
@@ -93,8 +127,30 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                               name="to_account"
                               id="to_account"
                               className="w-full block border rounded px-3 py-2 appearance-none text-sm"
+                              onChange={(event) => {
+                                const selected = accounts?.data?.docs?.find((doc: any) => {
+                                  return doc._id === event.target.value;
+                                });
+
+                                setFieldValue("to_account", selected?._id);
+                              }}
                             >
                               <option value="--select-an-bank-">---select-an-account---</option>
+                              {React.Children.toArray(
+                                accounts?.data?.docs.length &&
+                                  accounts?.data?.docs.map((doc: any) => {
+                                    return (
+                                      <option value={doc?._id}>
+                                        {doc?.type} Account -{" "}
+                                        {formatMoney(
+                                          doc?.wallet?.balance,
+                                          doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                          doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                        )}
+                                      </option>
+                                    );
+                                  })
+                              )}
                             </select>
                             <ErrorMessage name="to_account">
                               {(msg) => (
