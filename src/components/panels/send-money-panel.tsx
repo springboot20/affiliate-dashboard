@@ -40,16 +40,16 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     resetValidation,
   } = useValidateAccountNumber();
 
-  const [account, setAccount] = useState<string | null>(null);
+  // const [account, setAccount] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (accounts?.data && accounts?.data?.docs.length) {
-      setAccount(accounts?.data?.docs[0]?._id);
-    }
-  }, [accounts?.data]);
+  // useEffect(() => {
+  //   if (accounts?.data && accounts?.data?.docs.length) {
+  //     setAccount(accounts?.data?.docs[0]?._id);
+  //   }
+  // }, [accounts?.data]);
 
   const initialValues: InitialValues = {
-    account: account || "",
+    account: "",
     bank: "",
     beneficiary: "",
     amount: "",
@@ -155,8 +155,10 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                   setFieldValue("account", selected?._id);
                                 }}
                                 className={classNames(
-                                  "w-full block focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm",
-                                  touched.account && errors.account ? "border-red-500" : "border"
+                                  "w-full block focus:outline-none rounded px-3 py-2 appearance-none text-sm",
+                                  touched.account && errors.account
+                                    ? "border-red-500 border"
+                                    : "border focus:ring-2 focus:ring-[#A1E96F]"
                                 )}
                               >
                                 <option value="--select-an-account-">
@@ -211,8 +213,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 name="bank"
                                 id="bank"
                                 className={classNames(
-                                  "w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none focus:ring-2 focus:ring-[#A1E96F]",
-                                  errors.bank && touched.bank ? "border-red-500" : "border"
+                                  "w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none",
+                                  errors.bank && touched.bank ? "border-red-500 focus:ring-1 focus:ring-red-500" : "border focus:ring-2 focus:ring-[#A1E96F]"
                                 )}
                               >
                                 <option value="--select-an-bank-">---select-an-account---</option>
@@ -406,9 +408,14 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               <select
                                 name="category"
                                 id="category"
-                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm"
+                                className={classNames(
+                                  "w-full block border focus:outline-none rounded px-3 py-2 appearance-none text-sm",
+                                  touched.category && errors.category
+                                    ? "border-red-500 border focus:ring-1 focus:ring-red-500"
+                                    : "border focus:ring-2 focus:ring-[#A1E96F]"
+                                )}
                               >
-                                <option value="--select-an-account-">
+                                <option value="--select-an-category-">
                                   choose category of transaction
                                 </option>
                               </select>
@@ -423,7 +430,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               </div>
                             </div>
 
-                            <ErrorMessage name="account">
+                            <ErrorMessage name="category">
                               {(msg) => (
                                 <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
                                   {msg}
