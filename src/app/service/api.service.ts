@@ -4,8 +4,6 @@ import { Token } from "@/types/auth/auth";
 
 const env = import.meta.env;
 
-console.log(env);
-
 export const ApiService = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: env.MODE === "development" ? env.VITE_LOCAL_BASE_URL : env.VITE_DEPLOYED_URL,
