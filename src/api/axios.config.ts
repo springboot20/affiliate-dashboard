@@ -1,8 +1,6 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosInstance } from "axios";
 import { toast } from "react-toastify";
 
-console.log(import.meta.env);
-
 export const BankAppApiClient: AxiosInstance = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
@@ -24,7 +22,7 @@ export const BankAppService = async ({
   BankAppApiClient.interceptors.response.use(
     (config: AxiosResponse) => {
       if (config.status.toString().startsWith("2")) {
-        showSuccessNotification ? toast.success(config.data.message, { className:"text-sm"}) : "";
+        showSuccessNotification ? toast.success(config.data.message, { className: "text-sm" }) : "";
       }
 
       return config;
