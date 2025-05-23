@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
 import { useSendTransactionMutation } from "@/features/transactions/transaction.slice";
+import * as yup from "yup";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -107,8 +108,31 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                     </div>
                   </div>
 
-                  <Formik initialValues={initialValues} onSubmit={handleSendTransaction}>
-                    {({ setFieldValue, values }) => {
+                  <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSendTransaction}
+                    validationSchema={yup.object({
+                      account: yup.string().required("Account is required"),
+                      bank: yup.string().required("Bank is required"),
+                      beneficiary: yup
+                        .string()
+                        .matches(/^\d{10}$/, "Account number must be 10 digits")
+                        .required("Beneficiary account number is required"),
+                      amount: yup
+                        .number()
+                        .positive("Amount must be a positive number")
+                        .required("Amount is required"),
+                      narration: yup
+                        .string()
+                        .max(
+                          MAX_NARRATION_COUNT,
+                          `Description cannot exceed ${MAX_NARRATION_COUNT} characters`
+                        )
+                        .required("Description is required"),
+                      category: yup.string().required("Category is required"),
+                    })}
+                  >
+                    {({ setFieldValue, values, errors, touched }) => {
                       return (
                         <Form className="mt-4">
                           <fieldset className="mb-3">
@@ -130,7 +154,10 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
 
                                   setFieldValue("account", selected?._id);
                                 }}
-                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm"
+                                className={classNames(
+                                  "w-full block focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 appearance-none text-sm",
+                                  touched.account && errors.account ? "border-red-500" : "border"
+                                )}
                               >
                                 <option value="--select-an-account-">
                                   ---select-an-account---
@@ -183,7 +210,10 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               <select
                                 name="bank"
                                 id="bank"
-                                className="w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none focus:ring-2 focus:ring-[#A1E96F]"
+                                className={classNames(
+                                  "w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none focus:ring-2 focus:ring-[#A1E96F]",
+                                  errors.bank && touched.bank ? "border-red-500" : "border"
+                                )}
                               >
                                 <option value="--select-an-bank-">---select-an-account---</option>
                               </select>
@@ -219,9 +249,16 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               <Field
                                 name="beneficiary"
                                 className={classNames(
-                                  "w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded px-3 py-2 text-sm",
-                                  isAccountValid === true ? "border-[#A1E96F]" : "",
-                                  isAccountValid === false ? "border-red-500" : ""
+                                  "w-full block focus:outline-none rounded px-3 py-2 text-sm",
+                                  isAccountValid === true
+                                    ? "focus:ring-[#A1E96F] focus:ring-1"
+                                    : "border",
+                                  isAccountValid === false
+                                    ? "focus:ring-red-500 border-red-500 focus:ring-1"
+                                    : "border",
+                                  errors.beneficiary && touched.beneficiary
+                                    ? "border-red-500 focus:ring-red-500 focus:ring-1"
+                                    : "border"
                                 )}
                                 onChange={(event: any) => {
                                   const value = event.target.value.replace(/\D/g, ""); // Only allow digits
@@ -281,13 +318,22 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                               amount
                             </label>
 
-                            <div className="flex w-full items-center bg-white border rounded min-h-10 focus-within:ring-2 focus-within:ring-[#A1E96F] focus-within:border-transparent">
+                            <div
+                              className={classNames(
+                                "flex w-full items-center bg-white rounded min-h-10 border",
+                                errors.amount && touched.amount
+                                  ? "focus-within:ring-red-500 focus-within:ring-1 border-red-500 border"
+                                  : "!border focus-within:ring-2 focus-within:ring-[#A1E96F]"
+                              )}
+                            >
                               <span className="h-10 w-10 flex items-center justify-center border-r">
                                 <CurrencyDollarIcon className="h-5" />
                               </span>
                               <Field
                                 name="amount"
-                                className="w-full flex-1 text-sm bg-transparent outline-none !h-full px-3 peer"
+                                className={classNames(
+                                  "w-full flex-1 text-sm bg-transparent outline-none !h-full px-3 peer"
+                                )}
                               />
                             </div>
 
@@ -312,7 +358,12 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 as="textarea"
                                 name="narration"
                                 rows={Math.ceil(values.narration.length / 31)}
-                                className="w-full block border focus:outline-none focus:ring-2 focus:ring-[#A1E96F] rounded p-3 text-xs "
+                                className={classNames(
+                                  "w-full block focus:outline-none rounded p-3 text-xs",
+                                  errors.narration && touched.narration
+                                    ? "border-red-500 focus:ring-red-500 focus:ring-1 border"
+                                    : "!border focus:ring-2 focus:ring-[#A1E96F]"
+                                )}
                                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                                   const value = event.target.value;
 
