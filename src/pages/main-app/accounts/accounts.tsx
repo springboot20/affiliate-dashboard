@@ -64,7 +64,6 @@ export default function Accounts() {
   };
 
   const RenderActions = ({ data }: { data: any }) => {
-    console.log(data);
     return (
       <>
         <DeleteModalComponent
