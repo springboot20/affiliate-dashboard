@@ -167,20 +167,31 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                       const buttonType = step === 0 ? "button" : "submit";
                       const buttonText = step === 0 ? "next" : "send money";
 
-                      const handleButtonClick = (
+                      const handleButtonClick = async (
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                       ) => {
                         event.preventDefault();
-                        console.log(formik.errors)
-                        if (Object.keys(formik.errors).length === 0) {
-                          if (step === 0) {
+                        if (step === 0) {
+                          const errors = await formik.validateForm();
+
+                          formik.setTouched({
+                            account: true,
+                            bank: true,
+                            beneficiary: true,
+                            amount: true,
+                            narration: true,
+                            category: true,
+                          });
+
+                          if (Object.keys(errors).length === 0) {
                             setStep(1);
                             setTab("transaction-pin");
                           } else {
-                            formik.handleSubmit();
+                            toast("input fields cannot be empty.", { type: "error" });
+                            formik.setErrors(errors);
                           }
                         } else {
-                          toast("input fields cannot be empty.", { type: "error" });
+                          formik.handleSubmit();
                         }
                       };
 
