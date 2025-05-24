@@ -1,6 +1,7 @@
+import { CustomErrorMessage } from "@/components/Error";
 import { useOtp } from "@/hooks/useOtp";
 import { BackspaceIcon } from "@heroicons/react/24/outline";
-import { FormikProps } from "formik";
+import { ErrorMessage, FormikProps } from "formik";
 import React from "react";
 
 type InitialValues = {
@@ -54,9 +55,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
   return (
     <div className="max-w-xl mx-auto">
       <header className="py-5 text-center">
-        <h3 className="text-sm font-medium capitalize text-[#152F00]">
-          enter transaction pin
-        </h3>
+        <h3 className="text-sm font-medium capitalize text-[#152F00]">enter transaction pin</h3>
       </header>
       <div className="">
         <div className="flex items-center justify-center w-full sm:space-x-2 py-4">
@@ -83,6 +82,17 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
             ))
           )}
         </div>
+
+        <div className="flex justify-center mb-4">
+          <ErrorMessage name="pin">
+            {(msg) => (
+              <CustomErrorMessage className="text-sm text-center text-red-600 bg-red-50 px-3 py-2 rounded-md border border-red-200">
+                {msg}
+              </CustomErrorMessage>
+            )}
+          </ErrorMessage>
+        </div>
+
         <div className="grid grid-cols-3 gap-2 mt-4">
           {React.Children.toArray(
             [1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {

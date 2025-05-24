@@ -1,6 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { SendMoneyDetailForm } from "./components/send-money-detail-form";
 import { PinPadFormComponent } from "./components/pinpad-form";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -50,6 +51,12 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     pin: Array(4).fill(""),
   };
 
+  const variants = {
+    hidden: { opacity: 0, x: -100 },
+    visible: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 100 },
+  };
+
   const { resetValidation } = useValidateAccountNumber();
 
   // Reset validation when modal closes
@@ -59,7 +66,10 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     }
   }, [open, resetValidation]);
 
-  const handleSendTransaction = async (values: InitialValues) => {
+  const handleSendTransaction = async (
+    values: InitialValues,
+    { resetForm }: FormikHelpers<InitialValues>
+  ) => {
     try {
       const response = await sendTransaction({
         amount: values?.amount,
@@ -68,10 +78,17 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
         from_account: values?.account,
       }).unwrap();
 
-      const { data } = response;
-      console.log(data);
+      const { message } = response;
+      toast.success(message, { className: "text-xs" });
+
+      setTimeout(() => {
+        navigate("/app/overview");
+        onClose();
+        resetForm();
+      }, 1000);
     } catch (error: any) {
-      console.log(error);
+      const message = error?.data?.message;
+      toast.error(message, { className: "text-xs" });
     }
   };
 
@@ -120,8 +137,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-            <DialogPanel className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700">
-              <div className="flex h-full flex-col bg-white shadow-xl">
+            <DialogPanel className="pointer-events-auto w-screen max-w-md transform overflow-x-hidden transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700">
+              <div className="flex h-full flex-col bg-white shadow-xl overflow-y-auto">
                 <div className="flex-1 px-4 py-6 sm:px-6">
                   <div className="flex items-center justify-between">
                     <DialogTitle className="text-lg font-medium text-[#281d1d] capitalize">
@@ -130,7 +147,10 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                     <div className="ml-3 flex h-7 items-center">
                       <button
                         type="button"
-                        onClick={() => onClose()}
+                        onClick={() => {
+                          onClose();
+                          navigate("/app/overview");
+                        }}
                         className="h-10 w-10 z-20 flex items-center justify-center absolute right-4 top-4 rounded-full bg-gray-100"
                       >
                         <span className="sr-only">Close panel</span>
@@ -161,6 +181,18 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                         )
                         .required("Description is required"),
                       category: yup.string().required("Category is required"),
+                      pin: yup
+                        .array()
+                        .of(yup.string().required())
+                        .test("pin-complete", "PIN must be 4 digits", function (value) {
+                          if (!value) return false;
+                          // Check if all 4 PIN fields are filled and contain only digits
+                          return (
+                            value.length === 4 &&
+                            value.every((digit) => digit && /^\d$/.test(digit))
+                          );
+                        })
+                        .required("PIN is required"),
                     })}
                   >
                     {(formik) => {
@@ -183,15 +215,39 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                             category: true,
                           });
 
-                          if (Object.keys(errors).length === 0) {
+                          const step0Fields = [
+                            "account",
+                            "bank",
+                            "beneficiary",
+                            "amount",
+                            "narration",
+                            "category",
+                          ];
+                          const step0Errors = Object.keys(errors).filter((key) =>
+                            step0Fields.includes(key)
+                          );
+
+                          if (step0Errors.length === 0) {
                             setStep(1);
                             setTab("transaction-pin");
                           } else {
-                            toast("input fields cannot be empty.", { type: "error" });
+                            toast("Input fields cannot be empty.", { type: "error" });
                             formik.setErrors(errors);
                           }
                         } else {
-                          formik.handleSubmit();
+                          const errors = await formik.validateForm();
+                          formik.setTouched({
+                            ...formik.touched,
+                            pin: true,
+                          });
+
+                          if (Object.keys(errors).length === 0) {
+                            formik.handleSubmit();
+                            onClose();
+                          } else {
+                            toast("Please enter a valid 4-digit PIN.", { type: "error" });
+                            formik.setErrors(errors);
+                          }
                         }
                       };
 
@@ -204,16 +260,28 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                           setTab("transaction-details");
                         } else {
                           onClose();
+                          navigate("/app/overview");
                         }
                       };
                       return (
                         <Form>
-                          {step === 0 ? (
-                            <SendMoneyDetailForm formik={formik} accounts={accounts} />
-                          ) : (
-                            <PinPadFormComponent formik={formik} />
-                          )}
-                          <div className="mt-6 flex items-center  space-x-3">
+                          <motion.div
+                            key={step}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={variants}
+                            transition={{ duration: 0.5 }}
+                            className="w-full"
+                          >
+                            {step === 0 ? (
+                              <SendMoneyDetailForm formik={formik} accounts={accounts} />
+                            ) : (
+                              <PinPadFormComponent formik={formik} />
+                            )}
+                          </motion.div>
+
+                          <div className="mt-6 flex items-center space-x-3">
                             <button
                               type="button"
                               onClick={handleBackButtonClick}
