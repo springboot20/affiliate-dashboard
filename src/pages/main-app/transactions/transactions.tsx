@@ -4,17 +4,19 @@ import { useUserTransactionsQuery } from "@/features/transactions/transaction.sl
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type InitialFilterState = Record<string, any>;
 
 export default function Transactions() {
-  const TRASNACTION_LIMIT = 10;
+  const navigate = useNavigate();
+  const TRANSACTION_LIMIT = 10;
 
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
-    limit: TRASNACTION_LIMIT,
+    limit: TRANSACTION_LIMIT,
     page,
     search: "",
   });
@@ -76,14 +78,17 @@ export default function Transactions() {
     }));
   }, [page]);
 
-  const RenderAction = (data: any) => {
+  const RenderAction = (row: any) => {
+    const { data } = row;
     console.log(data);
+
     return (
       <div className="flex items-center space-x-3">
         <button
           title="view details"
           type="button"
           className="px-2 py-1.5 text-xs fomt-medium capitalize bg-green-500 text-white rounded-2xl"
+          onClick={() => navigate(`/app/transactions/detail/${data._id}`)}
         >
           view details
         </button>

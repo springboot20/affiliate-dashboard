@@ -1,41 +1,42 @@
-import AppLayout from '@/layout/AppLayout';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import AppLayout from "@/layout/AppLayout";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
-import { Forgot } from '@/pages/auth/forgot-password/Forgot';
-import { Accounts } from '@/pages/dashboard/account/Accounts';
-import { CreditCards } from '@/pages/dashboard/credit-cards/CreditCards';
-import { OverView } from '@/pages/dashboard/OverView';
-import { Investments } from '@/pages/dashboard/investments/Investments';
-import { Login } from '@/pages/auth/login/login';
-import { Register } from '@/pages/auth/register/register';
-import { Transactions } from '@/pages/dashboard/transactions/Transactions';
-import { SendEmail } from '@/pages/auth/verify/SendMail.tsx';
-import { ProtectedRoute } from '@/components/Protected';
-import { PublicRoute } from '@/components/Public';
-import { EmailVerification } from '@/pages/auth/verify/EmailVerification';
-import { EmailSentMessage } from '@/pages/auth/verify/EmailSent';
-import { Settings } from '@/pages/dashboard/settings/Settings';
-import { Loans } from '@/pages/dashboard/loans/Loans';
-import { Services } from '@/pages/dashboard/services/Services';
+import { Forgot } from "@/pages/auth/forgot-password/Forgot";
+import { Accounts } from "@/pages/dashboard/account/Accounts";
+import { CreditCards } from "@/pages/dashboard/credit-cards/CreditCards";
+import { OverView } from "@/pages/dashboard/OverView";
+import { Investments } from "@/pages/dashboard/investments/Investments";
+import { Login } from "@/pages/auth/login/login";
+import { Register } from "@/pages/auth/register/register";
+import { Transactions } from "@/pages/dashboard/transactions/Transactions";
+import { SendEmail } from "@/pages/auth/verify/SendMail.tsx";
+import { ProtectedRoute } from "@/components/Protected";
+import { PublicRoute } from "@/components/Public";
+import { EmailVerification } from "@/pages/auth/verify/EmailVerification";
+import { EmailSentMessage } from "@/pages/auth/verify/EmailSent";
+import { Settings } from "@/pages/dashboard/settings/Settings";
+import { Loans } from "@/pages/dashboard/loans/Loans";
+import { Services } from "@/pages/dashboard/services/Services";
 
-import MainLayout from '@/layout/MainLayout';
-import MainAppOverview from '@/pages/main-app/overview';
-import MainTransactions from '@/pages/main-app/transactions/transactions';
-import MainAccounts from '@/pages/main-app/accounts/accounts';
-import MainAccountsForm from '@/pages/main-app/accounts/components/account-forms';
-import EditAccount from '@/pages/main-app/accounts/components/edit-account';
-import MainCards from '@/pages/main-app/cards/cards';
-import { AppSwitcher } from '@/components/app-switcher';
-import { ViewRedirector } from '@/components/view-redirector';
+import MainLayout from "@/layout/MainLayout";
+import MainAppOverview from "@/pages/main-app/overview";
+import MainTransactions from "@/pages/main-app/transactions/transactions";
+import MainTransactionDetails from "@/pages/main-app/transactions/transaction-details";
+import MainAccounts from "@/pages/main-app/accounts/accounts";
+import MainAccountsForm from "@/pages/main-app/accounts/components/account-forms";
+import EditAccount from "@/pages/main-app/accounts/components/edit-account";
+import MainCards from "@/pages/main-app/cards/cards";
+import { AppSwitcher } from "@/components/app-switcher";
+import { ViewRedirector } from "@/components/view-redirector";
 
 export const router = createBrowserRouter([
   {
     // Root path redirects to app switcher or login based on auth status
-    path: '/',
+    path: "/",
     element: <AppSwitcher />,
   },
   {
-    path: '/app',
+    path: "/app",
     element: (
       <ProtectedRoute>
         <ViewRedirector>
@@ -49,22 +50,22 @@ export const router = createBrowserRouter([
       //   element: <Navigate to='/app/overview' replace />,
       // },
       {
-        path: 'overview',
+        path: "overview",
         element: <MainAppOverview />,
       },
       {
-        path: 'accounts',
+        path: "accounts",
         children: [
           {
             index: true,
             element: <MainAccounts />,
           },
           {
-            path: 'new-account',
+            path: "new-account",
             element: <MainAccountsForm />,
           },
           {
-            path: 'edit-account/:accountId',
+            path: "edit-account/:accountId",
             element: (
               <ProtectedRoute>
                 <EditAccount />
@@ -74,17 +75,26 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: 'transactions',
-        element: <MainTransactions />,
+        path: "transactions",
+        children: [
+          {
+            index: true,
+            element: <MainTransactions />,
+          },
+          {
+            path: "detail/:transactionId",
+            element: <MainTransactionDetails />,
+          },
+        ],
       },
       {
-        path: 'cards',
+        path: "cards",
         element: <MainCards />,
       },
     ],
   },
   {
-    path: '/dashboard',
+    path: "/dashboard",
     element: (
       <ViewRedirector>
         <AppLayout />
@@ -92,11 +102,11 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: 'overview',
+        path: "overview",
         element: <OverView />,
       },
       {
-        path: 'transactions',
+        path: "transactions",
         element: (
           <ProtectedRoute>
             <Transactions />
@@ -105,7 +115,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'accounts',
+        path: "accounts",
         element: (
           <ProtectedRoute>
             <Accounts />
@@ -114,7 +124,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'investments',
+        path: "investments",
         element: (
           <ProtectedRoute>
             <Investments />
@@ -123,7 +133,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'credit-cards',
+        path: "credit-cards",
         element: (
           <ProtectedRoute>
             <CreditCards />
@@ -132,7 +142,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'loans',
+        path: "loans",
         element: (
           <ProtectedRoute>
             <Loans />
@@ -141,7 +151,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'services',
+        path: "services",
         element: (
           <ProtectedRoute>
             <Services />
@@ -150,7 +160,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'settings',
+        path: "settings",
         element: (
           <ProtectedRoute>
             <Settings />
@@ -161,14 +171,14 @@ export const router = createBrowserRouter([
   },
 
   {
-    path: '/auth',
+    path: "/auth",
     children: [
       {
         index: true,
-        element: <Navigate to='/auth/login' replace />,
+        element: <Navigate to="/auth/login" replace />,
       },
       {
-        path: 'register',
+        path: "register",
         element: (
           <PublicRoute>
             <Register />
@@ -177,7 +187,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'login',
+        path: "login",
         element: (
           <PublicRoute>
             <Login />
@@ -185,20 +195,20 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'email',
+        path: "email",
         children: [
           {
-            path: 'send-email',
+            path: "send-email",
             element: <SendEmail />,
           },
           {
-            path: 'verify-email',
+            path: "verify-email",
             element: <EmailVerification />,
           },
         ],
       },
       {
-        path: 'email-sent-message',
+        path: "email-sent-message",
         element: (
           <PublicRoute>
             <EmailSentMessage />
@@ -206,7 +216,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'forgot-password',
+        path: "forgot-password",
         element: (
           <PublicRoute>
             <Forgot />
@@ -217,7 +227,7 @@ export const router = createBrowserRouter([
   },
   {
     // Catch-all route for 404 errors
-    path: '*',
-    element: <Navigate to='/' replace />,
+    path: "*",
+    element: <Navigate to="/" replace />,
   },
 ]);
