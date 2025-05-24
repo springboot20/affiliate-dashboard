@@ -22,7 +22,7 @@ export const AppPaginationComponent = ({
   return (
     <div className="flex flex-col sm:flex-row gap-y-5 items-center sm:justify-between mt-4">
       <div className="flex text-xs font-medium text-gray-600 items-center space-x-3">
-        <span>items per page</span>
+        <span>Items per page</span>
         <fieldset className="">
           <label htmlFor="page" className="sr-only">
             page number

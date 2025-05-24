@@ -62,7 +62,7 @@ export default function Transactions() {
     { header: "date created", accessor: "createdAt", type: "Date" },
   ];
 
-  const transactions = data?.data?.docs;
+  const transactions = data?.data?.docs as any[];
 
   useEffect(() => {
     refetch();
@@ -83,7 +83,7 @@ export default function Transactions() {
         <button
           title="view details"
           type="button"
-          className="px-2 py-1.5 text-xs fomt-medium capitalize bg-[#A1E96F] text-white rounded-2xl hover:underline transition"
+          className="px-2 py-1.5 text-xs fomt-medium capitalize bg-green-500 text-white rounded-2xl"
         >
           view details
         </button>
@@ -157,6 +157,7 @@ export default function Transactions() {
               columns={columns}
               datum={transactions}
               actions={(row) => <RenderAction data={row} />}
+              isLoading={isLoading}
             />
           </div>
           {!isLoading && (

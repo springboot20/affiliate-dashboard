@@ -21,9 +21,12 @@ interface Column {
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
-  const { data } = useUserTransactionsQuery();
+  const { data, isLoading: transactionsLoading } = useUserTransactionsQuery({
+    limit: 10,
+    page: 1,
+  });
 
-  const transactions = data?.data?.docs;
+  const transactions = data?.data?.docs as any[];
 
   const { data: accounts } = useGetUserAccountsQuery();
   const [account, setAccount] = useState<string | null>(null);
@@ -510,7 +513,11 @@ export default function Overview() {
             </div>
 
             <div className="!w-full overflow-x-auto mt-4">
-              <TableComponent columns={columns} datum={transactions} />
+              <TableComponent
+                columns={columns}
+                datum={transactions}
+                isLoading={transactionsLoading}
+              />
             </div>
           </div>
         </div>
