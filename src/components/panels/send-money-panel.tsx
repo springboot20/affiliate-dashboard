@@ -12,6 +12,7 @@ import { SendMoneyDetailForm } from "./components/send-money-detail-form";
 import { PinPadFormComponent } from "./components/pinpad-form";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { useValidateTransactionPin } from "@/hooks/useValidateTransactionPin";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -58,13 +59,15 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
   };
 
   const { resetValidation } = useValidateAccountNumber();
+  const { resetValidation: resetTransactionPinValidation } = useValidateTransactionPin();
 
   // Reset validation when modal closes
   useEffect(() => {
     if (!open) {
       resetValidation();
+      resetTransactionPinValidation();
     }
-  }, [open, resetValidation]);
+  }, [open, resetValidation, resetTransactionPinValidation]);
 
   const handleSendTransaction = async (
     values: InitialValues,
