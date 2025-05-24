@@ -135,7 +135,16 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
   }, [step, tab, updateUrl, open]);
 
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-40">
+    <Dialog
+      open={open}
+      onClose={() => {
+        onClose();
+        setTab("transaction-details");
+        setStep(0);
+        navigate("/app/overview");
+      }}
+      className="relative z-40"
+    >
       <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0" />
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
