@@ -7,8 +7,11 @@ import { ErrorMessage, FormikProps } from "formik";
 import React, { useEffect } from "react";
 
 type InitialValues = {
-  from_account: string;
-  to_account: string;
+  from_account?: string;
+  to_account?: string;
+  account?: string;
+  bank?: string;
+  beneficiary?: string;
   narration: string;
   category: string;
   amount: number
@@ -90,7 +93,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
                 </label>
                 <input
                   id={`pin-${index}`}
-                  type="text"
+                  type="password"
                   value={values.pin[index]}
                   maxLength={1}
                   inputMode="numeric"
@@ -100,12 +103,12 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
                   onKeyUp={(event) => handleKeyDown(event, index)}
                   onPaste={handlePaste}
                   className={classNames(
-                    "block w-12 h-12 text-center appearance-none px-3 text font-medium rounded-md border-0 py-3 text-[#152F00] shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-lg sm:leading-6 outline-none",
+                    "block w-12 h-12 text-center appearance-none px-3 text font-medium rounded-md border-0 py-3 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-lg sm:leading-6 outline-none",
                     isPinCompleted && isPinValid === true
-                      ? "ring-green-500 focus:ring-green-500"
+                      ? "ring-green-500 focus:ring-green-500 text-green-500"
                       : isPinCompleted && isPinValid === false
-                      ? "ring-red-500 focus:ring-red-500"
-                      : "ring-[#A1E96F] focus:ring-[#A1E96F]"
+                      ? "ring-red-500 focus:ring-red-500 text-red-500"
+                      : "ring-[#A1E96F] focus:ring-[#A1E96F] text-[#152F00]"
                   )}
                 />
               </fieldset>

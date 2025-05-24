@@ -10,10 +10,10 @@ import { ErrorMessage, Field, FormikProps } from "formik";
 import React, { useState } from "react";
 
 type InitialValues = {
-  account: string;
-  bank: string;
-  beneficiary: string;
-  amount: string;
+  account?: string;
+  bank?: string;
+  beneficiary?: string;
+  amount: number;
   narration: string;
   category: string;
   pin: string[];
@@ -180,18 +180,18 @@ export const SendMoneyDetailForm = ({
             {isValidatingAccount && (
               <div className="animate-spin h-4 w-4 border-2 border-[#A1E96F] border-t-transparent rounded-full"></div>
             )}
-            {!isValidatingAccount && isAccountValid === true && values.beneficiary.length >= 10 && (
+            {!isValidatingAccount && isAccountValid === true && values?.beneficiary?.length! >= 10 && (
               <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
             )}
             {!isValidatingAccount &&
               isAccountValid === false &&
-              values.beneficiary.length >= 10 && (
+              values?.beneficiary?.length! >= 10 && (
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               )}
           </div>
         </div>
         {/* Validation message */}
-        {validationMessage && values.beneficiary.length >= 10 && (
+        {validationMessage && values?.beneficiary?.length! >= 10 && (
           <div
             className={classNames(
               "text-sm mt-0.5 block",

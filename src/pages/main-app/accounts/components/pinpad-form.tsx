@@ -59,7 +59,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<AccountIni
                 </label>
                 <input
                   id={`pin-${index}`}
-                  type='text'
+                  type='password'
                   value={values.pin[index]}
                   maxLength={1}
                   inputMode='numeric'

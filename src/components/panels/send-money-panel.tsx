@@ -20,10 +20,10 @@ type SendMoneyPanelComponentProps = {
 };
 
 type InitialValues = {
-  account: string;
-  bank: string;
-  beneficiary: string;
-  amount: string;
+  account?: string;
+  bank?: string;
+  beneficiary?: string;
+  amount: number;
   narration: string;
   category: string;
   pin: string[];
@@ -34,19 +34,11 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
   const { data: accounts } = useGetUserAccountsQuery();
   const [sendTransaction] = useSendTransactionMutation();
 
-  // const [account, setAccount] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (accounts?.data && accounts?.data?.docs.length) {
-  //     setAccount(accounts?.data?.docs[0]?._id);
-  //   }
-  // }, [accounts?.data]);
-
   const initialValues: InitialValues = {
     account: "",
     bank: "",
     beneficiary: "",
-    amount: "",
+    amount: 0,
     narration: "",
     category: "",
     pin: Array(4).fill(""),
