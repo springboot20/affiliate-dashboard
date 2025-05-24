@@ -7,12 +7,11 @@ import { ErrorMessage, FormikProps } from "formik";
 import React, { useEffect } from "react";
 
 type InitialValues = {
-  account: string;
-  bank: string;
-  beneficiary: string;
-  amount: string;
+  from_account: string;
+  to_account: string;
   narration: string;
   category: string;
+  amount: number
   pin: string[];
 };
 
@@ -59,14 +58,14 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
 
   useEffect(() => {
     const pins = values.pin.join("");
-    const accountId = values.account;
+    const accountId = values.from_account;
 
     if (pins.length === 4 && accountId) {
       validatePin(pins, accountId);
     } else {
       resetValidation();
     }
-  }, [values.pin, values.account, validatePin, resetValidation]);
+  }, [values.pin, values.from_account, validatePin, resetValidation]);
 
   const resetPin = () => {
     resetValidation();
