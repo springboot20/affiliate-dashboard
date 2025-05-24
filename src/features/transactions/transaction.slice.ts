@@ -19,7 +19,18 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         };
       },
     }),
+
+    validateTransactionPin: build.mutation<Response, Record<string, any>>({
+      query: (data) => {
+        return {
+          url: "/transactions/paystack/validate-pin",
+          method: "POST",
+          body: { ...data },
+        };
+      },
+    }),
   }),
 });
 
-export const { useSendTransactionMutation } = TransactionApiSlice;
+export const { useSendTransactionMutation, useValidateTransactionPinMutation } =
+  TransactionApiSlice;
