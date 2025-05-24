@@ -29,8 +29,14 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         };
       },
     }),
+
+    getAllTransactions: build.query<Response, void>({
+      query: () => ({
+        url: "/transactions",
+      }),
+    }),
   }),
 });
 
-export const { useSendTransactionMutation, useValidateTransactionPinMutation } =
+export const { useSendTransactionMutation, useValidateTransactionPinMutation, useGetAllTransactionsQuery } =
   TransactionApiSlice;

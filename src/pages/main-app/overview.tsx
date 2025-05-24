@@ -9,6 +9,7 @@ import {
   useGetUserAccountsQuery,
 } from "@/features/account/account.slice";
 import { formatMoney } from "@/utils";
+import { useGetAllTransactionsQuery } from "@/features/transactions/transaction.slice";
 
 interface Column {
   header: string;
@@ -20,6 +21,9 @@ interface Column {
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
+  const {data} = useGetAllTransactionsQuery();
+
+  const transactions = data?.data?.docs
 
   const { data: accounts } = useGetUserAccountsQuery();
   const [account, setAccount] = useState<string | null>(null);
@@ -43,25 +47,22 @@ export default function Overview() {
 
   const navigate = useNavigate();
 
-  const columns: Column[] = [
+  const columns:Column[] = [
+    { header: "id", accessor: "_id" },
+    { header: "amount", accessor: "amount" },
+    { header: "currency", accessor: "currency" },
     {
-      header: "account",
-      accessor: "",
+      header: "user",
+      accessor: "user_profile",
+      // Since your implementation uses dot notation access, we need a different approach
+      deepOneAccessor: ["firstname", "lastname"],
     },
-    {
-      header: "name",
-      accessor: "",
-    },
-    {
-      header: "date",
-      accessor: "",
-      type: "date",
-    },
-    {
-      header: "description",
-      accessor: "",
-    },
+    { header: "type", accessor: "type" },
+    { header: "status", accessor: "status" },
+    { header: "date created", accessor: "createdAt", type: "Date" },
+    { header: "actions", accessor: "actions" },
   ];
+
 
   return (
     <Fragment>
@@ -510,7 +511,7 @@ export default function Overview() {
             </div>
 
             <div className="!w-full overflow-x-auto mt-4">
-              <TableComponent columns={columns} datum={[]} />
+              <TableComponent columns={columns} datum={transactions} />
             </div>
           </div>
         </div>
