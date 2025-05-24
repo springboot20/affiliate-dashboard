@@ -100,7 +100,7 @@ export const TableComponent = ({ datum, columns, actions }: AccountTableListProp
                                   row["status"] === "CLOSED" ||
                                   row["status"] === "FAILED"
                                 ? "bg-red-500"
-                                : "bg-yellow-500 text-gray-600"
+                                : "bg-yellow-700 text-gray-600"
                             )}
                           >
                             {cellContent}

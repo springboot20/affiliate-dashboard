@@ -1,28 +1,98 @@
+import { AppPaginationComponent } from "@/components/paginations/AppPagination";
 import { TableComponent } from "@/components/tables/table-component";
-import { useGetAllTransactionsQuery } from "@/features/transactions/transaction.slice";
+import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+
+type InitialFilterState = Record<string, any>;
 
 export default function Transactions() {
-  const { data } = useGetAllTransactionsQuery();
+  const TRASNACTION_LIMIT = 10;
+
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
+    limit: TRASNACTION_LIMIT,
+    page,
+    search: "",
+  });
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value: string = event.target.value;
+    setSearchQuery(value);
+
+    setInitialFilterState((prev) => ({
+      ...prev,
+      search: value,
+    }));
+  };
+
+  const { data, refetch, isLoading } = useUserTransactionsQuery(initialFilterState);
+
+  const totalPages = data?.data?.totalPages ?? 1;
+  const hasNextPage = data?.data?.hasNextPage ?? false;
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
+  };
 
   const columns = [
     { header: "id", accessor: "_id" },
     { header: "amount", accessor: "amount" },
     { header: "currency", accessor: "currency" },
+    { header: "description", accessor: "description" },
     {
       header: "user",
-      accessor: "user_profile",
+      accessor: "user",
       // Since your implementation uses dot notation access, we need a different approach
       deepOneAccessor: ["firstname", "lastname"],
     },
     { header: "type", accessor: "type" },
     { header: "status", accessor: "status" },
     { header: "date created", accessor: "createdAt", type: "Date" },
-    { header: "actions", accessor: "actions" },
   ];
 
   const transactions = data?.data?.docs;
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, initialFilterState]);
+
+  // Update page in filter state when page changes
+  useEffect(() => {
+    setInitialFilterState((prev) => ({
+      ...prev,
+      page,
+    }));
+  }, [page]);
+
+  const RenderAction = (data: any) => {
+    console.log(data);
+    return (
+      <div className="flex items-center space-x-3">
+        <button
+          title="view details"
+          type="button"
+          className="px-2 py-1.5 text-xs fomt-medium capitalize bg-[#A1E96F] text-white rounded-2xl hover:underline transition"
+        >
+          view details
+        </button>
+        <button type="button" title="delete transaction">
+          <TrashIcon className="h-5 text-red-500" />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <section className="py-24 lg:py-[8rem]">
@@ -44,6 +114,8 @@ export default function Transactions() {
                     type="text"
                     name="search"
                     placeholder="Search transactions"
+                    onChange={handleSearch}
+                    value={searchQuery}
                     className="flex-1 px-2 text-sm text-gray-700 border-0 outline-0 h-full"
                   />
                 </div>
@@ -79,8 +151,25 @@ export default function Transactions() {
           </div>
         </header>
 
-        <div className="mt-4 overflow-x-scroll !w-full">
-          <TableComponent columns={columns} datum={transactions} />
+        <div>
+          <div className="mt-4 overflow-x-auto !w-full">
+            <TableComponent
+              columns={columns}
+              datum={transactions}
+              actions={(row) => <RenderAction data={row} />}
+            />
+          </div>
+          {!isLoading && (
+            <AppPaginationComponent
+              page={page}
+              totalPages={totalPages}
+              hasNextPage={hasNextPage}
+              prev={handlePreviousPage}
+              next={handleNextPage}
+              setPage={setPage}
+              totalItems={data?.data?.transactions}
+            />
+          )}
         </div>
       </div>
     </section>

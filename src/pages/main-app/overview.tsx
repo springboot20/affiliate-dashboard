@@ -9,7 +9,7 @@ import {
   useGetUserAccountsQuery,
 } from "@/features/account/account.slice";
 import { formatMoney } from "@/utils";
-import { useGetAllTransactionsQuery } from "@/features/transactions/transaction.slice";
+import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
 
 interface Column {
   header: string;
@@ -21,9 +21,9 @@ interface Column {
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
-  const {data} = useGetAllTransactionsQuery();
+  const { data } = useUserTransactionsQuery();
 
-  const transactions = data?.data?.docs
+  const transactions = data?.data?.docs;
 
   const { data: accounts } = useGetUserAccountsQuery();
   const [account, setAccount] = useState<string | null>(null);
@@ -47,22 +47,21 @@ export default function Overview() {
 
   const navigate = useNavigate();
 
-  const columns:Column[] = [
+  const columns: Column[] = [
     { header: "id", accessor: "_id" },
     { header: "amount", accessor: "amount" },
     { header: "currency", accessor: "currency" },
+    { header: "description", accessor: "description" },
     {
       header: "user",
-      accessor: "user_profile",
+      accessor: "user",
       // Since your implementation uses dot notation access, we need a different approach
       deepOneAccessor: ["firstname", "lastname"],
     },
     { header: "type", accessor: "type" },
     { header: "status", accessor: "status" },
     { header: "date created", accessor: "createdAt", type: "Date" },
-    { header: "actions", accessor: "actions" },
   ];
-
 
   return (
     <Fragment>
@@ -87,7 +86,7 @@ export default function Overview() {
             </div>
 
             <div className="flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3">
-              {isLoading && isFetching && !accounts ? (
+              {isLoading && isFetching && !accounts?.data?.docs?.length ? (
                 <span className="text-sm text-white">loading...</span>
               ) : (
                 <fieldset className="w-fit">

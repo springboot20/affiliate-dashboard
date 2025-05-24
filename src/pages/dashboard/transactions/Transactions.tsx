@@ -10,7 +10,7 @@ import {
 } from "@/components/icons/Icons";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components/paginations/Pagination";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import { CreditCardLoader } from "@/components/loaders/credit-card.loader";

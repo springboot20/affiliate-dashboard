@@ -7,6 +7,10 @@ interface Response {
   statusCode: number;
 }
 
+interface RequestQuery {
+  [key: string]: any;
+}
+
 export const TransactionApiSlice = ApiService.injectEndpoints({
   endpoints: (build) => ({
     sendTransaction: build.mutation<Response, Record<string, any>>({
@@ -35,8 +39,20 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         url: "/transactions",
       }),
     }),
+
+    userTransactions: build.query<Response, RequestQuery>({
+      query: ({ limit = 10, page = 1, search = "" }) => {
+        return {
+          url: `/transactions/user?limit=${limit}&page=${page}&search=${search}`,
+        };
+      },
+    }),
   }),
 });
 
-export const { useSendTransactionMutation, useValidateTransactionPinMutation, useGetAllTransactionsQuery } =
-  TransactionApiSlice;
+export const {
+  useSendTransactionMutation,
+  useValidateTransactionPinMutation,
+  useGetAllTransactionsQuery,
+  useUserTransactionsQuery,
+} = TransactionApiSlice;
