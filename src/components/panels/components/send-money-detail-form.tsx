@@ -110,6 +110,9 @@ export const SendMoneyDetailForm = ({
           <select
             name="bank"
             id="bank"
+            onChange={(event) => {
+              setFieldValue("bank", event.target.value);
+            }}
             className={classNames(
               "w-full block border rounded px-3 py-2 appearance-none text-sm focus:outline-none",
               errors.bank && touched.bank
@@ -294,6 +297,9 @@ export const SendMoneyDetailForm = ({
           <select
             name="category"
             id="category"
+            onChange={(event) => {
+              setFieldValue("category", event.target.value);
+            }}
             className={classNames(
               "w-full block border focus:outline-none rounded px-3 py-2 appearance-none text-sm",
               touched.category && errors.category

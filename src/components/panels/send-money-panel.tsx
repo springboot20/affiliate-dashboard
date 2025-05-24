@@ -10,6 +10,7 @@ import { classNames } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { SendMoneyDetailForm } from "./components/send-money-detail-form";
 import { PinPadFormComponent } from "./components/pinpad-form";
+import { toast } from "react-toastify";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -164,10 +165,13 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                   >
                     {(formik) => {
                       const buttonType = step === 0 ? "button" : "submit";
+                      const buttonText = step === 0 ? "next" : "send money";
+
                       const handleButtonClick = (
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                       ) => {
                         event.preventDefault();
+                        console.log(formik.errors)
                         if (Object.keys(formik.errors).length === 0) {
                           if (step === 0) {
                             setStep(1);
@@ -175,19 +179,22 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                           } else {
                             formik.handleSubmit();
                           }
+                        } else {
+                          toast("input fields cannot be empty.", { type: "error" });
                         }
                       };
-                      // const handleBackButtonClick = (
-                      //   event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                      // ) => {
-                      //   event.preventDefault();
-                      //   if (step === 1) {
-                      //     setStep(0);
-                      //     setTab("transaction-details");
-                      //   } else {
-                      //     onClose();
-                      //   }
-                      // };
+
+                      const handleBackButtonClick = (
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      ) => {
+                        event.preventDefault();
+                        if (step === 1) {
+                          setStep(0);
+                          setTab("transaction-details");
+                        } else {
+                          onClose();
+                        }
+                      };
                       return (
                         <Form>
                           {step === 0 ? (
@@ -195,18 +202,27 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                           ) : (
                             <PinPadFormComponent formik={formik} />
                           )}
-                          <button
-                            type={buttonType}
-                            title={buttonType}
-                            onClick={buttonType === "button" ? handleButtonClick : undefined}
-                            disabled={formik.isSubmitting}
-                            className={classNames(
-                              "capitalize font-medium text-sm w-full px-2 py-2.5 rounded mt-10 text-center bg-[#A1E96F] text-[#152F00]",
-                              "flex items-center justify-center"
-                            )}
-                          >
-                            next
-                          </button>
+                          <div className="mt-6 flex items-center  space-x-3">
+                            <button
+                              type="button"
+                              onClick={handleBackButtonClick}
+                              className="text-sm font-medium text-[#A1E96F] capitalize shrink-0 w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#F7F7F7] border border-[#A1E96F] hover:bg-[#A1E96F] hover:text-white"
+                            >
+                              {step === 0 ? "cancel" : "back"}
+                            </button>
+                            <button
+                              type={buttonType}
+                              title={buttonType}
+                              onClick={buttonType === "button" ? handleButtonClick : undefined}
+                              disabled={formik.isSubmitting}
+                              className={classNames(
+                                "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
+                                "flex items-center justify-center"
+                              )}
+                            >
+                              {buttonText}
+                            </button>
+                          </div>
                         </Form>
                       );
                     }}
