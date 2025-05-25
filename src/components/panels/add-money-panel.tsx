@@ -17,8 +17,8 @@ type AddMoneyPanelComponentProps = {
 };
 
 type InitialValues = {
-  from account?: string;
-  to account?: string;
+  from_account?: string;
+  to_account?: string;
   amount: number;
   narration: string;
   category: string;
