@@ -66,7 +66,7 @@ export const DeleteModalComponent: React.FC<{
                     </Description>
                   </div>
 
-                  <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-4 !mt-4'>
                     <Button
                       variant='filled'
                       color='red'
@@ -77,7 +77,7 @@ export const DeleteModalComponent: React.FC<{
                           setTimeout(() => onClose(), 2000);
                         }
                       }}
-                      className='flex items-center gap-2 rounded px-2'
+                      className='flex items-center gap-2 rounded px-2 w-full justify-center' 
                       placeholder={undefined}
                       onPointerEnterCapture={undefined}
                       onPointerLeaveCapture={undefined}>
@@ -86,7 +86,7 @@ export const DeleteModalComponent: React.FC<{
                       ) : (
                         <>
                           <TrashIcon className='h-5 w-5 text-white' />
-                          <span className='text-xs'>delete {title}</span>
+                          <span className='text-xs font-normal'>delete {title}</span>
                         </>
                       )}
                     </Button>
@@ -95,12 +95,12 @@ export const DeleteModalComponent: React.FC<{
                       variant='filled'
                       color='indigo'
                       onClick={onClose}
-                      className='flex items-center gap-2 rounded px-2'
+                      className='flex items-center gap-2 rounded px-2 w-full justify-center' 
                       placeholder={undefined}
                       onPointerEnterCapture={undefined}
                       onPointerLeaveCapture={undefined}>
                       <XCircleIcon className='h-5 w-5' />
-                      <span className='text-xs'>cancel delete</span>
+                      <span className='!text-xs font-normal'>cancel delete</span>
                     </Button>
                   </div>
                 </DialogPanel>

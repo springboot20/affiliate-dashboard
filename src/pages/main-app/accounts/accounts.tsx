@@ -8,10 +8,12 @@ import { ExclamationCircleIcon, PencilSquareIcon, TrashIcon } from "@heroicons/r
 import { DeleteModalComponent } from "@/components/modal/delete-modal";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { SendMessageModal } from "@/components/modal/message";
 
 export default function Accounts() {
   const { data, refetch, isLoading: accountsLoading } = useGetUserAccountsQuery();
   const [open, setOpen] = useState<{ [key: string]: boolean }>({});
+  const [openMessage, setOpenMessage] = useState<{ [key: string]: boolean }>({});
   const [accountDeleted, setAccountDeleted] = useState(false);
   const [deleteUserAccount, { isLoading }] = useDeleteUserAccountMutation();
 
@@ -48,6 +50,9 @@ export default function Accounts() {
   const onOpen = (id: string) => setOpen((prev) => ({ ...prev, [id]: true }));
   const onClose = (id: string) => setOpen((prev) => ({ ...prev, [id]: false }));
 
+  const onOpenMessage = (id: string) => setOpenMessage((prev) => ({ ...prev, [id]: true }));
+  const onCloseMessage = (id: string) => setOpenMessage((prev) => ({ ...prev, [id]: false }));
+
   const handleDeleteUserAccount = async (accountId: string) => {
     try {
       const response = await deleteUserAccount({ accountId }).unwrap();
@@ -74,6 +79,12 @@ export default function Accounts() {
           onClose={() => onClose(data?._id as string)}
           title="account"
         />
+
+        <SendMessageModal
+          open={!!openMessage[data?._id as string]}
+          close={() => onCloseMessage(data?._id as string)}
+        />
+
         {data?.status !== "CLOSED" && data?.status !== "SUSPENDED" ? (
           <div className="flex items-center space-x-4">
             <button
@@ -99,6 +110,7 @@ export default function Accounts() {
             title={`account ${
               data?.status === "CLOSED" ? "closed" : data?.status === "SUSPENDED" ? "suspended" : ""
             }`}
+            onClick={() => onOpenMessage(data?._id as string)}
           >
             <ExclamationCircleIcon className="h-5 text-red-500" />
           </button>

@@ -116,14 +116,17 @@ export default function Overview() {
                         accounts?.data?.docs.length &&
                           accounts?.data?.docs.map((doc: any) => {
                             return (
-                              <option value={doc?._id}>
-                                {doc?.type} account -{" "}
-                                {formatMoney(
-                                  doc?.wallet?.balance,
-                                  doc?.wallet?.currency === "USD" ? "USD" : "NGN",
-                                  doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                                )}
-                              </option>
+                              doc?.status !== "CLOSED" &&
+                              doc?.status !== "SUSPENDED" && (
+                                <option value={doc?._id}>
+                                  {doc?.type} account -{" "}
+                                  {formatMoney(
+                                    doc?.wallet?.balance,
+                                    doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                    doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                  )}
+                                </option>
+                              )
                             );
                           })
                       )}
