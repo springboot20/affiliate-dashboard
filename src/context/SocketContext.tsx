@@ -34,7 +34,7 @@ const getSocket = (tokens: Token | null) => {
   });
 };
 
-export const SocketProvide: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<ReturnType<typeof SocketIo> | null>(null);
   const { tokens } = useAppSelector((state) => state.auth.data);
   const [connected, setConnected] = useState<boolean>(false);
