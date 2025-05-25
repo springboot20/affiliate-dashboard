@@ -81,7 +81,7 @@ export default function Overview() {
                 {isLoading && isFetching && !accountDetails
                   ? "loading..."
                   : formatMoney(
-                      accountDetails?.data?.wallet?.balance,
+                      accountDetails?.data?.wallet?.balance || 0,
                       accountDetails?.data?.wallet?.currency === "USD" ? "USD" : "NGN",
                       accountDetails?.data?.wallet?.currency === "USD" ? "en-US" : "en-NG"
                     )}
@@ -121,7 +121,7 @@ export default function Overview() {
                                 <option value={doc?._id}>
                                   {doc?.type} account -{" "}
                                   {formatMoney(
-                                    doc?.wallet?.balance,
+                                    doc?.wallet?.balance || 0,
                                     doc?.wallet?.currency === "USD" ? "USD" : "NGN",
                                     doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
                                   )}

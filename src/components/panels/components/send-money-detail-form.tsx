@@ -72,7 +72,7 @@ export const SendMoneyDetailForm = ({
                     <option value={doc?._id}>
                       {doc?.type} Account -{" "}
                       {formatMoney(
-                        doc?.wallet?.balance,
+                        doc?.wallet?.balance || 0,
                         doc?.wallet?.currency === "USD" ? "USD" : "NGN",
                         doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
                       )}
