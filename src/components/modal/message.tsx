@@ -1,3 +1,4 @@
+import { useSocket } from "@/context/SocketContext";
 import { classNames } from "@/utils";
 import {
   Dialog,
@@ -9,7 +10,9 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useFormik } from "formik";
-import { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import * as yup from "yup";
+import { CustomErrorMessage } from "../Error";
 
 type SendMessageModalProps = {
   open: boolean;
@@ -18,17 +21,61 @@ type SendMessageModalProps = {
 
 type InitialValues = {
   action: "CLOSE_ACCOUNT" | "SUSPEND_ACCOUNT" | "UNSUSPEND_ACCOUNT" | "UNCLOSE_ACCOUNT" | "NONE";
+  message: string;
 };
 
 export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close }) => {
-  const { values, setFieldValue } = useFormik<InitialValues>({
-    initialValues: {
-      action: "NONE",
-    },
-    onSubmit: async (values) => {
-      console.log(values);
-    },
-  });
+  const { socket, connected } = useSocket();
+
+  useEffect(() => {
+    if (!connected) return;
+
+    if (socket && open) {
+    }
+  }, [socket, open]);
+
+  const { values, setFieldValue, handleBlur, handleChange, errors, touched, handleSubmit } =
+    useFormik<InitialValues>({
+      initialValues: {
+        action: "NONE",
+        message: "",
+      },
+      onSubmit: async (values) => {
+        console.log(values);
+      },
+      validationSchema: yup.object({
+        action: yup
+          .string()
+          .oneOf(["CLOSE_ACCOUNT", "SUSPEND_ACCOUNT", "UNSUSPEND_ACCOUNT", "UNCLOSE_ACCOUNT"])
+          .required("Please choose an action"),
+        message: yup
+          .string()
+          .min(10, "Message must be at least 10 characters")
+          .max(500, "Message cannot exceed 500 characters")
+          .required("Message is required"),
+      }),
+    });
+
+  const actionLabels = {
+    CLOSE_ACCOUNT: "Close Account",
+    UNCLOSE_ACCOUNT: "Reopen Account",
+    SUSPEND_ACCOUNT: "Suspend Account",
+    UNSUSPEND_ACCOUNT: "Unsuspend Account",
+  };
+
+  const actionDescriptions = {
+    CLOSE_ACCOUNT: "Permanently close your account and delete all data",
+    UNCLOSE_ACCOUNT: "Reactivate a previously closed account",
+    SUSPEND_ACCOUNT: "Temporarily suspend account access",
+    UNSUSPEND_ACCOUNT: "Restore access to a suspended account",
+  };
+
+  const getPriority = (action: string) => {
+    if (action.startsWith("UN")) {
+      return { color: "green", urgent: false };
+    }
+    return { color: "red", urgent: true };
+  };
 
   return (
     <Transition show={open} as={Fragment}>
@@ -71,66 +118,95 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
                     Request message
                   </DialogTitle>
 
-                  <form
-                    className="mt-5"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                    }}
-                  >
+                  <form className="mt-5" onSubmit={handleSubmit}>
                     <fieldset className="mb-2">
-                      <label htmlFor="action" className="text-sm font-medium mb-2 inline-block">
-                        Request action {values.action !== "NONE" && "to"}
-                        {values.action !== "NONE" && (
-                          <span
-                            className={classNames(
-                              values.action.toLowerCase().startsWith("un")
-                                ? "bg-green-500"
-                                : "bg-red-500",
-                              "px-2 py-1 !font-medium !text-xs w-max !text-white rounded-xl ml-1.5"
-                            )}
-                          >
-                            {values.action === "CLOSE_ACCOUNT"
-                              ? "close account"
-                              : values.action === "UNCLOSE_ACCOUNT"
-                              ? "unclose account"
-                              : values.action === "SUSPEND_ACCOUNT"
-                              ? "suspend account"
-                              : values.action === "UNSUSPEND_ACCOUNT"
-                              ? "unsuspend account"
-                              : ""}
-                          </span>
-                        )}
+                      <label htmlFor="action" className="text-sm font-medium mb-2 inline-block text-gray-700">
+                        Request action
                       </label>
                       <select
                         name="action"
                         id="action"
                         value={values.action}
+                        onBlur={handleBlur}
                         onChange={(event) => {
                           setFieldValue("action", event.target.value);
                         }}
-                        className="w-full outline-none focus:ring-[1.3px] focus:ring-gray-600 appearance-none px-3 py-2.5 border rounded-md block text-sm"
+                        className={classNames(
+                          "w-full focus:outline-none appearance-none px-3 py-2.5 rounded-md block text-sm",
+                          // "w-full block focus:outline-none rounded px-3 py-2 appearance-none text-sm",
+                          touched.action && errors.action
+                            ? "border-red-500 border focus:ring-red-500 focus:ring-1"
+                            : "border focus:ring-2 focus:ring-[#A1E96F]"
+                        )}
                       >
                         <option value="NONE">---select-request-action---</option>
-                        <option value="CLOSE_ACCOUNT">close account</option>
-                        <option value="SUSPEND_ACCOUNT">suspend account</option>
-                        <option value="UNCLOSE_ACCOUNT">unclose account</option>
-                        <option value="UNSUSPEND_ACCOUNT">unsuspend account</option>
+                        {React.Children.toArray(
+                          Object.entries(actionLabels).map(([value, label]) => (
+                            <option value={value}>{label}</option>
+                          ))
+                        )}
                       </select>
+
+                      {values.action !== "NONE" && (
+                        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center">
+                            <span
+                              className={classNames(
+                                getPriority(values.action).color === "green"
+                                  ? "bg-green-500"
+                                  : "bg-red-500",
+                                "px-2 py-1 !font-medium !text-xs w-max !text-white rounded-full"
+                              )}
+                            >
+                              {actionLabels[values.action]}
+                            </span>
+
+                            {getPriority(values.action).urgent && (
+                              <span className="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full font-medium ml-1.5">
+                                high priority
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs font-normal mt-1 text-gray-600">
+                            {actionDescriptions[values.action]}
+                          </p>
+                        </div>
+                      )}
+
+                      {errors.action && touched.action && (
+                        <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                          {errors.action}
+                        </CustomErrorMessage>
+                      )}
                     </fieldset>
 
                     <fieldset>
-                      <label
-                        htmlFor="request_message"
-                        className="text-sm font-medium mb-2 inline-block"
-                      >
-                        Request Message
+                      <label htmlFor="message" className="text-sm font-medium mb-2 inline-block text-gray-700">
+                        Request Details{" "}
+                        <span className="text-gray-500 font-normal ml-2">
+                          ({values.message.length}/500)
+                        </span>
                       </label>
                       <textarea
-                        name="request_message"
-                        id="request_message"
-                        className="w-full outline-none focus:ring-[1.3px] focus:ring-gray-600 appearance-none p-3 border rounded-md block text-sm"
+                        name="message"
+                        id="message"
+                        value={values.message}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={classNames(
+                          "w-full outline-none appearance-none p-3 rounded-md block text-sm",
+                          touched.message && errors.message
+                            ? "border-red-500 border focus:ring-red-500 focus:ring-1"
+                            : "border focus:ring-2 focus:ring-[#A1E96F]"
+                        )}
                         rows={4}
                       ></textarea>
+
+                      {errors.message && touched.message && (
+                        <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">
+                          {errors.message}
+                        </CustomErrorMessage>
+                      )}
                     </fieldset>
 
                     <div className="flex items-center gap-4">
