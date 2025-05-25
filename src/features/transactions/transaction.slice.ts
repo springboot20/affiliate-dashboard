@@ -40,6 +40,12 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       }),
     }),
 
+    getTransactionDetails: build.query<Response, string>({
+      query: (transactionId) => ({
+        url: `/transactions/details?transactionId=${transactionId}`,
+      }),
+    }),
+
     userTransactions: build.query<Response, RequestQuery>({
       query: ({ limit = 10, page = 1, search = "" }) => {
         return {
@@ -54,5 +60,6 @@ export const {
   useSendTransactionMutation,
   useValidateTransactionPinMutation,
   useGetAllTransactionsQuery,
+  useGetTransactionDetailsQuery,
   useUserTransactionsQuery,
 } = TransactionApiSlice;

@@ -1,9 +1,16 @@
+import { useGetTransactionDetailsQuery } from "@/features/transactions/transaction.slice";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function TransactionDetails() {
-  const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
+  const { transactionId } = useParams<{ transactionId: string }>();
+
+  const { data } = useGetTransactionDetailsQuery(transactionId!, {
+    skip: !transactionId,
+  });
+
+  console.log(data);
 
   return (
     <section className="py-24 lg:py-[8rem]">
@@ -18,7 +25,11 @@ export default function TransactionDetails() {
           back
         </button>
 
-        <div className="max-w-full">{transactionId}</div>
+        <div className="max-w-full">
+          <div className="border p-4 rounded-sm bg-white mb-5"></div>
+          <div className="border p-4 rounded-sm bg-white mb-5"></div>
+          <div className="border p-4 rounded-sm bg-white"></div>
+        </div>
       </div>
     </section>
   );
