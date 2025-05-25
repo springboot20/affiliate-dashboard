@@ -5,8 +5,8 @@ import { ErrorMessage, Field, FormikProps } from "formik";
 import React, { useState } from "react";
 
 type InitialValues = {
-  from_account: string;
-  to_account: string;
+  from_account?: string;
+  to_account?: string;
   amount: number;
   narration: string;
   category: string;
