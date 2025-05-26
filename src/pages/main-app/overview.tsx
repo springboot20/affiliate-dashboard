@@ -78,7 +78,7 @@ export default function Overview() {
             <div className="text-white flex flex-col flex-start gap-y-2 sm:gap-y-4">
               <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
               <span className="font-medium text-sm lg:text-xl xl:text-3xl">
-                {isLoading && isFetching && !accountDetails
+                {isLoading || isFetching || !accountDetails
                   ? "loading..."
                   : formatMoney(
                       accountDetails?.data?.wallet?.balance || 0,
@@ -89,7 +89,7 @@ export default function Overview() {
             </div>
 
             <div className="flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3">
-              {isLoading && isFetching && !accounts?.data?.docs?.length ? (
+              {isLoading || isFetching || !accounts?.data?.docs?.length ? (
                 <span className="text-sm text-white">loading...</span>
               ) : (
                 <fieldset className="w-fit">
