@@ -1,8 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { toast } from "react-toastify";
 import { InitialState, Token, User } from "@/types/auth/auth";
 import { forgot, login, logout, register, sendMail } from "../thunks/auth.thunk";
 import { LocalStorage } from "@/utils";
+import { jwtDecode } from "jwt-decode";
 
 const initialState: InitialState = {
   loading: "idle",
@@ -19,10 +20,34 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (_, action) => {
-      const { user } = action.payload;
+    setCredentials: (state, action) => {
+      const { tokens } = action.payload;
 
-      LocalStorage.set("user", user);
+      state.data.tokens = tokens;
+
+      LocalStorage.set("tokens", state.data.tokens);
+    },
+    authenticationExpires: (state, action: PayloadAction<string>) => {
+      try {
+        if (!action.payload) {
+          state.isAuthenticated = false;
+          return;
+        }
+
+        const decodedToken = jwtDecode<{ exp: number }>(action.payload);
+        const expirationTime = decodedToken?.exp;
+
+        if (!expirationTime || Date.now() >= expirationTime * 1000) {
+          state.isAuthenticated = false;
+        } else {
+          state.isAuthenticated = true;
+        }
+
+        LocalStorage.set("authentified", state.isAuthenticated);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        state.isAuthenticated = false;
+      }
     },
     setUserEmail: (state, { payload }) => {
       state.data.user = payload;
@@ -167,4 +192,4 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { setCredentials, setUserEmail } = authSlice.actions;
+export const { setCredentials, setUserEmail, authenticationExpires } = authSlice.actions;

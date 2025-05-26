@@ -1,14 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
-import { CreateNewAccountFormComponent } from './create-new-account';
-import { PinPadFormComponent } from './pinpad-form';
-import { motion } from 'framer-motion';
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { AccountInitialValues } from '@/types/formik/formik';
-import { Formik, Form, FormikHelpers } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { useCreateNewAccountMutation } from '@/features/account/account.slice';
-import { SuccessModalComponent } from '@/components/modal/success-modal';
-import { ErrorModalComponent } from '@/components/modal/error-modal';
+import { useEffect, useState, useCallback } from "react";
+import { CreateNewAccountFormComponent } from "./create-new-account";
+import { PinPadFormComponent } from "./pinpad-form";
+import { motion } from "framer-motion";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { AccountInitialValues } from "@/types/formik/formik";
+import { Formik, Form, FormikHelpers } from "formik";
+import { useNavigate } from "react-router-dom";
+import { useCreateNewAccountMutation } from "@/features/account/account.slice";
+import { SuccessModalComponent } from "@/components/modal/success-modal";
+import { ErrorModalComponent } from "@/components/modal/error-modal";
 
 export default function AccountForms() {
   const navigate = useNavigate();
@@ -19,29 +19,29 @@ export default function AccountForms() {
 
   const getInitialStepFromUrl = (): number => {
     const urlParams = new URLSearchParams(location.search);
-    const stepParam = urlParams.get('step');
+    const stepParam = urlParams.get("step");
     // Convert to number, validate between 1-3, default to 1 if invalid
-    const step = parseInt(stepParam || '1', 10);
+    const step = parseInt(stepParam || "1", 10);
     return isNaN(step) || step < 1 || step > 2 ? 0 : step - 1; // Convert to 0-based index
   };
 
   const getInitialTabFromUrl = (): string => {
     const urlParams = new URLSearchParams(location.search);
-    const tabParam = urlParams.get('tab');
+    const tabParam = urlParams.get("tab");
     // Validate tab value, default to "address" if invalid
-    return ['new-account', 'create-pin'].includes(tabParam || '') ? tabParam! : 'new-account';
+    return ["new-account", "create-pin"].includes(tabParam || "") ? tabParam! : "new-account";
   };
 
   const [createNewAccount] = useCreateNewAccountMutation();
 
   const [step, setStep] = useState(getInitialStepFromUrl() || 0);
-  const [tab, setTab] = useState(getInitialTabFromUrl() || 'new-account');
+  const [tab, setTab] = useState(getInitialTabFromUrl() || "new-account");
 
   const initialValues: AccountInitialValues = {
     cards: [],
-    currency: '',
-    type: 'NONE',
-    pin: Array(4).fill(''),
+    currency: "",
+    type: "NONE",
+    pin: Array(4).fill(""),
   };
 
   const variants = {
@@ -64,7 +64,7 @@ export default function AccountForms() {
     event.preventDefault();
     event.stopPropagation();
     const nextStep = Math.min(step + 1, 1);
-    const nextTab = nextStep === 1 ? 'create-pin' : 'new-account';
+    const nextTab = nextStep === 1 ? "create-pin" : "new-account";
 
     // Update state
     setStep(nextStep);
@@ -78,7 +78,7 @@ export default function AccountForms() {
     event.preventDefault();
     event.stopPropagation();
     const prevStep = Math.max(step - 1, 0);
-    const prevTab = prevStep === 0 ? 'new-account' : 'create-pin';
+    const prevTab = prevStep === 0 ? "new-account" : "create-pin";
 
     // Update state
     setStep(prevStep);
@@ -99,7 +99,7 @@ export default function AccountForms() {
         open={open}
         close={() => {
           setOpen(false);
-          navigate('/app/accounts');
+          navigate("/app/accounts");
         }}
         message={message}
       />
@@ -109,7 +109,7 @@ export default function AccountForms() {
         close={() => {
           setOpenError(false);
           setStep(0);
-          setTab('new-account');
+          setTab("new-account");
         }}
         message={message}
       />
@@ -120,27 +120,25 @@ export default function AccountForms() {
           { resetForm }: FormikHelpers<AccountInitialValues>
         ) => {
           // Handle final form submission here
-          console.log('Form submitted with values:', values);
+          console.log("Form submitted with values:", values);
           // Here you would typically send the data to your backend
           try {
             const response = await createNewAccount({
               ...values,
-              pin: values.pin.join(''),
+              pin: values.pin.join(""),
             }).unwrap();
 
-            const { data } = response;
+            const { message } = response;
 
-            setMessage(data?.message);
+            setMessage(message);
 
             setTimeout(() => {
               setOpen(true);
 
-              setTab('new-account');
+              setTab("new-account");
               setStep(0);
               resetForm();
             }, 1500);
-
-            console.log(data);
           } catch (error: any) {
             setOpen(false);
             setOpenError(true);
@@ -150,7 +148,7 @@ export default function AccountForms() {
             setTimeout(() => {
               setOpenError(false);
 
-              setTab('new-account');
+              setTab("new-account");
               resetForm();
               setStep(0);
             }, 1500);
@@ -158,28 +156,31 @@ export default function AccountForms() {
             setMessage(message);
           }
         }}
-        enableReinitialize>
+        enableReinitialize
+      >
         {(formik) => {
           return (
-            <Form className='py-24 lg:py-[8rem] max-w-xl mx-auto'>
+            <Form className="py-24 lg:py-[8rem] max-w-xl mx-auto">
               <button
-                title='back'
-                type='button'
-                className='flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4'
-                onClick={() => navigate('/app/accounts')}>
-                <ArrowLeftIcon className='size-4 shrink-0' />
+                title="back"
+                type="button"
+                className="flex items-center gap-3 hover:underline active:underline text-sm font-medium mb-4"
+                onClick={() => navigate("/app/accounts")}
+              >
+                <ArrowLeftIcon className="size-4 shrink-0" />
                 back
               </button>
 
               <StepIndicator _step={step} />
               <motion.div
                 key={step}
-                initial='hidden'
-                animate='visible'
-                exit='exit'
+                initial="hidden"
+                animate="visible"
+                exit="exit"
                 variants={variants}
                 transition={{ duration: 0.5 }}
-                className='w-full'>
+                className="w-full"
+              >
                 {step === 0 ? (
                   <CreateNewAccountFormComponent formik={formik} />
                 ) : (
@@ -187,34 +188,37 @@ export default function AccountForms() {
                 )}
               </motion.div>
 
-              <div className='mt-4 flex items-center justify-between'>
+              <div className="mt-4 flex items-center justify-between">
                 {step > 0 && (
                   <button
-                    type='button'
+                    type="button"
                     onClick={handlePrevStep}
-                    className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
-                    <ArrowLeftIcon className='h-4' />
+                    className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                  >
+                    <ArrowLeftIcon className="h-4" />
                     Previous
                   </button>
                 )}
 
                 {step < steps.length - 1 ? (
-                  <div className='ml-auto'>
+                  <div className="ml-auto">
                     <button
-                      type='button'
+                      type="button"
                       onClick={handleNextStep}
-                      className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
+                      className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                    >
                       Next
-                      <ArrowRightIcon className='h-4' />
+                      <ArrowRightIcon className="h-4" />
                     </button>
                   </div>
                 ) : (
-                  <div className='ml-auto'>
+                  <div className="ml-auto">
                     <button
-                      type='submit'
-                      className='flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0'>
+                      type="submit"
+                      className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                    >
                       Submit
-                      <ArrowRightIcon className='h-4' />
+                      <ArrowRightIcon className="h-4" />
                     </button>
                   </div>
                 )}
@@ -227,20 +231,20 @@ export default function AccountForms() {
   );
 }
 
-const steps = ['new-account', 'create-pin'];
+const steps = ["new-account", "create-pin"];
 
 const StepIndicator = ({ _step }: { _step: number }) => {
   return (
-    <div className='mb-8 max-w-xl mx-auto'>
-      <div className='flex justify-between items-center relative mb-1'>
+    <div className="mb-8 max-w-xl mx-auto">
+      <div className="flex justify-between items-center relative mb-1">
         {/* Line indicators between steps */}
-        <div className='absolute h-0.5 bg-gray-300 left-0 right-0 top-1/2 transform -translate-y-1/2 z-0' />
+        <div className="absolute h-0.5 bg-gray-300 left-0 right-0 top-1/2 transform -translate-y-1/2 z-0" />
 
         {/* Completed line indicators */}
         <div
-          className='absolute h-0.5 bg-[#A1E96F] left-0 top-1/2 transform -translate-y-1/2 z-0 transition-all duration-300'
+          className="absolute h-0.5 bg-[#A1E96F] left-0 top-1/2 transform -translate-y-1/2 z-0 transition-all duration-300"
           style={{
-            width: _step === 0 ? '0%' : '100%',
+            width: _step === 0 ? "0%" : "100%",
 
             // _step === 1 ? '50%' :
           }}
@@ -248,19 +252,20 @@ const StepIndicator = ({ _step }: { _step: number }) => {
 
         {/* Step circles */}
         {steps.map((_, index) => (
-          <div key={index} className='z-10'>
+          <div key={index} className="z-10">
             <div
               className={`flex items-center justify-center w-8 h-8 rounded-full ${
                 index <= _step
-                  ? 'bg-[#A1E96F] text-white'
-                  : 'bg-white border-2 border-gray-300 text-gray-400'
-              } transition-all duration-300`}>
+                  ? "bg-[#A1E96F] text-white"
+                  : "bg-white border-2 border-gray-300 text-gray-400"
+              } transition-all duration-300`}
+            >
               {index <= _step ? (
-                <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
-                    fillRule='evenodd'
-                    d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
-                    clipRule='evenodd'
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
                   />
                 </svg>
               ) : (
@@ -271,16 +276,17 @@ const StepIndicator = ({ _step }: { _step: number }) => {
         ))}
       </div>
       {/* Step labels */}
-      <div className='flex justify-between items-center mt-2'>
+      <div className="flex justify-between items-center mt-2">
         {steps.map((step, index) => (
-          <div key={index} className='flex-1'>
+          <div key={index} className="flex-1">
             <motion.div
               className={`text-center text-sm font-medium ${
-                index <= _step ? 'text-[#A1E96F]' : 'text-gray-400'
+                index <= _step ? "text-[#A1E96F]" : "text-gray-400"
               }`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}>
+              transition={{ duration: 0.5 }}
+            >
               {step.charAt(0).toUpperCase() + step.slice(1)}
             </motion.div>
           </div>

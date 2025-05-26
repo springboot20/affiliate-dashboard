@@ -59,7 +59,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket?.off(SocketEvents.CONNECTED_EVENT, onConnected);
       socket?.off(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
     };
-  }, [socket, socket, onConnected, onDisconnected]);
+  }, [socket, onConnected, onDisconnected]);
 
   useEffect(() => {
     let currentSocket: ReturnType<typeof SocketIo> | null = null;
