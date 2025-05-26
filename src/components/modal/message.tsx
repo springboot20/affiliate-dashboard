@@ -9,10 +9,15 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useFormik } from "formik";
-import React, { Fragment, useEffect } from "react";
+import { FormikHelpers, useFormik } from "formik";
+import React, { Fragment, useEffect, useState } from "react";
 import * as yup from "yup";
 import { CustomErrorMessage } from "../Error";
+import {
+  useGetUserPendingRequesMessageQuery,
+  useSendRequesMessageMutation,
+} from "@/features/messaging/message.slice";
+import { toast } from "react-toastify";
 
 type SendMessageModalProps = {
   open: boolean;
@@ -25,36 +30,92 @@ type InitialValues = {
 };
 
 export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close }) => {
+  const [pendingRequests, setPendingRequests] = useState<number>(0);
+
   const { socket, connected } = useSocket();
+  const { data, refetch } = useGetUserPendingRequesMessageQuery(undefined, {
+    skip: !open,
+  });
+
+  const [sendRequestMessage] = useSendRequesMessageMutation();
+
+  const handleSendRequesMessage = async (
+    values: InitialValues,
+    { resetForm }: FormikHelpers<InitialValues>
+  ) => {
+    if (!socket || !connected) return;
+
+    if (pendingRequests >= 3) {
+      toast(
+        "You have reached the maximum number of pending requests (3). Please wait for them to be reviewed.",
+        {
+          type: "warning",
+        }
+      );
+      return;
+    }
+
+    try {
+      const response = await sendRequestMessage({ ...values }).unwrap();
+
+      const { data, message } = response;
+
+      console.log(data);
+      resetForm();
+      refetch();
+      setPendingRequests((prev) => prev + 1);
+      toast(message, { type: "success", className: "text-xs" });
+
+      setTimeout(() => {
+        close();
+      }, 3000);
+    } catch (error: any) {
+      const message = error?.data?.message;
+
+      toast(message, { type: "error", className: "text-xs" });
+    }
+  };
 
   useEffect(() => {
     if (!connected) return;
 
-    if (socket && open) {
+    if (socket && open && data) {
+      const _pendingRequests = data?.data?.pendingRequests;
+      setPendingRequests(_pendingRequests);
+      refetch();
     }
-  }, [socket, open]);
+  }, [socket, open, data]);
 
-  const { values, setFieldValue, handleBlur, handleChange, errors, touched, handleSubmit } =
-    useFormik<InitialValues>({
-      initialValues: {
-        action: "NONE",
-        message: "",
-      },
-      onSubmit: async (values) => {
-        console.log(values);
-      },
-      validationSchema: yup.object({
-        action: yup
-          .string()
-          .oneOf(["CLOSE_ACCOUNT", "SUSPEND_ACCOUNT", "UNSUSPEND_ACCOUNT", "UNCLOSE_ACCOUNT"])
-          .required("Please choose an action"),
-        message: yup
-          .string()
-          .min(10, "Message must be at least 10 characters")
-          .max(500, "Message cannot exceed 500 characters")
-          .required("Message is required"),
-      }),
-    });
+  console.log(pendingRequests);
+
+  const {
+    values,
+    setFieldValue,
+    handleBlur,
+    handleChange,
+    errors,
+    touched,
+    handleSubmit,
+    isSubmitting,
+    isValid,
+  } = useFormik<InitialValues>({
+    initialValues: {
+      action: "NONE",
+      message: "",
+    },
+    onSubmit: handleSendRequesMessage,
+    validationSchema: yup.object({
+      action: yup
+        .string()
+        .oneOf(["CLOSE_ACCOUNT", "SUSPEND_ACCOUNT", "UNSUSPEND_ACCOUNT", "UNCLOSE_ACCOUNT"])
+        .required("Please choose an action"),
+      message: yup
+        .string()
+        .min(10, "Message must be at least 10 characters")
+        .max(500, "Message cannot exceed 500 characters")
+        .required("Message is required"),
+    }),
+  });
 
   const actionLabels = {
     CLOSE_ACCOUNT: "Close Account",
@@ -114,13 +175,31 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
                     <XMarkIcon className="h-5" strokeWidth={2.5} />
                   </button>
 
-                  <DialogTitle as="h1" className="text-base font-medium text-gray-600">
-                    Request message
-                  </DialogTitle>
+                  <div className="mb-6">
+                    <DialogTitle as="h1" className="text-xl font-bold text-gray-900 mb-2">
+                      Submit Account Request
+                    </DialogTitle>
+                    <p className="text-sm text-gray-600">
+                      Request account changes that require admin approval.
+                      {pendingRequests > 0 && (
+                        <span className="text-amber-600 font-medium">
+                          You have{" "}
+                          <span className="bg-amber-500 text-white rounded-full size-6  text-xs inline-flex items-center justify-center">
+                            {pendingRequests}
+                            {pendingRequests > 1 ? "s" : ""}
+                          </span>{" "}
+                          pending request{pendingRequests > 1 ? "s" : ""}.
+                        </span>
+                      )}
+                    </p>
+                  </div>
 
                   <form className="mt-5" onSubmit={handleSubmit}>
                     <fieldset className="mb-2">
-                      <label htmlFor="action" className="text-sm font-medium mb-2 inline-block text-gray-700">
+                      <label
+                        htmlFor="action"
+                        className="text-sm font-medium mb-2 inline-block text-gray-700"
+                      >
                         Request action
                       </label>
                       <select
@@ -181,7 +260,10 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
                     </fieldset>
 
                     <fieldset>
-                      <label htmlFor="message" className="text-sm font-medium mb-2 inline-block text-gray-700">
+                      <label
+                        htmlFor="message"
+                        className="text-sm font-medium mb-2 inline-block text-gray-700"
+                      >
                         Request Details{" "}
                         <span className="text-gray-500 font-normal ml-2">
                           ({values.message.length}/500)
@@ -223,9 +305,32 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
                       <button
                         title="send message"
                         type="submit"
+                        disabled={isSubmitting || !isValid || pendingRequests >= 3}
                         className="mt-3 px-2 py-2.5 rounded-md text-sm bg-[#A1E96F] text-center w-full capitalize text-[#152F00]"
                       >
-                        send message
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                fill="none"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
+                            </svg>
+                            Submitting...
+                          </span>
+                        ) : (
+                          "Submit Request"
+                        )}
                       </button>
                     </div>
                   </form>
