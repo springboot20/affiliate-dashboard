@@ -36,18 +36,18 @@ export const BankAppService = async ({
 };
 
 export const register_new_user = (data: { username: string; password: string; email: string }) =>
-  BankAppApiClient.post("/users/register", data);
+  BankAppApiClient.post("/auth/register", data);
 
 export const login_user = (data: { password: string; email: string }) =>
-  BankAppApiClient.post("/users/login", data);
+  BankAppApiClient.post("/auth/login", data);
 
-export const logout_user = () => BankAppApiClient.post("/users/logout");
+export const logout_user = () => BankAppApiClient.post("/auth/logout");
 
 export const forgot_password = (data: { email: string }) =>
-  BankAppApiClient.post("/users/forgot-password", data);
+  BankAppApiClient.post("/auth/forgot-password", data);
 
 export const refreshToken = (data: { inComingRefreshToken: string }) =>
-  BankAppApiClient.post("/users/refresh-token", data);
+  BankAppApiClient.post("/auth/refresh-token", data);
 
 export const verify_email = (data: { userId: string; token: string }) => {
   const { userId, token } = data;
@@ -55,7 +55,7 @@ export const verify_email = (data: { userId: string; token: string }) => {
   console.log(data);
 
   return BankAppApiClient.post(
-    `/users/verify-email`,
+    `/auth/verify-email`,
     {},
     {
       params: {
@@ -67,4 +67,4 @@ export const verify_email = (data: { userId: string; token: string }) => {
 };
 
 export const send_email = (data: { email: string }) =>
-  BankAppApiClient.post(`/users/send-email`, data);
+  BankAppApiClient.post(`/auth/send-email`, data);
