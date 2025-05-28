@@ -188,12 +188,12 @@ export default function AccountForms() {
                 )}
               </motion.div>
 
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-4 flex items-center gap-3">
                 {step > 0 && (
                   <button
                     type="button"
                     onClick={handlePrevStep}
-                    className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                    className="flex py-3 px-3 w-full gap-3 items-center justify-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
                   >
                     <ArrowLeftIcon className="h-4" />
                     Previous
@@ -201,26 +201,22 @@ export default function AccountForms() {
                 )}
 
                 {step < steps.length - 1 ? (
-                  <div className="ml-auto">
-                    <button
+                 <button
                       type="button"
                       onClick={handleNextStep}
-                      className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                      className="flex py-3 px-3 gap-3 w-full items-center justify-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
                     >
                       Next
                       <ArrowRightIcon className="h-4" />
                     </button>
-                  </div>
                 ) : (
-                  <div className="ml-auto">
-                    <button
-                      type="submit"
-                      className="flex py-3 px-3 gap-3 items-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
-                    >
-                      Submit
-                      <ArrowRightIcon className="h-4" />
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="flex py-3 px-3 w-full flex-grow gap-3 items-center justify-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                  >
+                    Submit
+                    <ArrowRightIcon className="h-4" />
+                  </button>
                 )}
               </div>
             </Form>
