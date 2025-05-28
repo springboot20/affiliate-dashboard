@@ -20,7 +20,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
 
       deleteUserAccount: build.mutation<Response, { accountId: string }>({
         query: ({ accountId }) => ({
-          url: `/accounts/user-account/${accountId}`,
+          url: `/accounts/user-accounts/${accountId}`,
           method: "DELETE",
         }),
       }),
@@ -32,7 +32,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
         query: ({ accountId, ...rest }) => {
           console.log(rest);
           return {
-            url: `/accounts/user-account/${accountId}`,
+            url: `/accounts/user-accounts/${accountId}`,
             method: "PATCH",
             body: { ...rest },
           };
@@ -52,7 +52,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
       }),
 
       getAccountDetails: build.query<Response, { accountId: string }>({
-        query: ({ accountId }) => `/accounts/user-account/${accountId}`,
+        query: ({ accountId }) => `/accounts/user-accounts/${accountId}`,
       }),
     };
   },
