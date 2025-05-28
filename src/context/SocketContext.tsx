@@ -37,6 +37,7 @@ const getSocket = (tokens: Token | null) => {
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<ReturnType<typeof SocketIo> | null>(null);
   const { tokens } = useAppSelector((state) => state.auth.data);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [connected, setConnected] = useState<boolean>(false);
 
   const onConnected = useCallback(() => {
@@ -64,7 +65,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     let currentSocket: ReturnType<typeof SocketIo> | null = null;
 
-    if (tokens) {
+    if (tokens && isAuthenticated) {
       currentSocket = getSocket(tokens);
       setSocket(currentSocket);
     } else {
