@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { TableComponent } from "@/components/tables/table-component";
 import {
-  useDeleteUserAccountMutation,
+  useCloseUserAccountMutation,
   useGetUserAccountsQuery,
 } from "@/features/account/account.slice";
 import { ExclamationCircleIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -15,7 +15,7 @@ export default function Accounts() {
   const [open, setOpen] = useState<{ [key: string]: boolean }>({});
   const [openMessage, setOpenMessage] = useState<{ [key: string]: boolean }>({});
   const [accountDeleted, setAccountDeleted] = useState(false);
-  const [deleteUserAccount, { isLoading }] = useDeleteUserAccountMutation();
+  const [closeUserAccount, { isLoading }] = useCloseUserAccountMutation();
 
   const accounts = data?.data;
 
@@ -53,14 +53,21 @@ export default function Accounts() {
   const onOpenMessage = (id: string) => setOpenMessage((prev) => ({ ...prev, [id]: true }));
   const onCloseMessage = (id: string) => setOpenMessage((prev) => ({ ...prev, [id]: false }));
 
-  const handleDeleteUserAccount = async (accountId: string) => {
+  const handleCloseUserAccount = async (accountId: string) => {
     try {
-      const response = await deleteUserAccount({ accountId }).unwrap();
+      const response = await closeUserAccount({ accountId }).unwrap();
 
       setAccountDeleted(true);
 
       const { message } = response;
       toast(message, { type: "success", className: "text-xs" });
+
+      setTimeout(() => {
+        setAccountDeleted(false);
+        onClose(accountId);
+      }, 1000);
+
+      refetch();
     } catch (error: any) {
       const message = error?.data?.message;
       toast(message, { type: "error", className: "text-xs" });
@@ -75,8 +82,11 @@ export default function Accounts() {
           open={!!open[data?._id as string]}
           itemDeleted={accountDeleted}
           deleteLoading={isLoading}
-          handleDelete={() => handleDeleteUserAccount(data?._id as string)}
-          onClose={() => onClose(data?._id as string)}
+          handleDelete={() => handleCloseUserAccount(data?._id as string)}
+          onClose={() => {
+            onClose(data?._id as string);
+            refetch();
+          }}
           title="account"
         />
 

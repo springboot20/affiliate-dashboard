@@ -18,10 +18,10 @@ export const AccountApiSlice = ApiService.injectEndpoints({
         }),
       }),
 
-      deleteUserAccount: build.mutation<Response, { accountId: string }>({
+      closeUserAccount: build.mutation<Response, { accountId: string }>({
         query: ({ accountId }) => ({
-          url: `/accounts/user-accounts/${accountId}`,
-          method: "DELETE",
+          url: `/accounts/user-accounts/close/${accountId}`,
+          method: "PATCH",
         }),
       }),
 
@@ -60,7 +60,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
 
 export const {
   useGetUserAccountsQuery,
-  useDeleteUserAccountMutation,
+  useCloseUserAccountMutation,
   useUpdateAccountStatusMutation,
   useCreateNewAccountMutation,
   useValidateAccountNumberMutation,
