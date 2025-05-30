@@ -158,7 +158,7 @@ export const TableComponent = ({ datum, columns, actions, isLoading }: AccountTa
                 )}
 
                 {actions && (
-                  <td className="px-2 py-4 border-b text-[#0B2239] min-w-[200px]">
+                  <td key={row["_id"]} className="px-2 py-4 border-b text-[#0B2239] min-w-[200px]">
                     {typeof actions === "function" ? actions(row) : actions}
                   </td>
                 )}

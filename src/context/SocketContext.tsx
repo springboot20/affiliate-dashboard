@@ -39,14 +39,20 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { tokens } = useAppSelector((state) => state.auth.data);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [connected, setConnected] = useState<boolean>(false);
+  const userRole = useAppSelector((state) => state.auth.data.user?.role);
 
   const onConnected = useCallback(() => {
     setConnected(true);
     // setReconnecting(false);
   }, []);
 
-  const onDisconnected = useCallback(() => {
-    // setReconnecting(false);
+  const onDisconnected = useCallback((error: string) => {
+    console.error("Socket error:", error);
+    setConnected(false);
+  }, []);
+
+  const onSocketError = useCallback((error: string) => {
+    console.error("Socket error:", error);
     setConnected(false);
   }, []);
 
@@ -55,10 +61,27 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     socket?.on(SocketEvents.CONNECTED_EVENT, onConnected);
     socket?.on(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
+    socket?.on(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
+
+    socket.on("connect", () => {
+
+      if (["ADMIN", "MODERATOR"].includes(userRole)) {
+        socket.emit(SocketEvents.JOIN_ADMIN_ROOM);
+      } else if (userRole === "USER") {
+        socket.emit(SocketEvents.JOIN_USER_ROOM);
+      }
+    });
+
+    socket?.on(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
+      console.log(data);
+    });
 
     return () => {
       socket?.off(SocketEvents.CONNECTED_EVENT, onConnected);
       socket?.off(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
+      socket?.off(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
+      socket?.off("connect");
+      socket?.off(SocketEvents.NEW_ADMIN_REQUEST);
     };
   }, [socket, onConnected, onDisconnected]);
 

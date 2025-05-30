@@ -18,6 +18,7 @@ import {
   useSendRequesMessageMutation,
 } from "@/features/messaging/message.slice";
 import { toast } from "react-toastify";
+import { SocketEvents } from "@/types/enums/socket-events";
 
 type SendMessageModalProps = {
   open: boolean;
@@ -56,11 +57,14 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
     }
 
     try {
+      if (!socket) return;
+
       const response = await sendRequestMessage({ ...values }).unwrap();
 
       const { data, message } = response;
 
-      console.log(data);
+      socket.emit(SocketEvents.NEW_ADMIN_REQUEST, data);
+
       resetForm();
       refetch();
       setPendingRequests((prev) => prev + 1);
@@ -85,8 +89,6 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
       refetch();
     }
   }, [socket, open, data]);
-
-  console.log(pendingRequests);
 
   const {
     values,
