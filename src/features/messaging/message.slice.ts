@@ -18,6 +18,24 @@ export const MessagingApiSlice = ApiService.injectEndpoints({
             method: "POST",
           };
         },
+        invalidatesTags: ["MessageRequest"],
+        onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+          try {
+            await queryFulfilled;
+            // Refetch notifications after sending message
+            dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification"]));
+          } catch (error) {
+            console.error("Failed to send message:", error);
+          }
+        },
+      }),
+
+      getRequestMessageById: build.query<Response, string>({
+        query: (messageId) => ({
+          url: `messagings/${messageId}`,
+        }),
+
+        providesTags: (_, __, messageId) => [{ type: "MessageRequest", id: messageId }],
       }),
 
       getUserPendingRequesMessage: build.query<Response, void>({
@@ -27,10 +45,14 @@ export const MessagingApiSlice = ApiService.injectEndpoints({
             method: "GET",
           };
         },
+        providesTags: ["MessageNotification"],
       }),
     };
   },
 });
 
-export const { useSendRequesMessageMutation, useGetUserPendingRequesMessageQuery } =
-  MessagingApiSlice;
+export const {
+  useSendRequesMessageMutation,
+  useGetRequestMessageByIdQuery,
+  useGetUserPendingRequesMessageQuery,
+} = MessagingApiSlice;

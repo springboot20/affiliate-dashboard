@@ -18,6 +18,14 @@ export const ApiService = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Auth", "Profile", "Account", "Card"],
+  tagTypes: [
+    "Auth",
+    "Profile",
+    "Account",
+    "Card",
+    "MessageRequest",
+    "MessageNotification",
+    "UnreadCount",
+  ],
   endpoints: () => ({}),
 });

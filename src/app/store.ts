@@ -1,10 +1,12 @@
 import { authReducer } from "@/features/auth/auth.slice";
 import { configureStore } from "@reduxjs/toolkit";
 import { ApiService } from "./service/api.service";
+import { notificationReducer } from "@/features/messaging/notification.reducer";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    notification: notificationReducer,
     [ApiService.reducerPath]: ApiService.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(ApiService.middleware),

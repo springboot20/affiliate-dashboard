@@ -1,7 +1,12 @@
-import { useAppSelector } from "@/app/hook";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { MessagingApiSlice } from "@/features/messaging/message.slice";
+import {
+  setNotification,
+  updateNotificationStatus,
+} from "@/features/messaging/notification.reducer";
 import { Token } from "@/types/auth/auth";
 import { SocketEvents } from "@/types/enums/socket-events";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from "react";
 import SocketIo from "socket.io-client";
 
 interface ISocketInstance {
@@ -39,32 +44,93 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { tokens } = useAppSelector((state) => state.auth.data);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [connected, setConnected] = useState<boolean>(false);
+  const [reconnecting, setReconnecting] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const userRole = useAppSelector((state) => state.auth.data.user?.role);
+  const socketRef = useRef<ReturnType<typeof SocketIo> | null>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  console.log(reconnecting, "reconnecting");
 
   const onConnected = useCallback(() => {
     setConnected(true);
-    // setReconnecting(false);
+    setReconnecting(false);
+
+    // Clear any pending reconnect timeout
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
   }, []);
 
   const onDisconnected = useCallback((error: string) => {
     console.error("Socket error:", error);
+    setReconnecting(true);
     setConnected(false);
   }, []);
 
-  const onSocketError = useCallback((error: string) => {
+  const onSocketError = useCallback((error: any) => {
     console.error("Socket error:", error);
     setConnected(false);
+
+    // Handle specific authentication errors
+    if (
+      error.message?.includes("Authentication failed") ||
+      error.message?.includes("Unauthorized")
+    ) {
+      console.warn("🚫 Authentication failed, cleaning up socket");
+      if (socketRef.current) {
+        socketRef.current?.disconnect();
+        setSocket(null);
+        socketRef.current = null;
+      }
+    }
   }, []);
+
+  const handleOnStatusUpdate = useCallback((data: any) => {
+    console.log("📝 Request status updated:", data);
+
+    dispatch(
+      updateNotificationStatus({
+        notificationId: data._id || data.requestId,
+        status: data.status,
+        adminNotes: data.adminNotes,
+      })
+    );
+
+    // Invalidate relevant queries
+    dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification"]));
+  }, []);
+
+  const handleOnNewAdminRequest = useCallback(
+    (data: any) => {
+      dispatch(
+        setNotification({
+          _id: data._id || data.data?._id,
+          data: data.data || data,
+          type: "NEW_REQUEST",
+          isRead: false,
+          createdAt: data.createdAt || new Date().toISOString(),
+        })
+      );
+
+      dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification", "UnreadCount"]));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (!socket) return;
 
+    socketRef.current = socket;
+
     socket?.on(SocketEvents.CONNECTED_EVENT, onConnected);
     socket?.on(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
     socket?.on(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
+    socket.on(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
+    socket?.on(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
 
     socket.on("connect", () => {
-
       if (["ADMIN", "MODERATOR"].includes(userRole)) {
         socket.emit(SocketEvents.JOIN_ADMIN_ROOM);
       } else if (userRole === "USER") {
@@ -81,31 +147,48 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket?.off(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
       socket?.off(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
       socket?.off("connect");
-      socket?.off(SocketEvents.NEW_ADMIN_REQUEST);
+      socket?.off(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
+      socket?.off(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
     };
   }, [socket, onConnected, onDisconnected]);
 
   useEffect(() => {
-    let currentSocket: ReturnType<typeof SocketIo> | null = null;
+    // Clean up existing socket
+    if (socketRef.current) {
+      console.log("🧹 Cleaning up existing socket");
+      socketRef.current.disconnect();
+      socketRef.current = null;
+      setSocket(null);
+      setConnected(false);
+      setReconnecting(false);
+    }
 
-    if (tokens && isAuthenticated) {
-      currentSocket = getSocket(tokens);
-      setSocket(currentSocket);
-    } else {
-      // Disconnect and clean up if no tokens
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
-        setConnected(false);
+    // Only create socket if authenticated with valid tokens
+    if (isAuthenticated && tokens?.accessToken) {
+      console.log("🚀 Initializing new socket connection");
+      const newSocket = getSocket(tokens);
+
+      if (newSocket) {
+        setSocket(newSocket);
+
+        // Connect after a small delay to ensure proper setup
+        setTimeout(() => {
+          if (newSocket && !newSocket.connected) {
+            newSocket.connect();
+          }
+        }, 100);
       }
+    } else {
+      console.log("❌ No valid authentication, skipping socket initialization");
     }
 
     return () => {
-      if (currentSocket) {
-        currentSocket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
     };
-  }, [tokens]);
+  }, [tokens?.accessToken, isAuthenticated]);
 
   return (
     <SocketConext.Provider
