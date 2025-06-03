@@ -8,6 +8,7 @@ export const BankAppApiClient: AxiosInstance = axios.create({
       : import.meta.env.VITE_DEPLOYED_URL,
   headers: {
     "Content-Type": "application/json",
+    withCredentials: true,
   },
 });
 
