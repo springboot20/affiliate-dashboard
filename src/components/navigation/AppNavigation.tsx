@@ -114,7 +114,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
             : title === 'transactions' ||
               title === 'cards' ||
               title === 'accounts' ||
-              title === 'accounts'
+              title === 'notifications'
             ? 'bg-[#152F00]'
             : 'bg-transparent'
         )}>

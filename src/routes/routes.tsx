@@ -28,6 +28,8 @@ import EditAccount from "@/pages/main-app/accounts/components/edit-account";
 import MainCards from "@/pages/main-app/cards/cards";
 import { AppSwitcher } from "@/components/app-switcher";
 import { ViewRedirector } from "@/components/view-redirector";
+import Notifications from "@/pages/main-app/notifications/notifications";
+import NotificationDetails from "@/pages/main-app/notifications/details/notification-details";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +51,15 @@ export const router = createBrowserRouter([
       //   index: true,
       //   element: <Navigate to='/app/overview' replace />,
       // },
+      {
+        path: "notifications",
+        element: <Notifications />,
+      },
+      {
+        path: "notifications/:notificationId",
+        element: <NotificationDetails />,
+      },
+
       {
         path: "overview",
         element: <MainAppOverview />,
@@ -113,7 +124,6 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-
       {
         path: "accounts",
         element: (

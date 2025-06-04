@@ -6,7 +6,7 @@ import { notificationReducer } from "@/features/messaging/notification.reducer";
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    notification: notificationReducer,
+    notifications: notificationReducer,
     [ApiService.reducerPath]: ApiService.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(ApiService.middleware),

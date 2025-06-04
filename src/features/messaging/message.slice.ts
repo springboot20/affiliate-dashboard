@@ -30,6 +30,33 @@ export const MessagingApiSlice = ApiService.injectEndpoints({
         },
       }),
 
+      getUserMessageNotificatons: build.query<
+        Response,
+        {
+          page?: number;
+          limit?: number;
+          status?: string;
+        }
+      >({
+        query: ({ page = 1, limit = 10, status }) => {
+          // Create URLSearchParams for query parameters
+          const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+          });
+
+          if (status) params.append("status", status);
+
+          return {
+            url: `/messagings/admin-requests-message/user-requests?${params.toString()}`,
+            method: "GET",
+          };
+        },
+
+        providesTags: ["MessageNotification"],
+        keepUnusedDataFor: 30, // Keep cache for 30 seconds
+      }),
+
       getRequestMessageById: build.query<Response, string>({
         query: (messageId) => ({
           url: `messagings/${messageId}`,
@@ -55,4 +82,5 @@ export const {
   useSendRequesMessageMutation,
   useGetRequestMessageByIdQuery,
   useGetUserPendingRequesMessageQuery,
+  useGetUserMessageNotificatonsQuery,
 } = MessagingApiSlice;
