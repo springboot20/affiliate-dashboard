@@ -30,6 +30,7 @@ import { AppSwitcher } from "@/components/app-switcher";
 import { ViewRedirector } from "@/components/view-redirector";
 import Notifications from "@/pages/main-app/notifications/notifications";
 import NotificationDetails from "@/pages/main-app/notifications/details/notification-details";
+import TestNotification from "@/pages/main-app/notifications/TestNotification";
 
 export const router = createBrowserRouter([
   {
@@ -47,10 +48,10 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      // {
-      //   index: true,
-      //   element: <Navigate to='/app/overview' replace />,
-      // },
+      {
+        path: "test",
+        element: <TestNotification />,
+      },
       {
         path: "notifications",
         element: <Notifications />,

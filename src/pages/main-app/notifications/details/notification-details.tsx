@@ -119,13 +119,13 @@ export default function NotificationDetails(): JSX.Element {
 
   return (
     <Fragment>
-      <div className="pt-24 lg:pt-[5rem] mx-auto max-w-2xl">
+      <div className="pt-24 lg:pt-[6rem] mx-auto max-w-2xl">
         <header className="flex items-center justify-between">
           <button
             title="back"
             type="button"
             className="flex items-center gap-3 hover:underline active:underline font-medium mb-4"
-            onClick={() => navigate("/admin/notifications")}
+            onClick={() => navigate("/app/notifications")}
           >
             <ArrowLeftIcon className="size-4 shrink-0" />
             back
