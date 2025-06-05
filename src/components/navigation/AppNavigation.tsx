@@ -29,7 +29,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
   onClose,
 }) => {
   const [hasScrolled, setHasScrolled] = useState(false);
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const title = pathname.split("/")[2];
 
@@ -223,6 +223,7 @@ const navigate = useNavigate()
                       <button
                         type="button"
                         title="notification"
+                        onClick={() => navigate("/app/notifications")}
                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium md:hidden"
                       >
                         <svg
