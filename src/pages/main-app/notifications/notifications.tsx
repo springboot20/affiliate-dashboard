@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/app/hook";
 import React, { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import {
   deleteNotification,
-  // markAllAsRead,
   Notification,
   setNotifications,
   setReadNotification,
@@ -162,8 +161,31 @@ export default function Notifications(): JSX.Element {
     }
   };
 
+  const handleBulkAction = useCallback(
+    (action: "read" | "delete") => {
+      // TODO: Implement bulk actions
+      console.log(`Bulk ${action}:`, Array.from(selectedNotifications));
+
+      if (action === "read") {
+        sortedNotifications.map((so) => {
+          if (selectedNotifications.has(so._id)) {
+            dispatch(setReadNotification({ notificationId: so._id }));
+          }
+        });
+      } else if (action === "delete") {
+        sortedNotifications.map((so) => {
+          if (selectedNotifications.has(so._id)) {
+            dispatch(deleteNotification({ notificationId: so._id }));
+            selectedNotifications.delete(so._id);
+          }
+        });
+      }
+    },
+    [selectedNotifications]
+  );
+
   return (
-    <div className="pt-24 lg:pt-[6rem] mx-auto max-w-7xl">
+    <div className="pt-24 lg:pt-[6rem] mx-auto max-w-7xl px-2 2xl:px-0">
       <div className="flex-auto rounded-md w-full bg-white">
         <div className="rounded-t-md p-3 border-b-transparent border border-gray-500">
           <div className="flex items-center justify-between">
@@ -206,13 +228,13 @@ export default function Notifications(): JSX.Element {
               </span>
               <div className="flex space-x-2">
                 <button
-                  // onClick={() => handleBulkAction("read")}
+                  onClick={() => handleBulkAction("read")}
                   className="text-xs font-medium text-blue-600 hover:text-blue-800"
                 >
                   Mark as Read
                 </button>
                 <button
-                  // onClick={() => handleBulkAction("delete")}
+                  onClick={() => handleBulkAction("delete")}
                   className="text-xs font-medium text-red-600 hover:text-red-800"
                 >
                   Delete
