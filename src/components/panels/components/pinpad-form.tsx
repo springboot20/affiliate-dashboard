@@ -14,7 +14,7 @@ type InitialValues = {
   beneficiary?: string;
   narration: string;
   category: string;
-  amount: number
+  amount: number;
   pin: string[];
 };
 
@@ -25,6 +25,8 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
     _values: values.pin,
     setValues: setFieldValue,
   });
+
+  console.log(values.pin);
 
   const {
     isValid: isPinValid,
@@ -61,14 +63,16 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
 
   useEffect(() => {
     const pins = values.pin.join("");
-    const accountId = values.from_account;
+    const accountId = values.from_account || values?.account;
+
+    console.log(values?.account);
 
     if (pins.length === 4 && accountId) {
       validatePin(pins, accountId);
     } else {
       resetValidation();
     }
-  }, [values.pin, values.from_account, validatePin, resetValidation]);
+  }, [values.pin, values.from_account, values?.account, validatePin, resetValidation]);
 
   const resetPin = () => {
     resetValidation();
