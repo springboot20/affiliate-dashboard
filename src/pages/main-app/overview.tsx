@@ -28,7 +28,7 @@ export default function Overview() {
 
   const transactions = data?.data?.docs as any[];
 
-  const { data: accounts } = useGetUserAccountsQuery();
+  const { data: accounts, isFetching: isFetchingAccounts } = useGetUserAccountsQuery();
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,11 @@ export default function Overview() {
     }
   }, [accounts?.data]);
 
-  const { data: accountDetails, isLoading } = useGetAccountDetailsQuery(
+  const {
+    data: accountDetails,
+    isLoading,
+    isFetching,
+  } = useGetAccountDetailsQuery(
     { accountId: account! },
     {
       skip: !account,
@@ -62,6 +66,8 @@ export default function Overview() {
     { header: "date created", accessor: "createdAt", type: "Date" },
   ];
 
+  console.log(accounts);
+
   return (
     <Fragment>
       <main className="relative bg-[#152F00] h-[55vh] sm:h-[45vh] lg:h-[55vh]">
@@ -74,7 +80,7 @@ export default function Overview() {
             <div className="text-white flex flex-col flex-start gap-y-2 sm:gap-y-4">
               <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
               <span className="font-medium text-sm lg:text-xl xl:text-3xl">
-                {isLoading || !accountDetails?.data
+                {isLoading || !accountDetails?.data || isFetching
                   ? "loading..."
                   : formatMoney(
                       accountDetails?.data?.wallet?.balance || 0,
@@ -85,8 +91,10 @@ export default function Overview() {
             </div>
 
             <div className="flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3">
-              {isLoading || !accounts?.data?.docs?.length ? (
+              {isLoading || isFetchingAccounts ? (
                 <span className="text-sm text-white">loading...</span>
+              ) : accounts?.data?.docs?.length === 0 ? (
+                <span className="text-white text-sm shrink-0">no accounts found</span>
               ) : (
                 <fieldset className="w-fit">
                   <label
@@ -112,17 +120,19 @@ export default function Overview() {
                         accounts?.data?.docs.length &&
                           accounts?.data?.docs.map((doc: any) => {
                             return (
-                              doc?.status !== "CLOSED" &&
-                              doc?.status !== "SUSPENDED" && (
-                                <option value={doc?._id}>
-                                  {doc?.type} account -{" "}
-                                  {formatMoney(
-                                    doc?.wallet?.balance || 0,
-                                    doc?.wallet?.currency === "USD" ? "USD" : "NGN",
-                                    doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                                  )}
-                                </option>
-                              )
+                              // doc?.status !== "CLOSED" &&
+                              // doc?.status !== "SUSPENDED" && (
+
+                              // )
+
+                              <option value={doc?._id}>
+                                {doc?.type} account -{" "}
+                                {formatMoney(
+                                  doc?.wallet?.balance || 0,
+                                  doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                  doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                )}
+                              </option>
                             );
                           })
                       )}
