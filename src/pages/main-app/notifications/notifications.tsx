@@ -309,7 +309,7 @@ const NotificationIcon = ({ type }: { type: string }) => {
       return <EnvelopeIcon className={iconProps} />;
     case "WARNING":
       return <ExclamationTriangleIcon className={iconProps} />;
-    case "WARNING":
+    case "INFO":
       return <InformationCircleIcon className={iconProps} />;
     default:
       return <BellIcon className={iconProps} />;
