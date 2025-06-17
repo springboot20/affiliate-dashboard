@@ -48,6 +48,8 @@ export default function Overview() {
     }
   );
 
+  console.log(accountDetails)
+
   const navigate = useNavigate();
 
   const columns: Column[] = [

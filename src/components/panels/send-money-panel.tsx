@@ -13,6 +13,7 @@ import { PinPadFormComponent } from "./components/pinpad-form";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { useValidateTransactionPin } from "@/hooks/useValidateTransactionPin";
+import { ConfirmationDetails } from "./components/confirmation-detail";
 
 type SendMoneyPanelComponentProps = {
   onClose: () => void;
@@ -94,14 +95,16 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     const stepParam = urlParams.get("step");
     // Convert to number, validate between 1-3, default to 1 if invalid
     const step = parseInt(stepParam || "1", 10);
-    return isNaN(step) || step < 1 || step > 2 ? 0 : step - 1; // Convert to 0-based index
+    return isNaN(step) || step < 1 || step > 3 ? 0 : step - 1; // Convert to 0-based index
   };
 
   const getInitialTabFromUrl = (): string => {
     const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get("tab");
     // Validate tab value, default to "address" if invalid
-    return ["transaction-details", "transaction-pin"].includes(tabParam || "")
+    return ["transaction-details", "confirmation-details", "transaction-pin"].includes(
+      tabParam || ""
+    )
       ? tabParam!
       : "transaction-details";
   };
@@ -113,7 +116,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
   const updateUrl = useCallback(
     (stepValue: number, tabValue: string): void => {
       // Convert from 0-based index to 1-based for URL
-      const stepForUrl = Math.min(Math.max(1, stepValue + 1), 2);
+      const stepForUrl = Math.min(Math.max(1, stepValue + 1), 3);
       navigate(`/app/overview/?step=${stepForUrl}&tab=${tabValue}`, { replace: true });
     },
     [navigate]
@@ -153,6 +156,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                         type="button"
                         onClick={() => {
                           onClose();
+                          setStep(0);
+                          setTab("transaction-details");
                           navigate("/app/overview");
                         }}
                         className="h-10 w-10 z-20 flex items-center justify-center absolute right-4 top-4 rounded-full bg-gray-100"
@@ -200,8 +205,8 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                     })}
                   >
                     {(formik) => {
-                      const buttonType = step === 0 ? "button" : "submit";
-                      const buttonText = step === 0 ? "next" : "send money";
+                      const buttonType = step === 0 || step === 1 ? "button" : "submit";
+                      const buttonText = step === 0 || step === 1 ? "next" : "send money";
 
                       const handleButtonClick = async (
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -233,11 +238,14 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
 
                           if (step0Errors.length === 0) {
                             setStep(1);
-                            setTab("transaction-pin");
+                            setTab("confirmation-details");
                           } else {
                             toast("Input fields cannot be empty.", { type: "error" });
                             formik.setErrors(errors);
                           }
+                        } else if (step === 1) {
+                          setStep(2);
+                          setTab("transaction-pin");
                         } else {
                           const errors = await formik.validateForm();
                           formik.setTouched({
@@ -262,6 +270,9 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                         if (step === 1) {
                           setStep(0);
                           setTab("transaction-details");
+                        } else if (step === 2) {
+                          setStep(1);
+                          setTab("confirmation-details");
                         } else {
                           onClose();
                           navigate("/app/overview");
@@ -280,10 +291,27 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                           >
                             {step === 0 ? (
                               <SendMoneyDetailForm formik={formik} accounts={accounts} />
-                            ) : (
+                            ) : step === 2 ? (
                               <PinPadFormComponent formik={formik} />
-                            )}
+                            ) : null}
                           </motion.div>
+
+                          {step === 1 && (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                y: 200,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                y: 10,
+                              }}
+                              transition={{ duration: 0.5 }}
+                              className="w-full"
+                            >
+                              <ConfirmationDetails values={formik.values} />
+                            </motion.div>
+                          )}
 
                           <div className="mt-6 flex items-center space-x-3">
                             <button

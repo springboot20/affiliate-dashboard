@@ -88,6 +88,8 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
       open={open}
       onClose={() => {
         onClose();
+        setStep(0);
+        setTab("transaction-details");
         navigate("/app/overview");
       }}
       className="relative z-40"
@@ -108,6 +110,8 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                         type="button"
                         onClick={() => {
                           onClose();
+                          setStep(0);
+                          setTab("transaction-details");
                           navigate("/app/overview");
                         }}
                         className="h-10 w-10 z-20 flex items-center justify-center absolute right-4 top-4 rounded-full bg-gray-100"

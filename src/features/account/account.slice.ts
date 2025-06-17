@@ -52,7 +52,28 @@ export const AccountApiSlice = ApiService.injectEndpoints({
       }),
 
       getAccountDetails: build.query<Response, { accountId: string }>({
-        query: ({ accountId }) => `/accounts/user-accounts/${accountId}`,
+        query: ({ accountId }) => {
+          return {
+            url: `/accounts/user-accounts/${accountId}`,
+            method: "GET",
+          };
+        },
+        providesTags: () => ["Account"],
+      }),
+
+      getAccountByNumber: build.query<Response, { account_number: string }>({
+        query: ({ account_number }) => {
+          const params = new URLSearchParams({
+            account_number: account_number.toString(),
+          });
+
+          console.log(params);
+
+          return {
+            url: `/accounts/user-accounts/by-number?${params.toString()}`,
+            method: "GET",
+          };
+        },
       }),
     };
   },
@@ -65,4 +86,5 @@ export const {
   useCreateNewAccountMutation,
   useValidateAccountNumberMutation,
   useGetAccountDetailsQuery,
+  useGetAccountByNumberQuery,
 } = AccountApiSlice;
