@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PinPadFormComponent } from "./components/pinpad-form";
 import { motion } from "framer-motion";
+import { ConfirmationDetails } from "./components/confirmation-detail";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
@@ -52,7 +53,9 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
     const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get("tab");
     // Validate tab value, default to "address" if invalid
-    return ["transaction-details", "transaction-pin"].includes(tabParam || "")
+    return ["transaction-details", "confirmation-details", "transaction-pin"].includes(
+      tabParam || ""
+    )
       ? tabParam!
       : "transaction-details";
   };
@@ -64,7 +67,7 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
   const updateUrl = useCallback(
     (stepValue: number, tabValue: string): void => {
       // Convert from 0-based index to 1-based for URL
-      const stepForUrl = Math.min(Math.max(1, stepValue + 1), 2);
+      const stepForUrl = Math.min(Math.max(1, stepValue + 1), 3);
       navigate(`/app/overview/?step=${stepForUrl}&tab=${tabValue}`, { replace: true });
     },
     [navigate]
@@ -155,8 +158,8 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                     onSubmit={() => {}}
                   >
                     {(formik) => {
-                      const buttonType = step === 0 ? "button" : "submit";
-                      const buttonText = step === 0 ? "next" : "add money";
+                      const buttonType = step === 0 || step === 1 ? "button" : "submit";
+                      const buttonText = step === 0 || step === 1 ? "next" : "add money";
 
                       const handleButtonClick = async (
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -191,6 +194,9 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                             toast("Input fields cannot be empty.", { type: "error" });
                             formik.setErrors(errors);
                           }
+                        } else if (step === 1) {
+                          setStep(2);
+                          setTab("confirmation-details");
                         } else {
                           const errors = await formik.validateForm();
                           formik.setTouched({
@@ -215,6 +221,9 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                         if (step === 1) {
                           setStep(0);
                           setTab("transaction-details");
+                        } else if (step === 2) {
+                          setStep(1);
+                          setTab("confirmation-details");
                         } else {
                           onClose();
                           navigate("/app/overview");
@@ -233,10 +242,27 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                           >
                             {step === 0 ? (
                               <AddMoneyDetailForm accounts={accounts} formik={formik} />
-                            ) : (
+                            ) : step === 2 ? (
                               <PinPadFormComponent formik={formik} />
-                            )}
+                            ) : null}
                           </motion.div>
+
+                          {step === 1 && (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                y: 200,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                y: 10,
+                              }}
+                              transition={{ duration: 0.5 }}
+                              className="w-full"
+                            >
+                              <ConfirmationDetails values={formik.values} />
+                            </motion.div>
+                          )}
 
                           <div className="mt-6 flex items-center space-x-3">
                             <button

@@ -7,24 +7,21 @@ import { formatMoney } from "@/utils";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
-type InitialValues = {
-  account?: string;
-  bank?: string;
-  beneficiary?: string;
-  amount: number;
-  narration: string;
-  category: string;
-  pin: string[];
-};
-
 type ConfirmationDetailsProps = {
-  values: InitialValues;
+  values: any;
 };
 
 export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
+  const fromAccountId = values?.account || values?.from_account;
+
   const { data: from_account_details, isLoading: isLoadingFrom } = useGetAccountDetailsQuery(
-    { accountId: values?.account! },
-    { skip: !values?.account }
+    { accountId: values.account ? values?.account! : values.from_account! },
+    { skip: !fromAccountId }
+  );
+
+  const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
+    { accountId: values?.to_account! },
+    { skip: !values?.to_account }
   );
 
   const { data: to_account_details, isLoading: isLoadingTo } = useGetAccountByNumberQuery(
@@ -35,39 +32,52 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
   const [details, setDetails] = useState<Record<string, any>>({});
 
   useEffect(() => {
-    if (to_account_details?.data && from_account_details?.data) {
-      setDetails({
-        to_account_details: to_account_details?.data,
-        from_account_details: from_account_details?.data,
-      });
+    const newDetails: Record<string, any> = {};
+
+    // Set from account details
+    if (from_account_details?.data) {
+      newDetails.from_account_details = from_account_details.data;
     }
-  }, [to_account_details?.data, from_account_details?.data]);
+
+    // Set to account details (prioritize ID-based fetch over number-based)
+    if (to_account_details_id?.data) {
+      newDetails.to_account_details_id = to_account_details_id.data;
+      newDetails.to_account_details = to_account_details_id.data; // Use this as primary
+    } else if (to_account_details?.data) {
+      newDetails.to_account_details = to_account_details.data;
+    }
+
+    setDetails(newDetails);
+  }, [to_account_details?.data, from_account_details?.data, to_account_details_id?.data]);
 
   console.log(details);
 
-  return isLoadingFrom || isLoadingTo ? (
+  const recipientDetails = details.to_account_details_id || details.to_account_details;
+
+  return isLoadingFrom || isLoadingTo || isLoadingToWithId ? (
     <p>loading</p>
   ) : (
-    <>
-      <header className="text-center">
+    <div className="bg-white">
+      <header className="text-center mb-4">
         <h1>{formatMoney(values?.amount, "NGN", "en-NG")}</h1>
       </header>
 
       <div className="">
         <div className="flex items-center justify-between mb-4">
-          <span className="capitalize text-sm font-inter font-semibold">account number</span>
-          <span className="capitalize text-sm font-inter font-medium text-gray-700">
-            {details?.to_account_details?.account_number}
-          </span>
+            <span className="capitalize text-sm font-inter font-semibold">account number</span>
+            <span className="capitalize text-sm font-inter font-medium text-gray-700">
+              {recipientDetails?.account_number || "N/A"}
+            </span>
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <span className="capitalize text-sm font-inter font-semibold">name</span>
           {(() => {
-            const firstname = details?.to_account_details?.profile?.firstname;
-            const lastname = details?.to_account_details?.profile?.lastname;
-
-            const avatarUrl = details?.to_account_details?.user?.avatar?.url;
+            const firstname =
+              recipientDetails?.profile?.firstname || recipientDetails?.user?.firstname;
+            const lastname =
+              recipientDetails?.profile?.lastname || recipientDetails?.user?.lastname;
+            const avatarUrl = recipientDetails?.user?.avatar?.url;
 
             return (
               <div className="inline-flex items-center gap-2 justify-center">
@@ -86,7 +96,7 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
                 )}
 
                 <span className="capitalize text-sm font-inter font-medium text-gray-700">
-                  {firstname} {lastname}
+                {firstname && lastname ? `${firstname} ${lastname}` : "N/A"}
                 </span>
               </div>
             );
@@ -103,14 +113,14 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
         <div className="flex items-center justify-between mb-4">
           <span className="capitalize text-sm font-inter font-semibold">narration</span>
           <span className="capitalize text-sm font-inter font-medium text-gray-700">
-            {values?.narration}
+            {values?.narration || "N/A"}
           </span>
         </div>
 
         <div className="flex items-center justify-between">
           <span className="capitalize text-sm font-inter font-semibold">category</span>
           <span className="capitalize text-sm font-inter font-medium text-gray-700">
-            {values?.category}
+            {values?.category || "N/A"}
           </span>
         </div>
 
@@ -119,7 +129,7 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
         <div>
           <div className="rounded-3xl p-5 bg-gray-100">
             <div className="flex items-center justify-between mb-2 py-2 border-b-2 border-gray-500 border-dashed">
-              <div className="inline-flex space-x-1">
+              <div className="flex space-x-1 items-center">
                 <span className="capitalize text-sm font-inter font-semibold">
                   available balance
                 </span>
@@ -176,6 +186,6 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
