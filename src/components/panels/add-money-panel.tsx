@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { PinPadFormComponent } from "./components/pinpad-form";
 import { motion } from "framer-motion";
 import { ConfirmationDetails } from "./components/confirmation-detail";
+import { TransactionDetailReminderModalComponent } from "../modal/reminder-modal";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
@@ -29,6 +30,7 @@ type InitialValues = {
 export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponentProps) => {
   const { data: accounts } = useGetUserAccountsQuery();
   const navigate = useNavigate();
+  const [openReminder, setOpenReminder] = useState(false);
 
   const initialValues: InitialValues = {
     from_account: "",
@@ -159,7 +161,8 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                   >
                     {(formik) => {
                       const buttonType = step === 0 || step === 1 ? "button" : "submit";
-                      const buttonText = step === 0 || step === 1 ? "next" : "add money";
+                      const buttonText =
+                        step === 0 ? "next" : step === 1 ? "continue" : "add money";
 
                       const handleButtonClick = async (
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -195,8 +198,7 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                             formik.setErrors(errors);
                           }
                         } else if (step === 1) {
-                          setStep(2);
-                          setTab("confirmation-details");
+                          setOpenReminder(true);
                         } else {
                           const errors = await formik.validateForm();
                           formik.setTouched({
@@ -230,62 +232,73 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                         }
                       };
                       return (
-                        <Form className="mt-4">
-                          <motion.div
-                            key={step}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            variants={variants}
-                            transition={{ duration: 0.5 }}
-                            className="w-full"
-                          >
-                            {step === 0 ? (
-                              <AddMoneyDetailForm accounts={accounts} formik={formik} />
-                            ) : step === 2 ? (
-                              <PinPadFormComponent formik={formik} />
-                            ) : null}
-                          </motion.div>
-
-                          {step === 1 && (
+                        <>
+                          <TransactionDetailReminderModalComponent
+                            open={openReminder}
+                            close={() => {
+                              setOpenReminder(false);
+                            }}
+                            setStep={setStep}
+                            setTab={setTab}
+                            values={formik.values}
+                          />
+                          <Form className="mt-4">
                             <motion.div
-                              initial={{
-                                opacity: 0,
-                                y: 200,
-                              }}
-                              animate={{
-                                opacity: 1,
-                                y: 10,
-                              }}
+                              key={step}
+                              initial="hidden"
+                              animate="visible"
+                              exit="exit"
+                              variants={variants}
                               transition={{ duration: 0.5 }}
                               className="w-full"
                             >
-                              <ConfirmationDetails values={formik.values} />
+                              {step === 0 ? (
+                                <AddMoneyDetailForm accounts={accounts} formik={formik} />
+                              ) : step === 2 ? (
+                                <PinPadFormComponent formik={formik} />
+                              ) : null}
                             </motion.div>
-                          )}
 
-                          <div className="mt-6 flex items-center space-x-3">
-                            <button
-                              type="button"
-                              onClick={handleBackButtonClick}
-                              className="text-sm font-medium text-[#A1E96F] capitalize shrink-0 w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#F7F7F7] border border-[#A1E96F] hover:bg-[#A1E96F] hover:text-white"
-                            >
-                              {step === 0 ? "cancel" : "back"}
-                            </button>
-                            <button
-                              type={buttonType}
-                              title={buttonType}
-                              onClick={buttonType === "button" ? handleButtonClick : undefined}
-                              disabled={formik.isSubmitting}
-                              className={classNames(
-                                "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
-                                "flex items-center justify-center"
-                              )}
-                            >
-                              {buttonText}
-                            </button>
-                          </div>
-                        </Form>
+                            {step === 1 && (
+                              <motion.div
+                                initial={{
+                                  opacity: 0,
+                                  y: 200,
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  y: 10,
+                                }}
+                                transition={{ duration: 0.5 }}
+                                className="w-full"
+                              >
+                                <ConfirmationDetails values={formik.values} />
+                              </motion.div>
+                            )}
+
+                            <div className="mt-6 flex items-center space-x-3">
+                              <button
+                                type="button"
+                                onClick={handleBackButtonClick}
+                                className="text-sm font-medium text-[#A1E96F] capitalize shrink-0 w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#F7F7F7] border border-[#A1E96F] hover:bg-[#A1E96F] hover:text-white"
+                              >
+                                {step === 0 ? "cancel" : "back"}
+                              </button>
+                              <button
+                                type={buttonType}
+                                title={buttonType}
+                                onClick={buttonType === "button" ? handleButtonClick : undefined}
+                                disabled={formik.isSubmitting}
+                                className={classNames(
+                                  "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
+                                  "flex items-center justify-center"
+                                )}
+                              >
+                                {buttonText}
+                              </button>
+                            </div>
+                          </Form>
+                        </>
                       );
                     }}
                   </Formik>
