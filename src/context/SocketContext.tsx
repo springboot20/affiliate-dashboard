@@ -108,8 +108,25 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setNotification({
           _id: data._id || data.data?._id,
           data: data.data || data,
-          type: "NEW_REQUEST",
-          isRead: false,
+          type: data?.type || "NEW_REQUEST",
+          isRead: data?.isRead ? true : false,
+          createdAt: data.createdAt || new Date().toISOString(),
+        })
+      );
+
+      dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification", "UnreadCount"]));
+    },
+    [dispatch]
+  );
+
+  const handleOnNewAdminMessaegBroadCast = useCallback(
+    (data: any) => {
+      dispatch(
+        setNotification({
+          _id: data._id || data.data?._id,
+          data: data.data || data,
+          type: data?.type || "NEW_REQUEST",
+          isRead: data?.isRead ? true : false,
           createdAt: data.createdAt || new Date().toISOString(),
         })
       );
@@ -128,6 +145,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     socket?.on(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
     socket?.on(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
     socket.on(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
+    socket.on(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
     socket?.on(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
 
     socket.on("connect", () => {
@@ -143,12 +161,13 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
 
     return () => {
+      socket?.off("connect");
       socket?.off(SocketEvents.CONNECTED_EVENT, onConnected);
       socket?.off(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
       socket?.off(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
-      socket?.off("connect");
       socket?.off(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
       socket?.off(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
+      socket?.off(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
     };
   }, [socket, onConnected, onDisconnected]);
 
