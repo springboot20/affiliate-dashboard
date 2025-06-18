@@ -1,4 +1,7 @@
-import { useGetUserMessageNotificatonsQuery } from "@/features/messaging/message.slice";
+import {
+  useDeleteRequestMessageMutation,
+  useGetUserMessageNotificatonsQuery,
+} from "@/features/messaging/message.slice";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import React, { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import {
@@ -18,6 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { classNames, formatTime } from "@/utils";
 import { PaginationComponent } from "@/components/paginations/PaginationComponent";
+import { toast } from "react-toastify";
 
 type InitialFilterState = Record<string, any>;
 
@@ -35,6 +39,7 @@ export default function Notifications(): JSX.Element {
     limit: TRANSACTION_LIMIT,
     page,
   });
+  const [deleteRequestMessageMutation] = useDeleteRequestMessageMutation();
 
   const { data: notificationsData, isLoading } =
     useGetUserMessageNotificatonsQuery(initialFilterState);
@@ -154,7 +159,16 @@ export default function Notifications(): JSX.Element {
   // Delete notification
   const handleDeleteNotification = async (notificationId: string) => {
     try {
-      // await deleteNotificationMutation({ notificationId }).unwrap();
+      await deleteRequestMessageMutation(notificationId)
+        .unwrap()
+        .then((response) => {
+          toast.success(response?.message, { className: "text-sm" });
+        })
+        .catch((error: any) => {
+          const message = error?.data?.message;
+
+          toast.error(message, { className: "text-sm" });
+        });
       dispatch(deleteNotification({ notificationId }));
     } catch (error) {
       console.error("Failed to delete notification:", error);
@@ -173,10 +187,20 @@ export default function Notifications(): JSX.Element {
           }
         });
       } else if (action === "delete") {
-        sortedNotifications.map((so) => {
+        sortedNotifications.map(async (so) => {
           if (selectedNotifications.has(so._id)) {
             dispatch(deleteNotification({ notificationId: so._id }));
             selectedNotifications.delete(so._id);
+            await deleteRequestMessageMutation(so._id)
+              .unwrap()
+              .then((response) => {
+                toast.success(response?.message, { className: "text-sm" });
+              })
+              .catch((error: any) => {
+                const message = error?.data?.message;
+
+                toast.error(message, { className: "text-sm" });
+              });
           }
         });
       }

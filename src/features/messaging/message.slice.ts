@@ -1,3 +1,4 @@
+import { useDeleteRequestMessageMutation } from '@/features/messaging/message.slice';
 import { ApiService } from "@/app/service/api.service";
 
 interface Response {
@@ -65,6 +66,15 @@ export const MessagingApiSlice = ApiService.injectEndpoints({
         providesTags: (_, __, messageId) => [{ type: "MessageRequest", id: messageId }],
       }),
 
+      deleteRequestMessage: build.mutation<Response, string>({
+        query: (messageId) => ({
+          url: `messagings/${messageId}`,
+          method: "DELETE",
+        }),
+
+        invalidatesTags: (_, __, messageId) => [{ type: "MessageRequest", id: messageId }],
+      }),
+
       getUserPendingRequesMessage: build.query<Response, void>({
         query: () => {
           return {
@@ -83,4 +93,5 @@ export const {
   useGetRequestMessageByIdQuery,
   useGetUserPendingRequesMessageQuery,
   useGetUserMessageNotificatonsQuery,
+  useDeleteRequestMessageMutation
 } = MessagingApiSlice;
