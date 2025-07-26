@@ -216,11 +216,11 @@ export const Register = () => {
                     </button>
                   ) : (
                     <button
-                      disabled={!formik.isValid || !isLoading}
+                      disabled={!formik.isValid || isLoading}
                       type="submit"
                       className="disabled:bg-indigo-300 disabled:cursor-not-allowed block py-2.5 w-full bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 dark:disabled:bg-white/10 rounded-md transition shadow-md"
                     >
-                      {formik.isSubmitting || !isLoading ? (
+                      {formik.isSubmitting || isLoading ? (
                         <div
                           className={classNames(
                             "p-2 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/30"
