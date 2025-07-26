@@ -1,7 +1,10 @@
 export interface RegisterState {
-  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
+  confirmPassword: string;
+  phone_number?: string;
 }
 
 export interface LoginState {
@@ -24,7 +27,7 @@ export type ProfileValues = {
 };
 
 export type AccountInitialValues = {
-  type: 'NONE' | 'CURRENT' | 'SAVINGS';
+  type: "NONE" | "CURRENT" | "SAVINGS";
   currency: string;
   cards?: string[];
   pin: string[];

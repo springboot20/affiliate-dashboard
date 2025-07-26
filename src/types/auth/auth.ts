@@ -15,7 +15,7 @@ export interface User {
   createdAt: string;
   role: string;
   login_type: string;
-  [key:string]: any
+  [key: string]: any;
 }
 
 export interface ValidationError {
@@ -25,7 +25,7 @@ export interface ValidationError {
 
 export type InitialState = {
   loading: "idle" | "pending" | "succeeded" | "failed";
-  isAuthenticated:boolean
+  isAuthenticated: boolean;
   data: {
     user: User;
     tokens: Token;
@@ -35,8 +35,10 @@ export type InitialState = {
 };
 
 export type RegisterPayloadAction = {
-  username: string;
+  firstname: string;
+  lastname: string;
   password: string;
+  phone_number?: string;
   email: string;
 };
 

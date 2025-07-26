@@ -10,7 +10,7 @@ export const EmailVerification = () => {
   useEffect(() => {
     const url_params = new URLSearchParams(window.location.search);
 
-    console.log(url_params)
+    console.log(url_params);
     const userId = url_params.get("userId") as string;
     const token = url_params.get("token") as string;
 
@@ -19,21 +19,22 @@ export const EmailVerification = () => {
         const { data } = await verify_email({ userId, token });
 
         setStatus("success");
-        toast.success(data.message, { autoClose: 2000, className:"text-xs" });
+        toast.success(data.message, { autoClose: 2000, className: "text-xs" });
       } catch (error) {
         if (status !== "success") {
           // Only show error if status is not already "success"
           setStatus("failed");
           if (error instanceof AxiosError) {
+            // eslint-disable-next-line no-unsafe-optional-chaining
             const { message } = error.response?.data;
-            console.log(message)
+            console.log(message);
             // toast.error(message, { autoClose: 2000 });
           }
         }
       }
     };
     verify();
-  }, []);
+  }, [status]);
 
   if (status === "success") {
     return <EmailVerificationSuccessMessage />;

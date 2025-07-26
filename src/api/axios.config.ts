@@ -23,6 +23,7 @@ export const BankAppService = async ({
   BankAppApiClient.interceptors.response.use(
     (config: AxiosResponse) => {
       if (config.status.toString().startsWith("2")) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         showSuccessNotification ? toast.success(config.data.message, { className: "text-sm" }) : "";
       }
 
@@ -36,8 +37,13 @@ export const BankAppService = async ({
   return BankAppApiClient({ ...options });
 };
 
-export const register_new_user = (data: { username: string; password: string; email: string }) =>
-  BankAppApiClient.post("/auth/register", data);
+export const register_new_user = (data: {
+  firstname: string;
+  phone_number?: string;
+  lastname: string;
+  password: string;
+  email: string;
+}) => BankAppApiClient.post("/auth/register", data);
 
 export const login_user = (data: { password: string; email: string }) =>
   BankAppApiClient.post("/auth/login", data);
