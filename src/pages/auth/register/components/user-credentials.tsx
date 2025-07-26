@@ -12,7 +12,7 @@ export const RegisterUserCredentials = ({ formik }: { formik: FormikProps<Regist
         <div className="flex items-center justify-between">
           <label
             htmlFor="phone_number"
-            className="text-sm font-medium text-gray-800 dark:text-white"
+            className="text-sm font-medium text-gray-800 dark:text-white shrink-0"
           >
             Phone Number
           </label>

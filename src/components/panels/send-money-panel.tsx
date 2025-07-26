@@ -65,32 +65,6 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
     }
   }, [open, resetValidation, resetTransactionPinValidation]);
 
-  const handleSendTransaction = async (
-    values: InitialValues,
-    { resetForm }: FormikHelpers<InitialValues>
-  ) => {
-    try {
-      const response = await sendTransaction({
-        amount: values?.amount,
-        description: values?.narration,
-        to_account: values?.beneficiary,
-        from_account: values?.account,
-      }).unwrap();
-
-      const { message } = response;
-      toast.success(message, { className: "text-xs" });
-
-      setTimeout(() => {
-        navigate("/app/overview");
-        onClose();
-        resetForm();
-      }, 1000);
-    } catch (error: any) {
-      const message = error?.data?.message;
-      toast.error(message, { className: "text-xs" });
-    }
-  };
-
   const MAX_NARRATION_COUNT = 150;
 
   const getInitialStepFromUrl = (): number => {
@@ -131,6 +105,37 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
       updateUrl(step, tab);
     }
   }, [step, tab, updateUrl, open]);
+
+  const handleSendTransaction = async (
+    values: InitialValues,
+    { resetForm }: FormikHelpers<InitialValues>
+  ) => {
+    try {
+      const response = await sendTransaction({
+        amount: values?.amount,
+        description: values?.narration,
+        to_account: values?.beneficiary,
+        from_account: values?.account,
+      }).unwrap();
+
+      const { message } = response;
+      toast.success(message, { className: "text-xs" });
+
+      setTimeout(() => {
+        navigate("/app/overview");
+        onClose();
+        resetForm();
+      }, 1000);
+    } catch (error: any) {
+      setTimeout(() => {
+        resetForm();
+        setStep(0);
+        setTab("transaction-details");
+      }, 1000);
+      const message = error?.data?.message;
+      toast.error(message, { className: "text-xs" });
+    }
+  };
 
   return (
     <>

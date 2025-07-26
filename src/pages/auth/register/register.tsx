@@ -77,7 +77,7 @@ export const Register = () => {
         setIsLoading(false);
       }
     } catch (error: any) {
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error(error || "Registration failed. Please try again.");
       console.error("Registration error:", error);
 
       // Reset form state on error
@@ -145,7 +145,7 @@ export const Register = () => {
                 <div key={stepConfig.id} className="flex items-center">
                   <div
                     className={classNames(
-                      "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium",
+                      "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                       index <= step ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-600"
                     )}
                   >
@@ -154,7 +154,7 @@ export const Register = () => {
                   {index < STEPS.length - 1 && (
                     <div
                       className={classNames(
-                        "h-0.5 w-12 mx-2",
+                        "h-0.5 w-12 mx-2 transition-colors",
                         index < step ? "bg-indigo-600" : "bg-gray-200"
                       )}
                     />
