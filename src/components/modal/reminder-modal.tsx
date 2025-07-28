@@ -1,7 +1,4 @@
-import {
-  useGetAccountByNumberQuery,
-  useGetAccountDetailsQuery,
-} from "@/features/account/account.slice";
+import { useGetAccountDetailsQuery } from "@/features/account/account.slice";
 import { formatMoney } from "@/utils";
 import {
   Dialog,
@@ -27,14 +24,11 @@ export const TransactionDetailReminderModalComponent: React.FC<
 > = ({ open, values, close, setTab, setStep }) => {
   const [details, setDetails] = useState<Record<string, any>>({});
 
-  const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
-    { accountId: values?.to_account },
-    { skip: !values?.to_account }
-  );
+  const toAccountId = values?.beneficiary || values?.to_account; // this is the one you should use
 
-  const { data: to_account_details, isLoading: isLoadingTo } = useGetAccountByNumberQuery(
-    { account_number: values?.beneficiary },
-    { skip: !values?.beneficiary }
+  const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
+    { accountId: toAccountId },
+    { skip: !toAccountId }
   );
 
   useEffect(() => {
@@ -43,15 +37,12 @@ export const TransactionDetailReminderModalComponent: React.FC<
     // Set to account details (prioritize ID-based fetch over number-based)
     if (to_account_details_id?.data) {
       newDetails.to_account_details_id = to_account_details_id.data;
-      newDetails.to_account_details = to_account_details_id.data; // Use this as primary
-    } else if (to_account_details?.data) {
-      newDetails.to_account_details = to_account_details.data;
     }
 
     setDetails(newDetails);
-  }, [to_account_details?.data, to_account_details_id?.data]);
+  }, [to_account_details_id?.data]);
 
-  const recipientDetails = details.to_account_details_id || details.to_account_details;
+  const recipientDetails = details.to_account_details_id;
 
   return (
     <Transition show={open} as={Fragment}>
@@ -100,7 +91,7 @@ export const TransactionDetailReminderModalComponent: React.FC<
                         successful transafers cannot be reversed
                       </p>
 
-                      {isLoadingToWithId || isLoadingTo ? (
+                      {isLoadingToWithId ? (
                         <p>loading...</p>
                       ) : (
                         <div className="rounded-xl p-3 bg-gray-100">
