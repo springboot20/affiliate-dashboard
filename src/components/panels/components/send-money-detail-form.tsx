@@ -1,5 +1,7 @@
 import { CustomErrorMessage } from "@/components/Error";
+import { SelectionComponent } from "@/components/selecltion/AccountSelection";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
+import { AccountType } from "@/types/account";
 import { classNames, formatMoney } from "@/utils";
 import {
   CheckCircleIcon,
@@ -22,14 +24,24 @@ type InitialValues = {
 export const SendMoneyDetailForm = ({
   formik,
   accounts,
+  beneficiaryOptions = [], // Add beneficiary options prop
+  isBeneficiaryLoading = false, // Add loading state prop
 }: {
   formik: FormikProps<InitialValues>;
   accounts: any;
+  beneficiaryOptions?: AccountType[]; // Optional beneficiary options
+  isBeneficiaryLoading?: boolean; // Optional loading state
 }) => {
   const { values, setFieldValue, errors, touched } = formik;
 
   const MAX_NARRATION_COUNT = 150;
   const [descriptionCount, setDescriptionCount] = useState(MAX_NARRATION_COUNT);
+
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<AccountType>({} as AccountType);
+
+  const [query, setQuery] = useState("");
+
+  console.log(values);
 
   const {
     isValid: isAccountValid,
@@ -38,6 +50,31 @@ export const SendMoneyDetailForm = ({
     validateAccountNumber,
     resetValidation,
   } = useValidateAccountNumber();
+
+  // Handle beneficiary selection from SelectionComponent
+  const handleBeneficiaryChange = (selectedAccount: AccountType) => {
+    setSelectedBeneficiary(selectedAccount);
+    setFieldValue("beneficiary", selectedAccount?._id);
+
+    // Validate the selected account number
+    if (selectedAccount.account_number) {
+      setQuery(selectedAccount.account_number); 
+      validateAccountNumber(selectedAccount.account_number.toString());
+    }
+  };
+
+  const handleSetQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.replace(/\D/g, "");
+
+    setQuery(value);
+
+    // Validate as user types
+    if (value.length >= 10) {
+      validateAccountNumber(value);
+    } else if (value.length === 0) {
+      resetValidation();
+    }
+  };
 
   return (
     <div className="mt-4">
@@ -144,56 +181,38 @@ export const SendMoneyDetailForm = ({
           )}
         </ErrorMessage>
       </fieldset>
-
       <fieldset className="mb-3">
         <label htmlFor="beneficiary" className="text-sm capitalize mb-1.5 inline-block">
-          beneficiary account number
+          select beneficiary
         </label>
-        <div className="relative">
-          <Field
-            name="beneficiary"
-            className={classNames(
-              "w-full block focus:outline-none rounded px-3 py-2 text-sm",
-              isAccountValid === true ? "focus:ring-[#A1E96F] focus:ring-1" : "border",
-              isAccountValid === false
-                ? "focus:ring-red-500 border-red-500 focus:ring-1"
-                : "border",
-              errors.beneficiary && touched.beneficiary
-                ? "border-red-500 focus:ring-red-500 focus:ring-1"
-                : "border"
-            )}
-            onChange={(event: any) => {
-              const value = event.target.value.replace(/\D/g, ""); // Only allow digits
-              setFieldValue("beneficiary", value);
-
-              // Validate as user types
-              if (value.length >= 10) {
-                validateAccountNumber(value);
-              } else if (value.length === 0) {
-                resetValidation();
-              }
-            }}
-            maxLength={10}
+        <div className="relative w-full">
+          <SelectionComponent
+            options={beneficiaryOptions}
+            isLoading={isBeneficiaryLoading}
+            onChange={handleBeneficiaryChange}
+            placeholder="Search for beneficiary..."
+            selectedId={selectedBeneficiary?._id}
+            selectedUser={selectedBeneficiary}
+            query={query}
+            handleSetQuery={handleSetQuery}
           />
+
           {/* Validation indicator */}
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+          <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
             {isValidatingAccount && (
               <div className="animate-spin h-4 w-4 border-2 border-[#A1E96F] border-t-transparent rounded-full"></div>
             )}
-            {!isValidatingAccount &&
-              isAccountValid === true &&
-              (values?.beneficiary as string)?.length >= 10 && (
-                <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
-              )}
-            {!isValidatingAccount &&
-              isAccountValid === false &&
-              (values?.beneficiary as string)?.length >= 10 && (
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              )}
+            {!isValidatingAccount && isAccountValid === true && values?.beneficiary && (
+              <CheckCircleIcon className="h-5 w-5 text-[#A1E96F]" />
+            )}
+            {!isValidatingAccount && isAccountValid === false && values?.beneficiary && (
+              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+            )}
           </div>
         </div>
+
         {/* Validation message */}
-        {validationMessage && (values?.beneficiary as string)?.length >= 10 && (
+        {validationMessage && values?.beneficiary && (
           <div
             className={classNames(
               "text-sm mt-0.5 block",
@@ -203,6 +222,7 @@ export const SendMoneyDetailForm = ({
             {validationMessage}
           </div>
         )}
+
         <ErrorMessage name="beneficiary">
           {(msg) => (
             <CustomErrorMessage className="text-sm mt-0.5 block text-red-600">

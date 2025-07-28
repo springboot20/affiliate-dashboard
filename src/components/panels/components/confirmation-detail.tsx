@@ -12,72 +12,131 @@ type ConfirmationDetailsProps = {
 };
 
 export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
+  // Debug logging
+  console.log("ConfirmationDetails values:", values);
+
   const fromAccountId = values?.account || values?.from_account;
+  const hasToAccountId = Boolean(values?.to_account);
+  const hasBeneficiaryNumber = Boolean(values?.beneficiary);
 
-  const { data: from_account_details, isLoading: isLoadingFrom } = useGetAccountDetailsQuery(
-    { accountId: values.account ? values?.account! : values.from_account! },
-    { skip: !fromAccountId }
-  );
+  // From account query
+  const {
+    data: from_account_details,
+    isLoading: isLoadingFrom,
+    error: fromAccountError,
+  } = useGetAccountDetailsQuery({ accountId: fromAccountId }, { skip: !fromAccountId });
 
-  const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
-    { accountId: values?.to_account! },
-    { skip: !values?.to_account }
-  );
+  // To account query by ID
+  const {
+    data: to_account_details_id,
+    isLoading: isLoadingToWithId,
+    error: toAccountIdError,
+  } = useGetAccountDetailsQuery({ accountId: values?.to_account }, { skip: !hasToAccountId });
 
-  const { data: to_account_details, isLoading: isLoadingTo } = useGetAccountByNumberQuery(
-    { account_number: values?.beneficiary! },
-    { skip: !values?.beneficiary }
+  // To account query by number
+  const {
+    data: to_account_details,
+    isLoading: isLoadingToByNumber,
+    error: toAccountNumberError,
+  } = useGetAccountByNumberQuery(
+    { account_number: values?.beneficiary },
+    { skip: !hasBeneficiaryNumber }
   );
 
   const [details, setDetails] = useState<Record<string, any>>({});
 
+  // Debug logging for API responses
+  console.log("API Responses:", {
+    from_account_details,
+    to_account_details_id,
+    to_account_details,
+    errors: { fromAccountError, toAccountIdError, toAccountNumberError },
+  });
+
   useEffect(() => {
     const newDetails: Record<string, any> = {};
 
-    // Set from account details
+    // Set from account details - handle different response structures
     if (from_account_details?.data) {
       newDetails.from_account_details = from_account_details.data;
+    } else if (from_account_details && !from_account_details.data) {
+      // Handle case where API returns data directly without wrapping in 'data' property
+      newDetails.from_account_details = from_account_details;
     }
 
     // Set to account details (prioritize ID-based fetch over number-based)
     if (to_account_details_id?.data) {
-      newDetails.to_account_details_id = to_account_details_id.data;
-      newDetails.to_account_details = to_account_details_id.data; // Use this as primary
+      newDetails.to_account_details = to_account_details_id.data;
+    } else if (to_account_details_id && !to_account_details_id.data) {
+      newDetails.to_account_details = to_account_details_id;
     } else if (to_account_details?.data) {
       newDetails.to_account_details = to_account_details.data;
+    } else if (to_account_details && !to_account_details.data) {
+      newDetails.to_account_details = to_account_details;
     }
 
+    console.log("Setting details:", newDetails);
     setDetails(newDetails);
-  }, [to_account_details?.data, from_account_details?.data, to_account_details_id?.data]);
+  }, [from_account_details, to_account_details_id, to_account_details]);
 
-  console.log(details);
+  // Improved loading logic - only show loading if we're actually waiting for required data
+  const isLoadingRequired =
+    (fromAccountId && isLoadingFrom) ||
+    (hasToAccountId && isLoadingToWithId) ||
+    (hasBeneficiaryNumber && isLoadingToByNumber);
 
-  const recipientDetails = details.to_account_details_id || details.to_account_details;
+  console.log("Loading states:", {
+    isLoadingFrom,
+    isLoadingToWithId,
+    isLoadingToByNumber,
+    isLoadingRequired,
+  });
 
-  return isLoadingFrom || isLoadingTo || isLoadingToWithId ? (
-    <p>loading</p>
-  ) : (
+  const recipientDetails = details.to_account_details;
+
+  console.log("Final recipient details:", recipientDetails);
+  console.log("Final details state:", details);
+
+  // Show loading only when actually loading required data
+  if (isLoadingRequired) {
+    return (
+      <div className="bg-white p-4">
+        <p className="text-center">Loading transaction details...</p>
+      </div>
+    );
+  }
+
+  // Show error if we couldn't load required data
+  if (fromAccountId && !details.from_account_details) {
+    return (
+      <div className="bg-white p-4">
+        <p className="text-center text-red-500">Error loading account details</p>
+      </div>
+    );
+  }
+
+  return (
     <div className="bg-white">
       <header className="text-center mb-4">
-        <h1>{formatMoney(values?.amount, "NGN", "en-NG")}</h1>
+        <h1>
+          {values?.amount ? formatMoney(values.amount, "NGN", "en-NG") : "Amount not available"}
+        </h1>
       </header>
 
       <div className="">
         <div className="flex items-center justify-between mb-4">
-            <span className="capitalize text-sm font-inter font-semibold">account number</span>
-            <span className="capitalize text-sm font-inter font-medium text-gray-700">
-              {recipientDetails?.account_number || "N/A"}
-            </span>
+          <span className="capitalize text-sm font-inter font-semibold">account number</span>
+          <span className="capitalize text-sm font-inter font-medium text-gray-700">
+            {recipientDetails?.account_number || values?.beneficiary || "N/A"}
+          </span>
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <span className="capitalize text-sm font-inter font-semibold">name</span>
           {(() => {
-            const firstname =
-              recipientDetails?.profile?.firstname || recipientDetails?.user?.firstname;
-            const lastname =
-              recipientDetails?.profile?.lastname || recipientDetails?.user?.lastname;
-            const avatarUrl = recipientDetails?.user?.avatar?.url;
+            const firstname = recipientDetails?.user?.firstname || recipientDetails?.firstname;
+            const lastname = recipientDetails?.user?.lastname || recipientDetails?.lastname;
+            const avatarUrl = recipientDetails?.user?.avatar?.url || recipientDetails?.avatar?.url;
 
             return (
               <div className="inline-flex items-center gap-2 justify-center">
@@ -85,7 +144,7 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
                   <div className="overflow-hidden size-7 rounded-full border border-gray-400">
                     <img
                       src={avatarUrl}
-                      alt={`${firstname} ${lastname}`}
+                      alt={`${firstname || ""} ${lastname || ""}`}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -96,7 +155,13 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
                 )}
 
                 <span className="capitalize text-sm font-inter font-medium text-gray-700">
-                {firstname && lastname ? `${firstname} ${lastname}` : "N/A"}
+                  {firstname && lastname
+                    ? `${firstname} ${lastname}`
+                    : firstname
+                    ? firstname
+                    : lastname
+                    ? lastname
+                    : "N/A"}
                 </span>
               </div>
             );
@@ -106,7 +171,7 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
         <div className="flex items-center justify-between mb-4">
           <span className="capitalize text-sm font-inter font-semibold">amount</span>
           <span className="capitalize text-sm font-inter font-medium text-gray-700">
-            {formatMoney(values?.amount, "NGN", "en-NG")}
+            {values?.amount ? formatMoney(values.amount, "NGN", "en-NG") : "N/A"}
           </span>
         </div>
 
@@ -137,12 +202,12 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
                   (
                   {details?.from_account_details?.wallet?.balance
                     ? formatMoney(
-                        details?.from_account_details?.wallet?.balance,
-                        details?.from_account_details?.wallet?.currency === "USD" ? "USD" : "NGN",
-                        details?.from_account_details?.wallet?.currency === "USD"
-                          ? "en-US"
-                          : "en-NG"
+                        details.from_account_details.wallet.balance,
+                        details.from_account_details.wallet.currency === "USD" ? "USD" : "NGN",
+                        details.from_account_details.wallet.currency === "USD" ? "en-US" : "en-NG"
                       )
+                    : details?.from_account_details?.balance
+                    ? formatMoney(details.from_account_details.balance, "NGN", "en-NG")
                     : "N/A"}
                   )
                 </span>
@@ -158,29 +223,31 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
                   (
                   {details?.from_account_details?.wallet?.balance
                     ? formatMoney(
-                        details?.from_account_details?.wallet?.balance,
-                        details?.from_account_details?.wallet?.currency === "USD" ? "USD" : "NGN",
-                        details?.from_account_details?.wallet?.currency === "USD"
-                          ? "en-US"
-                          : "en-NG"
+                        details.from_account_details.wallet.balance,
+                        details.from_account_details.wallet.currency === "USD" ? "USD" : "NGN",
+                        details.from_account_details.wallet.currency === "USD" ? "en-US" : "en-NG"
                       )
+                    : details?.from_account_details?.balance
+                    ? formatMoney(details.from_account_details.balance, "NGN", "en-NG")
                     : "N/A"}
                   )
                 </span>
               </div>
               <span className="capitalize text-xs font-inter font-normal text-gray-700">
                 -
-                {formatMoney(
-                  values?.amount,
-                  details?.from_account_details?.wallet?.currency === "USD" ? "USD" : "NGN",
-                  details?.from_account_details?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                )}
+                {values?.amount
+                  ? formatMoney(
+                      values.amount,
+                      details?.from_account_details?.wallet?.currency === "USD" ? "USD" : "NGN",
+                      details?.from_account_details?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                    )
+                  : "N/A"}
               </span>
             </div>
             <div className="flex items-center justify-between my-3">
               <span className="capitalize text-xs font-inter font-normal">narration</span>
               <span className="capitalize text-xs font-inter font-normal text-gray-700">
-                {values?.narration}
+                {values?.narration || "N/A"}
               </span>
             </div>
           </div>

@@ -13,6 +13,12 @@ interface RequestQuery {
 
 export const TransactionApiSlice = ApiService.injectEndpoints({
   endpoints: (build) => ({
+    getAllAccounts: build.query<Response, RequestQuery>({
+      query: ({ limit = 10, page = 1 }) => ({
+        url: `/accounts/?limit=${limit}&page=${page}`,
+      }),
+    }),
+
     sendTransaction: build.mutation<Response, Record<string, any>>({
       query: (data) => {
         console.log(data);
@@ -62,4 +68,5 @@ export const {
   useGetAllTransactionsQuery,
   useGetTransactionDetailsQuery,
   useUserTransactionsQuery,
+  useGetAllAccountsQuery,
 } = TransactionApiSlice;

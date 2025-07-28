@@ -4,7 +4,10 @@ import { Form, Formik, FormikHelpers } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
-import { useSendTransactionMutation } from "@/features/transactions/transaction.slice";
+import {
+  useGetAllAccountsQuery,
+  useSendTransactionMutation,
+} from "@/features/transactions/transaction.slice";
 import * as yup from "yup";
 import { classNames } from "@/utils";
 import { useNavigate } from "react-router-dom";
@@ -31,10 +34,25 @@ type InitialValues = {
   pin: string[];
 };
 
+type InitialFilterState = Record<string, any>;
+
 export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelComponentProps) => {
   const navigate = useNavigate();
   const { data: accounts } = useGetUserAccountsQuery();
   const [sendTransaction] = useSendTransactionMutation();
+
+  const TRANSACTION_LIMIT = 20;
+
+  const [page] = useState(1);
+
+  const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
+    limit: TRANSACTION_LIMIT,
+    page,
+  });
+
+  const { data, isLoading } = useGetAllAccountsQuery(initialFilterState);
+
+  const all_accounts = data?.data?.docs as never[];
 
   const [openReminder, setOpenReminder] = useState(false);
 
@@ -105,6 +123,13 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
       updateUrl(step, tab);
     }
   }, [step, tab, updateUrl, open]);
+
+  useEffect(() => {
+    setInitialFilterState((prev) => ({
+      ...prev,
+      page,
+    }));
+  }, [page]);
 
   const handleSendTransaction = async (
     values: InitialValues,
@@ -183,10 +208,7 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                       validationSchema={yup.object({
                         account: yup.string().required("Account is required"),
                         bank: yup.string().required("Bank is required"),
-                        beneficiary: yup
-                          .string()
-                          .matches(/^\d{10}$/, "Account number must be 10 digits")
-                          .required("Beneficiary account number is required"),
+                        beneficiary: yup.string().required("Beneficiary is required"),
                         amount: yup
                           .number()
                           .positive("Amount must be a positive number")
@@ -310,7 +332,12 @@ export const SendMoneyPanelComponent = ({ open, onClose }: SendMoneyPanelCompone
                                 className="w-full"
                               >
                                 {step === 0 ? (
-                                  <SendMoneyDetailForm formik={formik} accounts={accounts} />
+                                  <SendMoneyDetailForm
+                                    beneficiaryOptions={all_accounts}
+                                    isBeneficiaryLoading={isLoading}
+                                    formik={formik}
+                                    accounts={accounts}
+                                  />
                                 ) : step === 2 ? (
                                   <PinPadFormComponent formik={formik} />
                                 ) : null}

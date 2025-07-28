@@ -5,7 +5,8 @@ export type VerifyEmailPayloadAction = { token: string; userId: string };
 export interface User {
   _id: string;
   email: string;
-  username: string;
+  lastname: string;
+  firstname: string;
   isEmailVerified: boolean;
   avatar?: {
     url: string;

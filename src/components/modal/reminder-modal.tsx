@@ -30,14 +30,16 @@ export const TransactionDetailReminderModalComponent: React.FC<
   const [details, setDetails] = useState<Record<string, any>>({});
 
   const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
-    { accountId: values?.to_account! },
+    { accountId: values?.to_account },
     { skip: !values?.to_account }
   );
 
   const { data: to_account_details, isLoading: isLoadingTo } = useGetAccountByNumberQuery(
-    { account_number: values?.beneficiary! },
+    { account_number: values?.beneficiary },
     { skip: !values?.beneficiary }
   );
+
+  console.log(values);
 
   useEffect(() => {
     const newDetails: Record<string, any> = {};
@@ -53,7 +55,7 @@ export const TransactionDetailReminderModalComponent: React.FC<
     setDetails(newDetails);
   }, [to_account_details?.data, to_account_details_id?.data]);
 
-  console.log(details);
+  console.log(to_account_details_id, to_account_details);
 
   const recipientDetails = details.to_account_details_id || details.to_account_details;
 
@@ -125,12 +127,8 @@ export const TransactionDetailReminderModalComponent: React.FC<
                                 name
                               </span>
                               {(() => {
-                                const firstname =
-                                  recipientDetails?.profile?.firstname ||
-                                  recipientDetails?.user?.firstname;
-                                const lastname =
-                                  recipientDetails?.profile?.lastname ||
-                                  recipientDetails?.user?.lastname;
+                                const firstname = recipientDetails?.user?.firstname;
+                                const lastname = recipientDetails?.user?.lastname;
                                 const avatarUrl = recipientDetails?.user?.avatar?.url;
 
                                 return (
