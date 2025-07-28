@@ -25,8 +25,6 @@ type TransactionDetailReminderModalProps = {
 export const TransactionDetailReminderModalComponent: React.FC<
   TransactionDetailReminderModalProps
 > = ({ open, values, close, setTab, setStep }) => {
-  console.log(values);
-
   const [details, setDetails] = useState<Record<string, any>>({});
 
   const { data: to_account_details_id, isLoading: isLoadingToWithId } = useGetAccountDetailsQuery(
@@ -38,8 +36,6 @@ export const TransactionDetailReminderModalComponent: React.FC<
     { account_number: values?.beneficiary },
     { skip: !values?.beneficiary }
   );
-
-  console.log(values);
 
   useEffect(() => {
     const newDetails: Record<string, any> = {};
@@ -54,8 +50,6 @@ export const TransactionDetailReminderModalComponent: React.FC<
 
     setDetails(newDetails);
   }, [to_account_details?.data, to_account_details_id?.data]);
-
-  console.log(to_account_details_id, to_account_details);
 
   const recipientDetails = details.to_account_details_id || details.to_account_details;
 
