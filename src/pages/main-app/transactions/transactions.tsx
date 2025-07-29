@@ -22,7 +22,7 @@ export default function Transactions() {
   });
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let value: string = event.target.value;
+    const value: string = event.target.value;
     setSearchQuery(value);
 
     setInitialFilterState((prev) => ({
