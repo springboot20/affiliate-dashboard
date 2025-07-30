@@ -9,8 +9,32 @@ import { DeleteModalComponent } from "@/components/modal/delete-modal";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { SendMessageModal } from "@/components/modal/message";
+import { useSearchEngineOptimization } from "@/hooks/seo/useSearchEngineOptimization";
 
 export default function Accounts() {
+  const env = import.meta.env;
+
+  useSearchEngineOptimization({
+    title: "BankDash | Accounts",
+    description: "",
+    canonical:
+      env.MODE === "production"
+        ? "https://iran-opal.vercel.app/home"
+        : "http://localhost:5173/app/accounts",
+    themeColor: "#000000",
+    appleTouchIcon: "/app-logo.svg",
+    lang: "en-NG",
+    keywords: [],
+    favicon: "/app-logo.svg",
+
+    ogTitle: "Accounts",
+    ogDescription: "",
+    ogImage: "/app-logo.svg",
+    ogImageAlt: "Screenshot of my awesome page",
+    ogType: "website",
+    ogSiteName: "",
+  });
+
   const { data, refetch, isLoading: accountsLoading } = useGetUserAccountsQuery();
   const [open, setOpen] = useState<{ [key: string]: boolean }>({});
   const [openMessage, setOpenMessage] = useState<{ [key: string]: boolean }>({});

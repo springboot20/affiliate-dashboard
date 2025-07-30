@@ -10,6 +10,7 @@ import {
 } from "@/features/account/account.slice";
 import { formatMoney } from "@/utils";
 import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
+import { useSearchEngineOptimization } from "../../hooks/seo/useSearchEngineOptimization";
 
 interface Column {
   header: string;
@@ -18,7 +19,31 @@ interface Column {
   deepOneAccessorAlt?: string;
   type?: string;
 }
+
+const env = import.meta.env;
+
 export default function Overview() {
+  useSearchEngineOptimization({
+    title: "BankDash | Overview",
+    description: "",
+    canonical:
+      env.MODE === "production"
+        ? "https://iran-opal.vercel.app/home"
+        : "http://localhost:5173/app/overview",
+    themeColor: "#000000",
+    appleTouchIcon: "/app-logo.svg",
+    lang: "en-NG",
+    keywords: [],
+    favicon: "/app-logo.svg",
+
+    ogTitle: "Overview",
+    ogDescription: "",
+    ogImage: "/app-logo.svg",
+    ogImageAlt: "Screenshot of my awesome page",
+    ogType: "website",
+    ogSiteName: "",
+  });
+
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
   const {

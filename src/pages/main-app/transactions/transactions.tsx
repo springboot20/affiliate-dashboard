@@ -1,6 +1,7 @@
 import { AppPaginationComponent } from "@/components/paginations/AppPagination";
 import { TableComponent } from "@/components/tables/table-component";
 import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
+import { useSearchEngineOptimization } from "@/hooks/seo/useSearchEngineOptimization";
 import { classNames } from "@/utils";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { MagnifyingGlassIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline";
@@ -27,6 +28,29 @@ type Filter =
   | "all";
 
 export default function Transactions() {
+  const env = import.meta.env;
+
+  useSearchEngineOptimization({
+    title: "BankDash | Transactions",
+    description: "",
+    canonical:
+      env.MODE === "production"
+        ? "https://iran-opal.vercel.app/home"
+        : "http://localhost:5173/app/transactions",
+    themeColor: "#000000",
+    appleTouchIcon: "/app-logo.svg",
+    lang: "en-NG",
+    keywords: [],
+    favicon: "/app-logo.svg",
+
+    ogTitle: "Transactions",
+    ogDescription: "",
+    ogImage: "/app-logo.svg",
+    ogImageAlt: "Screenshot of my awesome page",
+    ogType: "website",
+    ogSiteName: "",
+  });
+
   const navigate = useNavigate();
   const TRANSACTION_LIMIT = 10;
 
