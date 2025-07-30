@@ -19,6 +19,10 @@ type ProfileRequest = {
   currency?: string;
 };
 
+interface UploadAvatarRequest {
+  [key: string]: any;
+}
+
 export const ProfileApiSlice = ApiService.injectEndpoints({
   endpoints: (builder) => ({
     updateProfile: builder.mutation<Response, ProfileRequest>({
@@ -29,10 +33,30 @@ export const ProfileApiSlice = ApiService.injectEndpoints({
       }),
     }),
 
+    uploadAvatar: builder.mutation<Response, UploadAvatarRequest>({
+      query: (data) => {
+        console.log(data);
+        const formData = new FormData();
+
+        Object.keys(data).forEach((key) => {
+          if (data[key]) {
+            formData.append(key, data[key]);
+          }
+        });
+
+        return {
+          url: "/auth/upload-avatar",
+          body: formData,
+          method: "PATCH",
+        };
+      },
+    }),
+
     getProfile: builder.query<Response, void>({
       query: () => "/profiles",
     }),
   }),
 });
 
-export const { useUpdateProfileMutation, useGetProfileQuery } = ProfileApiSlice;
+export const { useUpdateProfileMutation, useGetProfileQuery, useUploadAvatarMutation } =
+  ProfileApiSlice;

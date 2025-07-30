@@ -3,7 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { ProfileValues } from "@/types/formik/formik";
 import { classNames } from "@/utils";
-import { useGetProfileQuery, useUpdateProfileMutation } from "@/features/profile/profile.slice";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useUploadAvatarMutation,
+} from "@/features/profile/profile.slice";
 import { toast } from "react-toastify";
 import { Loader } from "@/components/Loader";
 import { DocumentDuplicateIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -13,6 +17,7 @@ export const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [updateProfile] = useUpdateProfileMutation();
+  const [uploadAvatar] = useUploadAvatarMutation();
   const [profileDetail, setProfileDetail] = useState<any>(null);
   const [editing, setEditing] = useState(false);
   const { data: profile_data, isLoading, isFetching, refetch } = useGetProfileQuery();
@@ -57,9 +62,13 @@ export const Profile = () => {
       console.log(avatarData);
 
       // Submit form with all values
-      const response = await updateProfile({
-        ...values,
-      }).unwrap();
+
+      const [response] = await Promise.all([
+        updateProfile({
+          ...values,
+        }).unwrap(),
+        avatarData && uploadAvatar({ avatar: avatarData }).unwrap(),
+      ]);
 
       const { message } = response;
       toast(message, { type: "success", className: "text-xs" });
