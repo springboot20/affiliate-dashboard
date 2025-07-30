@@ -6,7 +6,6 @@ import imgTwo from "@/assets/img-02.jpg";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { CardTypeBlackIcon, CardTypeIcon, PaperIcon } from "@/components/icons/Icons";
-import { Button } from "@material-tailwind/react";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
 import DashboardChart from "@/components/statistics/DashboardChart";
@@ -99,16 +98,12 @@ export const OverView = () => {
         <div className="col-span-full lg:col-span-2">
           <nav className="flex justify-between items-center">
             <h3 className="text-base font-semibold text-affiliate-blue lg:text-lg">My Cards</h3>
-            <Button
-              variant="text"
+            <button
+              type="button"
               className="text-sm px-2 py-1.5 font-semibold text-affiliate-blue capitalize !bg-transparent"
-              ripple={false}
-              placeholder={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
             >
               See All
-            </Button>
+            </button>
           </nav>
           <motion.div ref={cardSlider} className="overflow-hidden w-full mt-2.5 pb-2">
             <motion.div

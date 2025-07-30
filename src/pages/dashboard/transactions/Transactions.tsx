@@ -20,6 +20,8 @@ export const Transactions = () => {
   const [width, setWidth] = useState<number>(0);
   const cardSlider = useRef<HTMLDivElement>(null);
 
+  const [page, setPage] = useState<number>(1);
+
   const { data, isLoading } = useGetUserCardsQuery();
   const cards = useMemo(() => data?.data?.cards ?? [], [data]);
 
@@ -38,6 +40,25 @@ export const Transactions = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const totalPages = data?.data?.totalPages ?? 1;
+  const hasNextPage = data?.data?.hasNextPage ?? false;
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  const handleGoToPage = (pageNumber: number) => {
+    setPage(Math.max(1, Math.min(pageNumber, totalPages)));
+  };
 
   return (
     <section className="px-2 mt-[9rem] lg:mt-[5.5rem]">
@@ -943,7 +964,14 @@ export const Transactions = () => {
                 </TabPanel>
               </TabPanels>
             </TabGroup>
-            <Pagination />
+            <Pagination
+              page={page}
+              next={handleNextPage}
+              prev={handlePreviousPage}
+              hasNextPage={false}
+              totalPages={10}
+              goToPage={handleGoToPage}
+            />
           </div>
         </div>
       </motion.div>

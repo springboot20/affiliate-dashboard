@@ -1,70 +1,64 @@
-import { Button, IconButton, IconButtonProps } from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import { classNames } from "@/utils";
 
-export const Pagination = () => {
-  const [page, setPage] = useState(1);
+type PaginationProps = {
+  prev: () => void;
+  next: () => void;
+  totalPages: number;
+  page: number;
+  hasNextPage: boolean;
+  goToPage: (page: number) => void;
+};
 
-  let totalPages = 4;
-
-  const getItemProps = (index: number) => ({
-    variant: 3 === index ? "filled" : ("text" as IconButtonProps["variant"]),
-    className: classNames(
-      `flex items-center justify-center text-xs font-medium`,
-      page === index ? "text-white bg-affiliate-deep-blue " : "text-affiliate-deep-blue !bg-transparent !shadow-none"
-    ),
-    // color: "text-affiliate-deep-blue",
-    onClick: () => console.log("clicked"),
-    children: index + 1,
-  });
-
-  const next = () => {
-    setPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
-  const prev = () => {
-    if (page > 1) setPage((prev) => prev - 1);
-  };
-
+export const Pagination = ({
+  next,
+  prev,
+  totalPages,
+  hasNextPage,
+  page,
+  goToPage,
+}: PaginationProps) => {
   return (
     <div className="relative mt-5 rounded-lg flex justify-end w-full">
       <div className="flex items-center lg:px-4 py-2 rounded-md gap-2">
-        <Button
-          placeholder={"previous"}
+        <button
+          title={"previous"}
           onClick={prev}
-          variant="text"
+          disabled={page === 1}
           className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
-          onPointerEnterCapture={undefined}
-          ripple={false}
-          onPointerLeaveCapture={undefined}
         >
           <ChevronLeftIcon strokeWidth={2} className="h-5 w-5" /> Previous
-        </Button>
+        </button>
         <div className="flex items-center gap-2">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <IconButton
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-              placeholder={""}
-              key={index}
-              {...getItemProps(index + 1)}
-            >
-              {index + 1}
-            </IconButton>
-          ))}
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNumber = index + 1;
+            const isActive = pageNumber === page;
+
+            return (
+              <button
+                type="button"
+                onClick={() => goToPage(pageNumber)}
+                className={classNames(
+                  `flex items-center justify-center text-xs font-medium h-6 w-6 rounded-md`,
+                  isActive
+                    ? "text-white bg-affiliate-deep-blue "
+                    : "text-affiliate-deep-blue !bg-transparent !shadow-none"
+                )}
+                key={index}
+              >
+                {pageNumber}
+              </button>
+            );
+          })}
         </div>
-        <Button
-          placeholder={"next"}
-          variant="text"
+        <button
+          title="next"
           className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
           onClick={next}
-          ripple={false}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
+          disabled={!hasNextPage}
         >
           Next <ChevronRightIcon strokeWidth={2} className="h-5 w-5" />
-        </Button>
+        </button>
       </div>
     </div>
   );
