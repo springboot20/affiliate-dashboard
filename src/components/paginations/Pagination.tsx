@@ -25,7 +25,7 @@ export const Pagination = ({
           title={"previous"}
           onClick={prev}
           disabled={page === 1}
-          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
+          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3 disabled:opacity-50"
         >
           <ChevronLeftIcon strokeWidth={2} className="h-5 w-5" /> Previous
         </button>
@@ -38,6 +38,7 @@ export const Pagination = ({
               <button
                 type="button"
                 onClick={() => goToPage(pageNumber)}
+                aria-current={isActive ? "page" : undefined}
                 className={classNames(
                   `flex items-center justify-center text-xs font-medium h-6 w-6 rounded-md`,
                   isActive
@@ -53,7 +54,7 @@ export const Pagination = ({
         </div>
         <button
           title="next"
-          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3"
+          className="flex items-center gap-1 !bg-transparent capitalize text-affiliate-deep-blue text-xs font-medium px-3 disabled:opacity-50"
           onClick={next}
           disabled={!hasNextPage}
         >
