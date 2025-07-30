@@ -11,9 +11,11 @@ import { useEffect } from "react";
 export const ViewRedirector: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { preferred_view } = useProfile();
+  const { preferred_view, isLoading } = useProfile();
 
   useEffect(() => {
+    if (isLoading) return;
+
     // Skip redirects for auth and special routes
     if (location.pathname.startsWith("/auth") || location.pathname === "/") {
       return;
@@ -25,18 +27,24 @@ export const ViewRedirector: React.FC<{ children: React.ReactNode }> = ({ childr
 
     if (shouldBeIn === "app" && !inAppView) {
       const newPath = location.pathname.replace(/^\/dashboard/, "/app");
-      if (location.pathname !== newPath) {
+      if (newPath === location.pathname) {
+        // fallback redirect if replacement didn't work
+        navigate("/dasboard/overview");
+      } else {
         navigate(newPath);
       }
     }
     // Only redirect if user is in the wrong view
     else if (shouldBeIn === "dashboard" && !inDashboard) {
       const newPath = location.pathname.replace(/^\/app/, "/dashboard");
-      if (location.pathname !== newPath) {
+      if (newPath === location.pathname) {
+        // fallback redirect if replacement didn't work
+        navigate("/app/overview");
+      } else {
         navigate(newPath);
       }
     }
-  }, [location, navigate, preferred_view]);
+  }, [isLoading, location, navigate, preferred_view]);
 
   // This component doesn't render anything
   return <>{children}</>;

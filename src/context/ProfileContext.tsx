@@ -32,7 +32,7 @@ export const ProfileProvider: React.FC<ProfileContextProviderProps> = ({ childre
   const [preferredView, setPreferredView] = useState<"app" | "dashboard">(
     (localStorage.getItem("preferred_view") as "app" | "dashboard") || "app"
   );
-  const [location, setLocation] = useState<string>("");
+  const [location, setLocation] = useState<string>(`/${preferredView}/overview`);
 
   const {
     data: profileData,

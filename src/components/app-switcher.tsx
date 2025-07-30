@@ -24,7 +24,7 @@ export const AppSwitcher: React.FC = () => {
   console.log(location);
 
   // Show loading while fetching profile data
-  if (!ready || isLoading) {
+  if (!ready || isLoading || !location) {
     return (
       <div className="h-screen flex justify-center items-center">
         <Loader />
@@ -32,5 +32,5 @@ export const AppSwitcher: React.FC = () => {
     );
   }
 
-  return <Navigate to={location || `/${preferred_view}`} replace />;
+  return <Navigate to={location || `/${preferred_view}/overview`} replace />;
 };
