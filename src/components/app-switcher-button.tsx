@@ -1,10 +1,11 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '@/app/hook';
-import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
-import { useUpdateProfileMutation } from '@/features/profile/profile.slice';
-import { toast } from 'react-toastify';
-import { useProfile } from '@/context/ProfileContext';
-import React from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAppSelector } from "@/app/hook";
+import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
+import { useUpdateProfileMutation } from "@/features/profile/profile.slice";
+import { toast } from "react-toastify";
+import { useProfile } from "@/context/ProfileContext";
+import React from "react";
+import { classNames } from "@/utils";
 
 // This component can be added to both AppLayout.tsx and MainLayout.tsx
 export const AppSwitcherButton = React.forwardRef<
@@ -22,8 +23,8 @@ export const AppSwitcherButton = React.forwardRef<
     return null;
   }
 
-  const isDashboard = location.pathname.startsWith('/dashboard');
-  const newPreferredView = isDashboard ? 'app' : 'dashboard';
+  const isDashboard = location.pathname.startsWith("/dashboard");
+  const newPreferredView = isDashboard ? "app" : "dashboard";
 
   const handleSwitchApp = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -48,13 +49,13 @@ export const AppSwitcherButton = React.forwardRef<
 
       // Navigate to the appropriate route
       if (isDashboard) {
-        navigate('/app/overview');
+        navigate("/app/overview");
       } else {
-        navigate('/dashboard/overview');
+        navigate("/dashboard/overview");
       }
     } catch (error: any) {
-      const errorMessage = error?.data?.message || 'Failed to update preference';
-      toast(errorMessage, { type: 'error' });
+      const errorMessage = error?.data?.message || "Failed to update preference";
+      toast(errorMessage, { type: "error" });
     }
   };
 
@@ -64,10 +65,14 @@ export const AppSwitcherButton = React.forwardRef<
       onClick={handleSwitchApp}
       disabled={isLoading}
       ref={ref}
-      className='flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium truncate overflow-hidden rounded transition-colors'>
-      <ArrowsRightLeftIcon className='shrink-0 size-6' />
+      className={classNames(
+        "flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium truncate overflow-hidden rounded transition-colors",
+        isLoading ? "pointer-events-none opacity-70" : ""
+      )}
+    >
+      <ArrowsRightLeftIcon className="shrink-0 size-6" />
       <span>
-        {isLoading ? 'Switching...' : `Switch to ${isDashboard ? 'Banking App' : 'Dashboard'}`}
+        {isLoading ? "Switching..." : `Switch to ${isDashboard ? "Banking App" : "Dashboard"}`}
       </span>
     </button>
   );

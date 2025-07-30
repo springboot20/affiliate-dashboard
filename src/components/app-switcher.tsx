@@ -1,16 +1,14 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '@/app/hook';
-import { useState, useEffect } from 'react';
-import { Loader } from './Loader';
-import { useProfile } from '@/context/ProfileContext';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAppSelector } from "@/app/hook";
+import { useState, useEffect } from "react";
+import { Loader } from "./Loader";
+import { useProfile } from "@/context/ProfileContext";
 
 export const AppSwitcher: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const { preferred_view, isLoading } = useProfile();
+  const { preferred_view, isLoading, location } = useProfile();
   const [ready, setReady] = useState(false);
-
-  console.log(preferred_view)
 
   useEffect(() => {
     if (!isLoading) {
@@ -19,21 +17,20 @@ export const AppSwitcher: React.FC = () => {
   }, [isLoading]);
 
   if (!isAuthenticated) {
-    return <Navigate to='/auth/login' replace />;
+    return <Navigate to="/auth/login" replace />;
   }
+
+  console.log(preferred_view);
+  console.log(location);
 
   // Show loading while fetching profile data
   if (!ready || isLoading) {
     return (
-      <div className='h-screen flex justify-center items-center'>
+      <div className="h-screen flex justify-center items-center">
         <Loader />
       </div>
     );
   }
 
-  if (preferred_view === 'dashboard') {
-    return <Navigate to='/dashboard/overview' replace />;
-  } else {
-    return <Navigate to='/app/overview' replace />;
-  }
+  return <Navigate to={location || `/${preferred_view}`} replace />;
 };

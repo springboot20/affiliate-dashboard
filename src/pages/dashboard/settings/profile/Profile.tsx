@@ -29,16 +29,16 @@ export const Profile = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   const initialValues: ProfileValues = {
     permanent_address: profileDetail?.permanent_address || "",
     present_address: profileDetail?.present_address || "",
-    firstname: profileDetail?.firstname || "",
-    lastname: profileDetail?.lastname || "",
-    phoneNumber: profileDetail?.phoneNumber || "",
+    firstname: profileDetail?.user?.firstname || "",
+    lastname: profileDetail?.user?.lastname || "",
+    phoneNumber: profileDetail?.user?.phone_number || "",
     city: profileDetail?.city || "",
-    username: profileDetail?.user?.username || "",
+    username: profileDetail?.username || "",
     password: "", // Password is empty by default for security
     country: profileDetail?.country || "",
     email: profileDetail?.user?.email || "",
@@ -213,15 +213,16 @@ export const Profile = () => {
                       username
                     </label>
                     <Field
-                      // id="username"
+                      id="username"
                       type="text"
                       name="username"
                       autoComplete="username"
                       placeholder="Charlene Reed"
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5",
+                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
                       )}
-                      disabled={true}
+                      disabled={!editing}
                     />
                   </fieldset>
 
@@ -233,14 +234,15 @@ export const Profile = () => {
                       email
                     </label>
                     <Field
-                      // id="email"
+                      id="email"
                       type="email"
                       name="email"
                       placeholder="charlenereed@gmail.com "
                       className={classNames(
-                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5 disabled:bg-gray-50 border-0"
+                        "block w-full px-3 rounded-lg text-[#718EBF] py-2 focus:ring-2 focus:ring-inset text-xs placeholder:text-[#718EBF] sm:leading-6 outline-none lg:py-2.5",
+                        editing ? "border border-[#DFEAF2]" : "disabled:bg-gray-50 border-0"
                       )}
-                      disabled={true}
+                      disabled={!editing}
                     />
                   </fieldset>
 
