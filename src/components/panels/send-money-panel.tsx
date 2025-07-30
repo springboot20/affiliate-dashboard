@@ -66,7 +66,7 @@ export const SendMoneyPanelComponent = ({
 }: SendMoneyPanelComponentProps) => {
   const navigate = useNavigate();
   const { data: accounts } = useGetUserAccountsQuery();
-  const [sendTransaction] = useSendTransactionMutation();
+  const [sendTransaction, { isLoading: sendingTransaction }] = useSendTransactionMutation();
 
   const TRANSACTION_LIMIT = 20;
 
@@ -417,13 +417,27 @@ export const SendMoneyPanelComponent = ({
                                     onClick={
                                       buttonType === "button" ? handleButtonClick : undefined
                                     }
-                                    disabled={formik.isSubmitting}
+                                    disabled={formik.isSubmitting || sendingTransaction}
                                     className={classNames(
                                       "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
                                       "flex items-center justify-center"
                                     )}
                                   >
-                                    {buttonText}
+                                    {formik.isSubmitting || sendingTransaction ? (
+                                      <div
+                                        className={classNames(
+                                          "p-2 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/30"
+                                        )}
+                                      >
+                                        <span className="animation1 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                        <span className="animation2 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                        <span className="animation3 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                      </div>
+                                    ) : (
+                                      <span className="text-white text-sm font-medium uppercase tracking-wider">
+                                        {buttonText}
+                                      </span>
+                                    )}
                                   </button>
                                 </div>
                               </Form>

@@ -13,10 +13,11 @@ import { motion } from "framer-motion";
 import { ConfirmationDetails } from "./components/confirmation-detail";
 import { TransactionDetailReminderModalComponent } from "../modal/reminder-modal";
 import { useDepositTransactionMutation } from "@/features/transactions/transaction.slice";
+import { TransactionConfirmed } from "./components/transaction-confirmed";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
-    refetch: () => any;
+  refetch: () => any;
   open: boolean;
 };
 
@@ -29,11 +30,33 @@ type InitialValues = {
   pin: string[];
 };
 
+interface TransactionSubDetail {
+  gateway: string;
+  receiverAccountNumber: string;
+  senderAccountNumber: string;
+  _id: string;
+}
+
+interface TransactionDetail {
+  authorizationUrl: string;
+  transaction: {
+    amount: number;
+    currency: string;
+    description: string;
+    reference: string;
+    status: string;
+    type: string;
+    detail: TransactionSubDetail;
+    createdAt: string;
+  };
+}
+
 export const AddMoneyPanelComponent = ({ open, onClose, refetch }: AddMoneyPanelComponentProps) => {
   const { data: accounts } = useGetUserAccountsQuery();
   const navigate = useNavigate();
   const [openReminder, setOpenReminder] = useState(false);
-  const [depositTransaction] = useDepositTransactionMutation();
+  const [depositTransaction, { isLoading: depositLoading }] = useDepositTransactionMutation();
+  const [transactionDetails, setTransactionsDetails] = useState<TransactionDetail | null>(null);
 
   const initialValues: InitialValues = {
     from_account: "",
@@ -106,21 +129,28 @@ export const AddMoneyPanelComponent = ({ open, onClose, refetch }: AddMoneyPanel
       const { message } = response;
       toast.success(message, { className: "text-xs" });
 
-      setTimeout(() => {
-        navigate("/app/overview");
-        onClose();
-        refetch();
-        resetForm();
-      }, 1000);
+      setTransactionsDetails(response.data);
+
+      refetch();
+      resetForm();
     } catch (error: any) {
       setTimeout(() => {
-        resetForm();
-        setStep(0);
-        setTab("transaction-details");
+        setStep((prev) => prev - 1);
+        setTab("transaction-pin");
+        refetch();
       }, 1000);
       const message = error?.data?.message;
       toast.error(message, { className: "text-xs" });
     }
+  };
+
+  const handleClose = () => {
+    onClose();
+    setStep(0);
+    setTab("transaction-details");
+    navigate("/app/transactions");
+    setTransactionsDetails(null);
+    setOpenReminder(false);
   };
 
   return (
@@ -162,184 +192,205 @@ export const AddMoneyPanelComponent = ({ open, onClose, refetch }: AddMoneyPanel
                     </div>
                   </div>
 
-                  <Formik
-                    initialValues={initialValues}
-                    validationSchema={yup.object({
-                      from_account: yup.string().required("account is required"),
-                      to_account: yup
-                        .string()
-                        .required("destination account is required")
-                        .notOneOf([yup.ref("from_account")], "Cannot transfer to the same account"),
-                      amount: yup
-                        .number()
-                        .positive("Amount must be a positive number")
-                        .required("Amount is required"),
-                      narration: yup
-                        .string()
-                        .max(
-                          MAX_NARRATION_COUNT,
-                          `Description cannot exceed ${MAX_NARRATION_COUNT} characters`
-                        )
-                        .required("Description is required"),
-                      category: yup.string().required("Category is required"),
-                      pin: yup
-                        .array()
-                        .of(yup.string().required())
-                        .test("pin-complete", "PIN must be 4 digits", function (value) {
-                          if (!value) return false;
-                          // Check if all 4 PIN fields are filled and contain only digits
-                          return (
-                            value.length === 4 &&
-                            value.every((digit) => digit && /^\d$/.test(digit))
-                          );
-                        })
-                        .required("PIN is required"),
-                    })}
-                    onSubmit={handleDepositTransaction}
-                  >
-                    {(formik) => {
-                      const buttonType = step === 0 || step === 1 ? "button" : "submit";
-                      const buttonText =
-                        step === 0 ? "next" : step === 1 ? "continue" : "add money";
+                  {transactionDetails !== null ? (
+                    <TransactionConfirmed {...transactionDetails} handleClose={handleClose} />
+                  ) : (
+                    <Formik
+                      initialValues={initialValues}
+                      validationSchema={yup.object({
+                        from_account: yup.string().required("account is required"),
+                        to_account: yup
+                          .string()
+                          .required("destination account is required")
+                          .notOneOf(
+                            [yup.ref("from_account")],
+                            "Cannot transfer to the same account"
+                          ),
+                        amount: yup
+                          .number()
+                          .positive("Amount must be a positive number")
+                          .required("Amount is required"),
+                        narration: yup
+                          .string()
+                          .max(
+                            MAX_NARRATION_COUNT,
+                            `Description cannot exceed ${MAX_NARRATION_COUNT} characters`
+                          )
+                          .required("Description is required"),
+                        category: yup.string().required("Category is required"),
+                        pin: yup
+                          .array()
+                          .of(yup.string().required())
+                          .test("pin-complete", "PIN must be 4 digits", function (value) {
+                            if (!value) return false;
+                            // Check if all 4 PIN fields are filled and contain only digits
+                            return (
+                              value.length === 4 &&
+                              value.every((digit) => digit && /^\d$/.test(digit))
+                            );
+                          })
+                          .required("PIN is required"),
+                      })}
+                      onSubmit={handleDepositTransaction}
+                    >
+                      {(formik) => {
+                        const buttonType = step === 0 || step === 1 ? "button" : "submit";
+                        const buttonText =
+                          step === 0 ? "next" : step === 1 ? "continue" : "add money";
 
-                      const handleButtonClick = async (
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                      ) => {
-                        event.preventDefault();
-                        if (step === 0) {
-                          const errors = await formik.validateForm();
+                        const handleButtonClick = async (
+                          event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                        ) => {
+                          event.preventDefault();
+                          if (step === 0) {
+                            const errors = await formik.validateForm();
 
-                          formik.setTouched({
-                            from_account: true,
-                            to_account: true,
-                            amount: true,
-                            narration: true,
-                            category: true,
-                          });
+                            formik.setTouched({
+                              from_account: true,
+                              to_account: true,
+                              amount: true,
+                              narration: true,
+                              category: true,
+                            });
 
-                          const step0Fields = [
-                            "from_account",
-                            "to_account",
-                            "amount",
-                            "narration",
-                            "category",
-                          ];
-                          const step0Errors = Object.keys(errors).filter((key) =>
-                            step0Fields.includes(key)
-                          );
+                            const step0Fields = [
+                              "from_account",
+                              "to_account",
+                              "amount",
+                              "narration",
+                              "category",
+                            ];
+                            const step0Errors = Object.keys(errors).filter((key) =>
+                              step0Fields.includes(key)
+                            );
 
-                          if (step0Errors.length === 0) {
+                            if (step0Errors.length === 0) {
+                              setStep(1);
+                              setTab("transaction-pin");
+                            } else {
+                              toast("Input fields cannot be empty.", { type: "error" });
+                              formik.setErrors(errors);
+                            }
+                          } else if (step === 1) {
+                            setOpenReminder(true);
+                          } else {
+                            const errors = await formik.validateForm();
+                            formik.setTouched({
+                              ...formik.touched,
+                              pin: true,
+                            });
+
+                            if (Object.keys(errors).length === 0) {
+                              formik.handleSubmit();
+                              onClose();
+                            } else {
+                              toast("Please enter a valid 4-digit PIN.", { type: "error" });
+                              formik.setErrors(errors);
+                            }
+                          }
+                        };
+
+                        const handleBackButtonClick = (
+                          event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                        ) => {
+                          event.preventDefault();
+                          if (step === 1) {
+                            setStep(0);
+                            setTab("transaction-details");
+                          } else if (step === 2) {
                             setStep(1);
-                            setTab("transaction-pin");
+                            setTab("confirmation-details");
                           } else {
-                            toast("Input fields cannot be empty.", { type: "error" });
-                            formik.setErrors(errors);
-                          }
-                        } else if (step === 1) {
-                          setOpenReminder(true);
-                        } else {
-                          const errors = await formik.validateForm();
-                          formik.setTouched({
-                            ...formik.touched,
-                            pin: true,
-                          });
-
-                          if (Object.keys(errors).length === 0) {
-                            formik.handleSubmit();
                             onClose();
-                          } else {
-                            toast("Please enter a valid 4-digit PIN.", { type: "error" });
-                            formik.setErrors(errors);
+                            navigate("/app/overview");
                           }
-                        }
-                      };
-
-                      const handleBackButtonClick = (
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                      ) => {
-                        event.preventDefault();
-                        if (step === 1) {
-                          setStep(0);
-                          setTab("transaction-details");
-                        } else if (step === 2) {
-                          setStep(1);
-                          setTab("confirmation-details");
-                        } else {
-                          onClose();
-                          navigate("/app/overview");
-                        }
-                      };
-                      return (
-                        <>
-                          <TransactionDetailReminderModalComponent
-                            open={openReminder}
-                            close={() => {
-                              setOpenReminder(false);
-                            }}
-                            setStep={setStep}
-                            setTab={setTab}
-                            values={formik.values}
-                          />
-                          <Form className="mt-4">
-                            <motion.div
-                              key={step}
-                              initial="hidden"
-                              animate="visible"
-                              exit="exit"
-                              variants={variants}
-                              transition={{ duration: 0.5 }}
-                              className="w-full"
-                            >
-                              {step === 0 ? (
-                                <AddMoneyDetailForm accounts={accounts} formik={formik} />
-                              ) : step === 2 ? (
-                                <PinPadFormComponent formik={formik} />
-                              ) : null}
-                            </motion.div>
-
-                            {step === 1 && (
+                        };
+                        return (
+                          <>
+                            <TransactionDetailReminderModalComponent
+                              open={openReminder}
+                              close={() => {
+                                setOpenReminder(false);
+                              }}
+                              setStep={setStep}
+                              setTab={setTab}
+                              values={formik.values}
+                            />
+                            <Form className="mt-4">
                               <motion.div
-                                initial={{
-                                  opacity: 0,
-                                  y: 200,
-                                }}
-                                animate={{
-                                  opacity: 1,
-                                  y: 10,
-                                }}
+                                key={step}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={variants}
                                 transition={{ duration: 0.5 }}
                                 className="w-full"
                               >
-                                <ConfirmationDetails values={formik.values} />
+                                {step === 0 ? (
+                                  <AddMoneyDetailForm accounts={accounts} formik={formik} />
+                                ) : step === 2 ? (
+                                  <PinPadFormComponent formik={formik} />
+                                ) : null}
                               </motion.div>
-                            )}
 
-                            <div className="mt-6 flex items-center space-x-3">
-                              <button
-                                type="button"
-                                onClick={handleBackButtonClick}
-                                className="text-sm font-medium text-[#A1E96F] capitalize shrink-0 w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#F7F7F7] border border-[#A1E96F] hover:bg-[#A1E96F] hover:text-white"
-                              >
-                                {step === 0 ? "cancel" : "back"}
-                              </button>
-                              <button
-                                type={buttonType}
-                                title={buttonType}
-                                onClick={buttonType === "button" ? handleButtonClick : undefined}
-                                disabled={formik.isSubmitting}
-                                className={classNames(
-                                  "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
-                                  "flex items-center justify-center"
-                                )}
-                              >
-                                {buttonText}
-                              </button>
-                            </div>
-                          </Form>
-                        </>
-                      );
-                    }}
-                  </Formik>
+                              {step === 1 && (
+                                <motion.div
+                                  initial={{
+                                    opacity: 0,
+                                    y: 200,
+                                  }}
+                                  animate={{
+                                    opacity: 1,
+                                    y: 10,
+                                  }}
+                                  transition={{ duration: 0.5 }}
+                                  className="w-full"
+                                >
+                                  <ConfirmationDetails values={formik.values} />
+                                </motion.div>
+                              )}
+
+                              <div className="mt-6 flex items-center space-x-3">
+                                <button
+                                  type="button"
+                                  onClick={handleBackButtonClick}
+                                  className="text-sm font-medium text-[#A1E96F] capitalize shrink-0 w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#F7F7F7] border border-[#A1E96F] hover:bg-[#A1E96F] hover:text-white"
+                                >
+                                  {step === 0 ? "cancel" : "back"}
+                                </button>
+                                <button
+                                  type={buttonType}
+                                  title={buttonType}
+                                  onClick={buttonType === "button" ? handleButtonClick : undefined}
+                                  disabled={formik.isSubmitting || depositLoading}
+                                  className={classNames(
+                                    "capitalize font-medium text-sm w-auto flex-grow px-2 py-2.5 rounded text-center bg-[#A1E96F] text-[#152F00]",
+                                    "flex items-center justify-center"
+                                  )}
+                                >
+                                  {formik.isSubmitting || depositLoading ? (
+                                    <div
+                                      className={classNames(
+                                        "p-2 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/30"
+                                      )}
+                                    >
+                                      <span className="animation1 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                      <span className="animation2 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                      <span className="animation3 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-white text-sm font-medium uppercase tracking-wider">
+                                      {buttonText}
+                                    </span>
+                                  )}
+                                </button>
+                              </div>
+                            </Form>
+                          </>
+                        );
+                      }}
+                    </Formik>
+                  )}
                 </div>
               </div>
             </DialogPanel>
