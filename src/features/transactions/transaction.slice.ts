@@ -64,9 +64,17 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
     }),
 
     userTransactions: build.query<Response, RequestQuery>({
-      query: ({ limit = 10, page = 1, search = "", type }) => {
+      query: ({ limit = 10, page = 1, search = "", type = "" }) => {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+        });
+
+        if (search) params.append("search", search);
+        if (type) params.append("type", type);
+
         return {
-          url: `/transactions/user?limit=${limit}&page=${page}&search=${search}&type=${type}`,
+          url: `/transactions/user?${params.toString()}`,
         };
       },
     }),
