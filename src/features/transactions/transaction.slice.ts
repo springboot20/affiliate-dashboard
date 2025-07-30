@@ -64,9 +64,9 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
     }),
 
     userTransactions: build.query<Response, RequestQuery>({
-      query: ({ limit = 10, page = 1, search = "" }) => {
+      query: ({ limit = 10, page = 1, search = "", type }) => {
         return {
-          url: `/transactions/user?limit=${limit}&page=${page}&search=${search}`,
+          url: `/transactions/user?limit=${limit}&page=${page}&search=${search}&type=${type}`,
         };
       },
     }),

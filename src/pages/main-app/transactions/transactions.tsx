@@ -1,12 +1,30 @@
 import { AppPaginationComponent } from "@/components/paginations/AppPagination";
 import { TableComponent } from "@/components/tables/table-component";
 import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
-import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { classNames } from "@/utils";
+import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
+import { MagnifyingGlassIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type InitialFilterState = Record<string, any>;
+
+const filterOptions = [
+  { value: "all", label: "All Transaction" },
+  { value: "type-deposit", label: "Deposit" },
+  { value: "type-transfer", label: "Transfer" },
+  { value: "status-complete", label: "Status (Completed)" },
+  { value: "status-in_progress", label: "Status (In Progress)" },
+  { value: "status-failed", label: "Status (Failed)" },
+] as const;
+
+type Filter =
+  | "type-deposit"
+  | "type-transfer"
+  | "status-complete"
+  | "status-in_progress"
+  | "status-failed"
+  | "all";
 
 export default function Transactions() {
   const navigate = useNavigate();
@@ -14,11 +32,14 @@ export default function Transactions() {
 
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [transactionType, setTransactionType] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
 
   const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
     limit: TRANSACTION_LIMIT,
     page,
     search: "",
+    type: transactionType !== "all" ? transactionType : undefined,
   });
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,9 +87,43 @@ export default function Transactions() {
 
   const transactions = data?.data?.docs as any[];
 
+  console.log(transactions);
+
+  const filteredTransactions = useMemo(() => {
+    if (!transactions || !transactions.length || filter === "all") return transactions;
+
+    return transactions.filter((t) => {
+      if (filter === "type-deposit") {
+        return t.type === "DEPOSIT";
+      }
+      if (filter === "type-transfer") {
+        return t.type === "TRANSFER";
+      }
+      if (filter === "status-complete") return t.status === "COMPLETED";
+      if (filter === "status-in_progress") return t.status === "IN_PROGRESS";
+      if (filter === "status-failed") return t.status === "FAILED";
+      return true;
+    });
+  }, [filter, transactions]);
+
+  const handleFilterChange = (value: Filter) => {
+    setFilter(value);
+
+    if (value === "type-deposit") setTransactionType("DEPOSIT");
+    else if (value === "type-transfer") setTransactionType("TRANSFER");
+    else setTransactionType("");
+  };
+
   useEffect(() => {
-    refetch();
-  }, [refetch, initialFilterState]);
+    const delayDebounce = setTimeout(() => {
+      setInitialFilterState((prev) => ({
+        ...prev,
+        search: searchQuery,
+      }));
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
   // Update page in filter state when page changes
   useEffect(() => {
@@ -77,6 +132,10 @@ export default function Transactions() {
       page,
     }));
   }, [page]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, initialFilterState]);
 
   const RenderAction = (row: any) => {
     const { data } = row;
@@ -150,7 +209,39 @@ export default function Transactions() {
                   </MenuButton>
                 </div>
 
-                <MenuItems></MenuItems>
+                <MenuItems className="absolute right-0 z-10 mt-4 w-56 origin-top-right rounded-md bg-white dark:bg-black/90 dark:backdrop-blur-sm shadow-lg ring-1 ring-black dark:ring-white/10 overflow-hidden ring-opacity-5 focus:outline-none">
+                  {React.Children.toArray(
+                    filterOptions.map((option) => {
+                      return (
+                        <MenuItem>
+                          {({ active }) => {
+                            return (
+                              <button
+                                onClick={() => handleFilterChange(option.value)}
+                                className={classNames(
+                                  filter === option.value
+                                    ? "bg-blue-50 dark:bg-white/5 dark:!text-white text-blue-700 font-medium"
+                                    : "",
+                                  "group flex w-full items-center px-4 py-2 text-sm transition-colors",
+                                  active
+                                    ? "bg-gray-100 text-gray-900 dark:bg-white/5 dark:!text-white"
+                                    : "dark:text-white/40 text-gray-700"
+                                )}
+                              >
+                                {option.label}
+                                {filter === option.value && (
+                                  <span className="ml-auto text-blue-600">
+                                    <CheckIcon className="h-4" />
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          }}
+                        </MenuItem>
+                      );
+                    })
+                  )}
+                </MenuItems>
               </Menu>
             </div>
           </div>
@@ -160,7 +251,7 @@ export default function Transactions() {
           <div className="mt-4 overflow-x-auto !w-full">
             <TableComponent
               columns={columns}
-              datum={transactions}
+              datum={filteredTransactions}
               actions={(row) => <RenderAction data={row} />}
               isLoading={isLoading}
             />
