@@ -1,6 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import { classNames } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useGetUserAccountsQuery } from "@/features/account/account.slice";
@@ -12,6 +12,7 @@ import { PinPadFormComponent } from "./components/pinpad-form";
 import { motion } from "framer-motion";
 import { ConfirmationDetails } from "./components/confirmation-detail";
 import { TransactionDetailReminderModalComponent } from "../modal/reminder-modal";
+import { useDepositTransactionMutation } from "@/features/transactions/transaction.slice";
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
@@ -31,6 +32,7 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
   const { data: accounts } = useGetUserAccountsQuery();
   const navigate = useNavigate();
   const [openReminder, setOpenReminder] = useState(false);
+  const [depositTransaction] = useDepositTransactionMutation();
 
   const initialValues: InitialValues = {
     from_account: "",
@@ -88,6 +90,37 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
     exit: { opacity: 0, x: 100 },
   };
 
+  const handleDepositTransaction = async (
+    values: InitialValues,
+    { resetForm }: FormikHelpers<InitialValues>
+  ) => {
+    try {
+      const response = await depositTransaction({
+        amount: values?.amount,
+        description: values?.narration,
+        to_account: values?.to_account,
+        from_account: values?.from_account,
+      }).unwrap();
+
+      const { message } = response;
+      toast.success(message, { className: "text-xs" });
+
+      setTimeout(() => {
+        navigate("/app/overview");
+        onClose();
+        resetForm();
+      }, 1000);
+    } catch (error: any) {
+      setTimeout(() => {
+        resetForm();
+        setStep(0);
+        setTab("transaction-details");
+      }, 1000);
+      const message = error?.data?.message;
+      toast.error(message, { className: "text-xs" });
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -131,7 +164,10 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                     initialValues={initialValues}
                     validationSchema={yup.object({
                       from_account: yup.string().required("account is required"),
-                      to_account: yup.string().required("destination account is required"),
+                      to_account: yup
+                        .string()
+                        .required("destination account is required")
+                        .notOneOf([yup.ref("from_account")], "Cannot transfer to the same account"),
                       amount: yup
                         .number()
                         .positive("Amount must be a positive number")
@@ -157,7 +193,7 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
                         })
                         .required("PIN is required"),
                     })}
-                    onSubmit={() => {}}
+                    onSubmit={handleDepositTransaction}
                   >
                     {(formik) => {
                       const buttonType = step === 0 || step === 1 ? "button" : "submit";

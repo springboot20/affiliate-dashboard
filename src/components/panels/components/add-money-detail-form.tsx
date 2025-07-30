@@ -1,4 +1,5 @@
 import { CustomErrorMessage } from "@/components/Error";
+import { AccountType } from "@/types/account";
 import { classNames, formatMoney } from "@/utils";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { ErrorMessage, Field, FormikProps } from "formik";
@@ -51,7 +52,7 @@ export const AddMoneyDetailForm = ({
           <option value="--select-an-account-">---select-an-account---</option>
           {React.Children.toArray(
             accounts?.data?.docs.length &&
-              accounts?.data?.docs.map((doc: any) => {
+              accounts?.data?.docs.map((doc: AccountType) => {
                 return (
                   <option value={doc?._id}>
                     {doc?.type} Account -{" "}
@@ -98,18 +99,20 @@ export const AddMoneyDetailForm = ({
           <option value="--select-an-bank-">---select-an-account---</option>
           {React.Children.toArray(
             accounts?.data?.docs.length &&
-              accounts?.data?.docs.map((doc: any) => {
-                return (
-                  <option value={doc?._id}>
-                    {doc?.type} Account -{" "}
-                    {formatMoney(
-                      doc?.wallet?.balance || 0,
-                      doc?.wallet?.currency === "USD" ? "USD" : "NGN",
-                      doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                    )}
-                  </option>
-                );
-              })
+              accounts?.data?.docs
+                // .filter((doc: AccountType) => doc?._id !== values?.from_account)
+                .map((doc: AccountType) => {
+                  return (
+                    <option value={doc?._id} disabled={doc?._id === values?.from_account}>
+                      {doc?.type} Account -{" "}
+                      {formatMoney(
+                        doc?.wallet?.balance || 0,
+                        doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                        doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                      )}
+                    </option>
+                  );
+                })
           )}
         </select>
         <ErrorMessage name="to_account">

@@ -23,7 +23,18 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       query: (data) => {
         console.log(data);
         return {
-          url: "/transactions/paystack/send-transaction",
+          url: "/transactions/paystack/transfer",
+          method: "POST",
+          body: { ...data },
+        };
+      },
+    }),
+
+    depositTransaction: build.mutation<Response, Record<string, any>>({
+      query: (data) => {
+        console.log(data);
+        return {
+          url: "/transactions/paystack/deposit",
           method: "POST",
           body: { ...data },
         };
@@ -69,4 +80,5 @@ export const {
   useGetTransactionDetailsQuery,
   useUserTransactionsQuery,
   useGetAllAccountsQuery,
+  useDepositTransactionMutation,
 } = TransactionApiSlice;
