@@ -87,59 +87,61 @@ export const SelectionComponent: React.FC<{
                 <span className="text-sm font-medium text-gray-500">loading seats...</span>
               </div>
             ) : (
-              filteredOptions?.map((opt) => {
-                return (
-                  <ComboboxOption
-                    key={opt._id}
-                    value={opt}
-                    className={({ focus }) =>
-                      classNames(
-                        "cursor-pointer relative rounded-2xl select-none py-4 pl-3 pr-9 dark:text-white",
-                        focus ? "bg-gray-200 dark:bg-white/5 text-gray-700 " : "text-gray-800"
-                      )
-                    }
-                  >
-                    {({ focus, selected }) => (
-                      <>
-                        <div className="flex items-center gap-3">
-                          {opt?.user?.avatar?.url ? (
-                            <div className="overflow-hidden size-7 rounded-full border border-gray-400">
-                              <img
-                                src={opt?.user?.avatar?.url}
-                                alt={`${opt?.user?.lastname} ${opt?.user?.firstname}`}
-                                className="h-full w-full object-cover object-center"
-                              />
-                            </div>
-                          ) : (
-                            <span className="shrink-0 flex justify-center items-center size-7 border border-gray-400 bg-gray-50 rounded-full">
-                              <UserIcon className="h-4 fill-gray-600" />
+              filteredOptions
+                // ?.filter((opt) => opt?.account_number !== query)
+                ?.map((opt) => {
+                  return (
+                    <ComboboxOption
+                      key={opt._id}
+                      value={opt}
+                      className={({ focus }) =>
+                        classNames(
+                          "cursor-pointer relative rounded-2xl select-none py-4 pl-3 pr-9 dark:text-white",
+                          focus ? "bg-gray-200 dark:bg-white/5 text-gray-700 " : "text-gray-800"
+                        )
+                      }
+                    >
+                      {({ focus, selected }) => (
+                        <>
+                          <div className="flex items-center gap-3">
+                            {opt?.user?.avatar?.url ? (
+                              <div className="overflow-hidden size-7 rounded-full border border-gray-400">
+                                <img
+                                  src={opt?.user?.avatar?.url}
+                                  alt={`${opt?.user?.lastname} ${opt?.user?.firstname}`}
+                                  className="h-full w-full object-cover object-center"
+                                />
+                              </div>
+                            ) : (
+                              <span className="shrink-0 flex justify-center items-center size-7 border border-gray-400 bg-gray-50 rounded-full">
+                                <UserIcon className="h-4 fill-gray-600" />
+                              </span>
+                            )}
+                            <span
+                              className={classNames(
+                                "block truncate",
+                                selected ? "font-semibold" : ""
+                              )}
+                            >
+                              {opt?.user.firstname} {opt?.user.lastname}
+                            </span>
+                          </div>
+
+                          {selected && (
+                            <span
+                              className={classNames(
+                                "absolute inset-y-0 right-0 flex items-center pr-4",
+                                focus ? "text-green-400" : "text-green-600"
+                              )}
+                            >
+                              <CheckIcon className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
                             </span>
                           )}
-                          <span
-                            className={classNames(
-                              "block truncate",
-                              selected ? "font-semibold" : ""
-                            )}
-                          >
-                            {opt?.user.firstname} {opt?.user.lastname}
-                          </span>
-                        </div>
-
-                        {selected && (
-                          <span
-                            className={classNames(
-                              "absolute inset-y-0 right-0 flex items-center pr-4",
-                              focus ? "text-indigo-400" : "text-indigo-600"
-                            )}
-                          >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </ComboboxOption>
-                );
-              })
+                        </>
+                      )}
+                    </ComboboxOption>
+                  );
+                })
             )}
           </ComboboxOptions>
         )}

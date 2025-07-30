@@ -16,6 +16,7 @@ import { useDepositTransactionMutation } from "@/features/transactions/transacti
 
 type AddMoneyPanelComponentProps = {
   onClose: () => void;
+    refetch: () => any;
   open: boolean;
 };
 
@@ -28,7 +29,7 @@ type InitialValues = {
   pin: string[];
 };
 
-export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponentProps) => {
+export const AddMoneyPanelComponent = ({ open, onClose, refetch }: AddMoneyPanelComponentProps) => {
   const { data: accounts } = useGetUserAccountsQuery();
   const navigate = useNavigate();
   const [openReminder, setOpenReminder] = useState(false);
@@ -108,6 +109,7 @@ export const AddMoneyPanelComponent = ({ open, onClose }: AddMoneyPanelComponent
       setTimeout(() => {
         navigate("/app/overview");
         onClose();
+        refetch();
         resetForm();
       }, 1000);
     } catch (error: any) {

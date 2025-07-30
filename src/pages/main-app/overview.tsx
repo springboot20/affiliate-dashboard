@@ -21,7 +21,11 @@ interface Column {
 export default function Overview() {
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
-  const { data, isLoading: transactionsLoading } = useUserTransactionsQuery({
+  const {
+    data,
+    isLoading: transactionsLoading,
+    refetch,
+  } = useUserTransactionsQuery({
     limit: 10,
     page: 1,
   });
@@ -48,7 +52,7 @@ export default function Overview() {
     }
   );
 
-  console.log(accountDetails)
+  console.log(accountDetails);
 
   const navigate = useNavigate();
 
@@ -534,8 +538,17 @@ export default function Overview() {
         </div>
       </main>
 
-      <SendMoneyPanelComponent open={openSendPanel} onClose={() => setOpenSendPanel(false)} />
-      <AddMoneyPanelComponent open={openAddPanel} onClose={() => setOpenAddPanel(false)} />
+      <SendMoneyPanelComponent
+        refetch={refetch}
+        open={openSendPanel}
+        onClose={() => setOpenSendPanel(false)}
+      />
+
+      <AddMoneyPanelComponent
+        refetch={refetch}
+        open={openAddPanel}
+        onClose={() => setOpenAddPanel(false)}
+      />
     </Fragment>
   );
 }
