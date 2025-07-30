@@ -198,7 +198,7 @@ export const SendMoneyPanelComponent = ({
     setTab("transaction-details");
     navigate("/app/transactions");
     setTransactionsDetails(null);
-    setOpenReminder(false); 
+    setOpenReminder(false);
   };
 
   return (
@@ -208,8 +208,10 @@ export const SendMoneyPanelComponent = ({
         onClose={() => {
           onClose();
           setTab("transaction-details");
-          setStep(0);
           navigate("/app/overview");
+          setTransactionsDetails(null);
+          setOpenReminder(false);
+          setStep(0);
         }}
         className="relative z-40"
       >
@@ -241,7 +243,7 @@ export const SendMoneyPanelComponent = ({
                       </div>
                     </div>
                     {transactionDetails !== null ? (
-                      <TransactionConfirmed {...transactionDetails} handleClose={handleClose}/>
+                      <TransactionConfirmed {...transactionDetails} handleClose={handleClose} />
                     ) : (
                       <Formik
                         initialValues={initialValues}
