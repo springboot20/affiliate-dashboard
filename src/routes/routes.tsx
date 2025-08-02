@@ -31,6 +31,7 @@ import { ViewRedirector } from "@/components/view-redirector";
 import Notifications from "@/pages/main-app/notifications/notifications";
 import NotificationDetails from "@/pages/main-app/notifications/details/notification-details";
 import TestNotification from "@/pages/main-app/notifications/TestNotification";
+import VerifyPaystackPayment from "@/pages/main-app/transactions/verify/verify-transaction";
 
 export const router = createBrowserRouter([
   {
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
           {
             path: "detail/:transactionId",
             element: <MainTransactionDetails />,
+          },
+          {
+            path: "verify",
+            element: <VerifyPaystackPayment />,
           },
         ],
       },
