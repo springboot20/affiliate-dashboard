@@ -12,6 +12,8 @@ interface ComponentProps {
 }
 
 export const PendingState = ({ transaction, isLoading, onRetry }: ComponentProps) => {
+  console.log(transaction);
+
   const [timeLeft, setTimeLeft] = useState(30);
 
   // Reset timer when verification starts

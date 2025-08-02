@@ -19,14 +19,16 @@ export default function VerifyPaystackPayment() {
 
   const handleNormalizeStatus = useCallback((response: TransactionProps): TransactionStatus => {
     const statusValue = response?.status || response?.transactionStatus;
+    const normalized = statusValue?.toLowerCase();
 
-    switch (statusValue?.toLowerCase()) {
+    switch (normalized) {
       case "completed":
       case "success":
         return "COMPLETED";
 
       case "failed":
         return "FAILED";
+
       case "in_progress":
         return "IN_PROGRESS";
 
@@ -42,6 +44,8 @@ export default function VerifyPaystackPayment() {
       setIsVerifying(true);
       setError(null);
 
+      console.log("re-rendering");
+
       try {
         const api = await dispatch(
           TransactionApiSlice.endpoints.verifyPayment.initiate({ trxref, reference })
@@ -49,28 +53,34 @@ export default function VerifyPaystackPayment() {
 
         const response = api.data;
 
-        console.log(response);
+        console.log(api);
 
-        if (api.success) {
-          const normalizedStatus = handleNormalizeStatus(response?.data?.transaction);
+        if (api.success !== false) {
+          const normalizedStatus = handleNormalizeStatus(response?.transaction);
 
           setData((prev) => ({ ...prev, ...response?.data?.transaction }));
           setStatus(normalizedStatus);
 
           retryCountRef.current = 0;
+        } else {
+          throw new Error(response.message || "Verification failed");
         }
-      } catch (error: any) {
-        const errorMessage = error?.data?.message || error?.message;
-        setError(errorMessage);
+      } catch (err: any) {
+        const errData = err?.data?.data?.transaction || {};
+        const errMsg = err?.data?.message || err?.message || "Verification failed";
 
-        if (retryCountRef.current < maxRetries && !error?.data?.status) {
+        setError(errMsg);
+        setData(errData);
+        setStatus(handleNormalizeStatus(errData));
+
+        // Retry with exponential backoff
+        if (retryCountRef.current < maxRetries && !err?.data?.status) {
           retryCountRef.current += 1;
+          const delay = Math.pow(2, retryCountRef.current) * 1000;
 
           setTimeout(() => {
             verifyPaystackPayment(trxref, reference, true);
-          }, Math.pow(2, retryCountRef.current) * 1000);
-        } else {
-          setStatus("FAILED");
+          }, delay);
         }
       } finally {
         setIsVerifying(false);
@@ -79,22 +89,28 @@ export default function VerifyPaystackPayment() {
     [dispatch, handleNormalizeStatus, isVerifying]
   );
 
+  const extractTransactionParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      trxref: params.get("trxref"),
+      reference: params.get("reference"),
+    };
+  };
+
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const trxref = urlParams.get("trxref");
-    const reference = urlParams.get("reference");
+    const { trxref, reference } = extractTransactionParams();
 
     if (trxref && reference) {
-      verifyPaystackPayment(trxref, reference);
+      verifyPaystackPayment(trxref, reference, false);
+    } else {
+      // Handle missing parameters
+      setStatus("FAILED");
+      setError("Missing transaction parameters");
     }
   }, [verifyPaystackPayment]);
 
-  console.log(data);
-
   const handleRetry = useCallback(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const trxref = urlParams.get("trxref");
-    const reference = urlParams.get("reference");
+    const { trxref, reference } = extractTransactionParams();
 
     if (trxref && reference) {
       retryCountRef.current = 0; // Reset retry count for manual retry
@@ -105,7 +121,7 @@ export default function VerifyPaystackPayment() {
   }, [verifyPaystackPayment]);
 
   const renderTransactionStatus = () => {
-    const commonProps = {
+    const props = {
       transaction: data,
       isLoading: isVerifying,
       error,
@@ -115,17 +131,11 @@ export default function VerifyPaystackPayment() {
 
     switch (status) {
       case "COMPLETED":
-      case "success":
-        return <SuccessState {...commonProps} />;
-
-      case "IN_PROGRESS":
-        return <PendingState {...commonProps} />;
-
+        return <SuccessState {...props} />;
       case "FAILED":
-        return <FailedState {...commonProps} />;
-
+        return <FailedState {...props} />;
       default:
-        return <PendingState {...commonProps} />;
+        return <PendingState {...props} />;
     }
   };
 
