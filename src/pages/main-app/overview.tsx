@@ -1,14 +1,14 @@
 import { AddMoneyPanelComponent } from "@/components/panels/add-money-panel";
 import { SendMoneyPanelComponent } from "@/components/panels/send-money-panel";
 import { TableComponent } from "@/components/tables/table-component";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "@/assets/background.svg";
 import {
   useGetAccountDetailsQuery,
   useGetUserAccountsQuery,
 } from "@/features/account/account.slice";
-import { formatMoney } from "@/utils";
+import { classNames, formatMoney, LocalStorage } from "@/utils";
 import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
 import { useSearchEngineOptimization } from "../../hooks/seo/useSearchEngineOptimization";
 
@@ -49,7 +49,7 @@ export default function Overview() {
   const {
     data,
     isLoading: transactionsLoading,
-    refetch,
+    refetch: refetchTransactions,
   } = useUserTransactionsQuery({
     limit: 10,
     page: 1,
@@ -58,23 +58,64 @@ export default function Overview() {
   const transactions = data?.data?.docs as any[];
 
   const { data: accounts, isFetching: isFetchingAccounts } = useGetUserAccountsQuery();
-  const [account, setAccount] = useState<string | null>(null);
+  const [account, setAccount] = useState<string>("");
+  const [isAccountSwitching, setIsAccountSwitching] = useState(false);
 
   useEffect(() => {
-    if (accounts?.data && accounts?.data?.docs.length) {
-      setAccount(accounts?.data?.docs[0]?._id);
+    const storedAccount = LocalStorage.get("current-account");
+    const availableAccounts = accounts?.data?.docs as any[];
+
+    if (storedAccount && availableAccounts?.some((acc: any) => acc._id === storedAccount)) {
+      setAccount(storedAccount);
+    } else if (availableAccounts?.length > 0) {
+      const firstAccount = availableAccounts[0]?._id;
+      LocalStorage.set("current-account", firstAccount);
+      setAccount(firstAccount);
     }
-  }, [accounts?.data]);
+  }, [accounts?.data?.docs]);
 
   const {
     data: accountDetails,
-    isLoading,
-    isFetching,
+    isLoading: isLoadingAccountDetails,
+    isFetching: isFetchingAccountDetails,
+    refetch: refetchAccount,
+    error: accountError,
   } = useGetAccountDetailsQuery(
-    { accountId: account! },
+    { accountId: account },
     {
       skip: !account,
+      // Force refetch when account changes
+      refetchOnMountOrArgChange: true,
     }
+  );
+
+  const handleSelectAccount = useCallback(
+    async (accountId: string) => {
+      if (accountId === account) return;
+
+      setIsAccountSwitching(true);
+
+      try {
+        setAccount(accountId);
+        LocalStorage.set("current-account", accountId);
+        // Force refetch account details
+        // The query will automatically refetch due to the account parameter change
+        await refetchAccount();
+
+        // Optional: Also refetch transactions if they depend on account
+        await refetchTransactions();
+      } catch (error) {
+        console.error("Failed to switch account:", error);
+
+        const previousAccount = LocalStorage.get("current-account");
+        if (previousAccount !== accountId) {
+          setAccount(previousAccount);
+        }
+      } finally {
+        setIsAccountSwitching(false);
+      }
+    },
+    [account, refetchAccount, refetchTransactions]
   );
 
   console.log(accountDetails);
@@ -97,7 +138,13 @@ export default function Overview() {
     { header: "date created", accessor: "createdAt", type: "Date" },
   ];
 
-  console.log(accounts);
+  // Determine loading states
+  const isLoadingBalance =
+    isLoadingAccountDetails || isFetchingAccountDetails || isAccountSwitching;
+  const isLoadingAccounts = isFetchingAccounts;
+
+  // Get current account data for display
+  const currentAccountData = accounts?.data?.docs?.find((acc: any) => acc._id === account);
 
   return (
     <Fragment>
@@ -111,20 +158,46 @@ export default function Overview() {
             <div className="text-white flex flex-col flex-start gap-y-2 sm:gap-y-4">
               <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
               <span className="font-medium text-sm lg:text-xl xl:text-3xl">
-                {isLoading || !accountDetails?.data || isFetching
-                  ? "loading..."
-                  : formatMoney(
-                      accountDetails?.data?.wallet?.balance || 0,
-                      accountDetails?.data?.wallet?.currency === "USD" ? "USD" : "NGN",
-                      accountDetails?.data?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                    )}
+                {isLoadingBalance ? (
+                  <span className="inline-flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Loading...
+                  </span>
+                ) : accountError ? (
+                  <span className="text-red-300">Error loading balance</span>
+                ) : (
+                  formatMoney(
+                    currentAccountData?.wallet?.balance || 0,
+                    currentAccountData?.wallet?.currency === "USD" ? "USD" : "NGN",
+                    currentAccountData?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                  )
+                )}
               </span>
             </div>
 
             <div className="flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3">
-              {isLoading || isFetchingAccounts ? (
+              {isLoadingAccounts ? (
                 <span className="text-sm text-white">loading...</span>
-              ) : accounts?.data?.docs?.length === 0 ? (
+              ) : !accounts?.data?.docs?.length ? (
                 <span className="text-white text-sm shrink-0">no accounts found</span>
               ) : (
                 <fieldset className="w-fit">
@@ -132,19 +205,22 @@ export default function Overview() {
                     className="text-xs mb-2 text-white block capitalize font-medium"
                     htmlFor="account"
                   >
-                    switch account
+                    switch account {isAccountSwitching && "(Switching...)"}
                   </label>
                   <div className="relative flex items-center h-full">
                     <select
                       id="account"
                       name="account"
-                      className="text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]"
+                      value={account}
+                      disabled={isAccountSwitching}
+                      className={classNames(
+                        "text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]",
+                        isAccountSwitching ? "opacity-50 cursor-not-allowed" : ""
+                      )}
                       onChange={(event) => {
-                        const selectedAccount = accounts?.data?.docs.find((doc: any) => {
-                          return event.target.value === doc?._id;
-                        });
+                        const value = event.target.value;
 
-                        setAccount(selectedAccount?._id);
+                        handleSelectAccount(value);
                       }}
                     >
                       {React.Children.toArray(
@@ -169,13 +245,36 @@ export default function Overview() {
                       )}
                     </select>
                     <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
-                      </svg>
+                      {isAccountSwitching ? (
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="fill-current h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                        </svg>
+                      )}
                     </div>
                   </div>
                 </fieldset>
@@ -215,6 +314,7 @@ export default function Overview() {
                     type="button"
                     title="send money"
                     onClick={() => setOpenSendPanel(true)}
+                    disabled={!account || isAccountSwitching}
                     className="bg-[#A1E96F] flex items-center justify-center gap-2 px-3 py-2 rounded"
                   >
                     <svg
@@ -262,6 +362,7 @@ export default function Overview() {
                     type="button"
                     title="add money"
                     onClick={() => setOpenAddPanel(true)}
+                    disabled={!account || isAccountSwitching}
                     className="bg-white/30 flex items-center justify-center gap-2 px-3 py-2 rounded"
                   >
                     <svg
@@ -564,13 +665,13 @@ export default function Overview() {
       </main>
 
       <SendMoneyPanelComponent
-        refetch={refetch}
+        refetch={refetchTransactions}
         open={openSendPanel}
         onClose={() => setOpenSendPanel(false)}
       />
 
       <AddMoneyPanelComponent
-        refetch={refetch}
+        refetch={refetchTransactions}
         open={openAddPanel}
         onClose={() => setOpenAddPanel(false)}
       />
