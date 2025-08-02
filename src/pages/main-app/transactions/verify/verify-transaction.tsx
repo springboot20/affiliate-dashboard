@@ -79,6 +79,8 @@ export default function VerifyPaystackPayment() {
           setTimeout(() => {
             verifyPaystackPayment(trxref, reference, true);
           }, delay);
+        } else {
+          setStatus("ERROR");
         }
       } finally {
         setIsVerifying(false);
@@ -119,9 +121,12 @@ export default function VerifyPaystackPayment() {
   }, [verifyPaystackPayment]);
 
   const renderTransactionStatus = () => {
+    const { reference } = extractTransactionParams();
+    
     const props = {
       transaction: data,
       isLoading: isVerifying,
+      reference,
       error,
       onRetry: handleRetry,
       canRetry: retryCountRef.current < maxRetries,

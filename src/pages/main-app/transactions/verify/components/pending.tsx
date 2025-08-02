@@ -1,19 +1,16 @@
-import { TransactionProps } from "@/types/account";
-import { classNames, formatMoney } from "@/utils";
+import { classNames } from "@/utils";
 import { ArrowPathIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 interface ComponentProps {
-  transaction?: TransactionProps;
   isLoading?: boolean;
   error?: string | null;
   onRetry?: () => void;
   canRetry?: boolean;
+  reference?: string | null;
 }
 
-export const PendingState = ({ transaction, isLoading, onRetry }: ComponentProps) => {
-  console.log(transaction);
-
+export const PendingState = ({ isLoading, onRetry, reference }: ComponentProps) => {
   const [timeLeft, setTimeLeft] = useState(30);
 
   // Reset timer when verification starts
@@ -60,22 +57,8 @@ export const PendingState = ({ transaction, isLoading, onRetry }: ComponentProps
           ></div>
         </div>
       </div>
-      {/* Transaction details */}
-      {transaction && (
-        <div className="text-sm text-gray-500 space-y-1 mb-6">
-          <p>Reference: {transaction.reference}</p>
-          {transaction.amount && (
-            <p>
-              Amount:{" "}
-              {formatMoney(
-                transaction.amount,
-                transaction.currency === "USD" ? "USD" : "NGN",
-                transaction.currency === "USD" ? "en-US" : "en-NG"
-              )}
-            </p>
-          )}
-        </div>
-      )}
+
+      <p className="text-sm text-gray-500">Reference: {reference}</p>
 
       {/* Manual retry option when not loading */}
       {!isLoading && onRetry && (
