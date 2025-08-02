@@ -89,7 +89,7 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         console.log(trxef, reference);
 
         return {
-          url: `/transactions/provider/paystack/verify-callback?${params.toString()}`,
+          url: `/transactions/paystack/verify-callback?${params.toString()}`,
         };
       },
     }),
