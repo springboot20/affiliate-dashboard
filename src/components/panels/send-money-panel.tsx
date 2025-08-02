@@ -196,7 +196,6 @@ export const SendMoneyPanelComponent = ({
     onClose();
     setStep(0);
     setTab("transaction-details");
-    navigate("/app/transactions/verify");
     setTransactionsDetails(null);
     setOpenReminder(false);
   };
