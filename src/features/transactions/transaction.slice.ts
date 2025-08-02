@@ -82,9 +82,11 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
     verifyPayment: build.query<Response, RequestQuery>({
       query: ({ trxef, reference }) => {
         const params = new URLSearchParams({
-          trxef: trxef.toString(),
-          reference: reference.toString(),
+          trxef: trxef?.toString(),
+          reference: reference?.toString(),
         });
+
+        console.log(trxef, reference);
 
         return {
           url: `/transactions/provider/paystack/verify-callback?${params.toString()}`,
@@ -102,5 +104,5 @@ export const {
   useUserTransactionsQuery,
   useGetAllAccountsQuery,
   useDepositTransactionMutation,
-  useVerifyPaymentQuery
+  useVerifyPaymentQuery,
 } = TransactionApiSlice;
