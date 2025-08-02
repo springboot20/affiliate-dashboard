@@ -16,6 +16,8 @@ export default function VerifyPaystackPayment() {
 
         const response = api.data;
 
+        console.log(response)
+
         if (response.status) {
           setData(response.data);
         }
