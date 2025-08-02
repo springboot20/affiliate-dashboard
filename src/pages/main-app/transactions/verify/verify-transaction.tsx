@@ -53,12 +53,10 @@ export default function VerifyPaystackPayment() {
 
         const response = api.data;
 
-        console.log(api);
-
         if (api.success !== false) {
           const normalizedStatus = handleNormalizeStatus(response?.transaction);
 
-          setData((prev) => ({ ...prev, ...response?.data?.transaction }));
+          setData((prev) => ({ ...prev, ...response?.transaction }));
           setStatus(normalizedStatus);
 
           retryCountRef.current = 0;
