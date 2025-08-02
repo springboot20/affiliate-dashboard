@@ -148,7 +148,7 @@ export const AddMoneyPanelComponent = ({ open, onClose, refetch }: AddMoneyPanel
     onClose();
     setStep(0);
     setTab("transaction-details");
-    navigate("/app/transactions");
+    navigate("/app/transactions/verify");
     setTransactionsDetails(null);
     setOpenReminder(false);
   };
