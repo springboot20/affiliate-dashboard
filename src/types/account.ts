@@ -12,3 +12,23 @@ export type AccountType = {
     [key: string]: any;
   };
 };
+
+interface TransactionDetail {
+  gateway: string;
+  receiverAccountNumber: string;
+  senderAccountNumber: string;
+  _id: string;
+}
+
+export interface TransactionProps {
+  transaction: {
+    amount: number;
+    currency: string;
+    description: string;
+    reference: string;
+    status: string;
+    type: string;
+    detail: TransactionDetail;
+    createdAt: string;
+  };
+}
