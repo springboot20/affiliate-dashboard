@@ -72,7 +72,7 @@ export default function VerifyPaystackPayment() {
         setStatus(handleNormalizeStatus(errData));
 
         // Retry with exponential backoff
-        if (retryCountRef.current < maxRetries && !err?.data?.status) {
+        if (retryCountRef.current < maxRetries) {
           retryCountRef.current += 1;
           const delay = Math.pow(2, retryCountRef.current) * 1000;
 
@@ -122,7 +122,7 @@ export default function VerifyPaystackPayment() {
 
   const renderTransactionStatus = () => {
     const { reference } = extractTransactionParams();
-    
+
     const props = {
       transaction: data,
       isLoading: isVerifying,
