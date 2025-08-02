@@ -26,8 +26,11 @@ export const AppSwitcher: React.FC = () => {
   // Show loading while fetching profile data
   if (!ready || isLoading || !location) {
     return (
-      <div className="h-screen flex justify-center items-center">
+      <div className="h-screen flex justify-center items-center flex-col">
         <Loader />
+        <p>
+          switcing app context from {location.split("/")[0]} to {preferred_view}
+        </p>
       </div>
     );
   }

@@ -67,6 +67,22 @@ export function removeCircularReferences(obj: any) {
   );
 }
 
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return {
+    date: date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+    time: date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }),
+  };
+};
+
 export const formatTime = (dateString: string) => {
   const date = new Date(dateString);
   const now = new Date();
