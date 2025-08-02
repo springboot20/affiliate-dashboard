@@ -21,14 +21,13 @@ interface TransactionDetail {
 }
 
 export interface TransactionProps {
-  transaction: {
-    amount: number;
-    currency: string;
-    description: string;
-    reference: string;
-    status: string;
-    type: string;
-    detail: TransactionDetail;
-    createdAt: string;
-  };
+  amount: number;
+  currency: string;
+  description: string;
+  reference: string;
+  status: string;
+  type: string;
+  detail: TransactionDetail;
+  createdAt: string;
+  transactionStatus: string;
 }

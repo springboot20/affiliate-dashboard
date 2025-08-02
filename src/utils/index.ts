@@ -1,4 +1,5 @@
-export const classNames = (...classes: (string | boolean)[]) => classes.filter(Boolean).join(" ");
+export const classNames = (...classes: (string | boolean | undefined)[]) =>
+  classes.filter(Boolean).join(" ");
 export const isBrowser = typeof window !== "undefined";
 
 export class LocalStorage {
