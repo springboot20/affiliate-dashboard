@@ -51,12 +51,9 @@ export default function Notifications(): JSX.Element {
     }));
   }, [page]);
 
-  console.log(notificationsData);
-
   useEffect(() => {
     if (notificationsData?.success && notificationsData.data.docs) {
       const formattedNotifications = notificationsData.data.docs.map((request: any) => {
-        console.log(request);
         return {
           _id: request._id,
           data: request,
@@ -106,8 +103,6 @@ export default function Notifications(): JSX.Element {
     });
   }, [notifications, unread_notifications]);
 
-  console.log(filter);
-
   const filteredNotifications = useMemo(() => {
     switch (filter) {
       case "unread":
@@ -118,8 +113,6 @@ export default function Notifications(): JSX.Element {
         return sortedNotifications;
     }
   }, [sortedNotifications, filter]);
-
-  console.log(filteredNotifications);
 
   const unreadCount = useMemo(() => {
     return sortedNotifications.filter((n) => !n.isRead).length;
@@ -205,7 +198,7 @@ export default function Notifications(): JSX.Element {
         });
       }
     },
-    [selectedNotifications]
+    [deleteRequestMessageMutation, dispatch, selectedNotifications, sortedNotifications]
   );
 
   return (

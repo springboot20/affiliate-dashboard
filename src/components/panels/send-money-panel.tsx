@@ -174,8 +174,6 @@ export const SendMoneyPanelComponent = ({
       const { message } = response;
       toast.success(message, { className: "text-xs" });
 
-      console.log("Transaction successful:", response);
-
       setTransactionsDetails(response.data);
 
       refetch();

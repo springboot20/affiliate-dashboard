@@ -191,8 +191,6 @@ export default function TestNotification() {
     });
   }, [notifications, unread_notifications]);
 
-  console.log(filter);
-
   const filteredNotifications = useMemo(() => {
     switch (filter) {
       case "unread":
@@ -203,8 +201,6 @@ export default function TestNotification() {
         return sortedNotifications;
     }
   }, [sortedNotifications, filter]);
-
-  console.log(filteredNotifications);
 
   const unreadCount = useMemo(() => {
     return sortedNotifications.filter((n) => !n.isRead).length;

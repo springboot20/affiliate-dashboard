@@ -40,7 +40,6 @@ export const SendMoneyDetailForm = ({
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<AccountType>({} as AccountType);
 
   const [query, setQuery] = useState("");
-
   console.log(values);
 
   const {

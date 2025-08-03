@@ -111,8 +111,6 @@ export default function Transactions() {
 
   const transactions = data?.data?.docs as any[];
 
-  console.log(transactions);
-
   const filteredTransactions = useMemo(() => {
     if (!transactions || !transactions.length || filter === "all") return transactions;
 
@@ -163,8 +161,7 @@ export default function Transactions() {
 
   const RenderAction = (row: any) => {
     const { data } = row;
-    console.log(data);
-
+    
     return (
       <div className="flex items-center space-x-3">
         <button

@@ -85,11 +85,7 @@ export default function NotificationDetails(): JSX.Element {
   };
 
   const getActionConfig = (action: string) => {
-    console.log(action);
-
-    let actions = action?.split("_");
-
-    console.log(actions);
+    const actions = action?.split("_");
 
     const isDestructive =
       actions?.includes("CLOSE") || actions?.includes("SUSPEND") || actions?.includes("DELETE");

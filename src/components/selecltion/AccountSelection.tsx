@@ -46,8 +46,6 @@ export const SelectionComponent: React.FC<{
 
   const handleSelectionChange = (selectedOptions: AccountType) => {
     onChange(selectedOptions);
-
-    console.log(selectedOptions);
   };
 
   return (

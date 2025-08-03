@@ -97,8 +97,6 @@ export default function TransactionDetails() {
 
   const transactionData = data?.data as any;
 
-  console.log(transactionData);
-
   const statusConfig = getStatusConfig(transactionData?.status);
   const typeConfig = getTypeConfig(transactionData?.type);
   const StatusIcon = statusConfig.icon;
@@ -115,8 +113,6 @@ export default function TransactionDetails() {
       console.error("Failed to copy text: ", err);
     }
   };
-
-  console.log(data);
 
   return (
     <section className="py-24 lg:py-[8rem]">

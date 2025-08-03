@@ -9,10 +9,8 @@ type ConfirmationDetailsProps = {
 };
 
 export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
-  const fromAccountId = values?.account ||  values?.from_account; // or values?.from_account if using that
+  const fromAccountId = values?.account || values?.from_account; // or values?.from_account if using that
   const toAccountId = values?.beneficiary || values?.to_account; // this is the one you should use
-
-  console.log(values, "values in confirmation details");
 
   const [details, setDetails] = useState<Record<string, any>>({});
 
@@ -25,9 +23,6 @@ export const ConfirmationDetails = ({ values }: ConfirmationDetailsProps) => {
     { accountId: toAccountId },
     { skip: !toAccountId }
   );
-
-  console.log("From Account Details:", from_account_details);
-  console.log("To Account Details ID:", to_account_details_id);
 
   useEffect(() => {
     const newDetails: Record<string, any> = {};

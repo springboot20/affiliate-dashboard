@@ -62,7 +62,6 @@ export default function EditAccount() {
 
       toast(message, { type: "success", className: "text-xs" });
     } catch (error: any) {
-      console.log(error);
       const message = error?.data?.message;
       toast(message, { type: "error", className: "text-xs" });
       navigate("/app/accounts");

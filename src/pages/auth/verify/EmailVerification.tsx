@@ -9,8 +9,7 @@ export const EmailVerification = () => {
 
   useEffect(() => {
     const url_params = new URLSearchParams(window.location.search);
-
-    console.log(url_params);
+    
     const userId = url_params.get("userId") as string;
     const token = url_params.get("token") as string;
 
@@ -27,8 +26,7 @@ export const EmailVerification = () => {
           if (error instanceof AxiosError) {
             // eslint-disable-next-line no-unsafe-optional-chaining
             const { message } = error.response?.data;
-            console.log(message);
-            // toast.error(message, { autoClose: 2000 });
+            toast.error(message, { autoClose: 2000 });
           }
         }
       }

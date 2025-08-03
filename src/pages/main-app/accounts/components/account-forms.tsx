@@ -120,7 +120,6 @@ export default function AccountForms() {
           { resetForm }: FormikHelpers<AccountInitialValues>
         ) => {
           // Handle final form submission here
-          console.log("Form submitted with values:", values);
           // Here you would typically send the data to your backend
           try {
             const response = await createNewAccount({
@@ -201,14 +200,14 @@ export default function AccountForms() {
                 )}
 
                 {step < steps.length - 1 ? (
-                 <button
-                      type="button"
-                      onClick={handleNextStep}
-                      className="flex py-3 px-3 gap-3 w-full items-center justify-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
-                    >
-                      Next
-                      <ArrowRightIcon className="h-4" />
-                    </button>
+                  <button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="flex py-3 px-3 gap-3 w-full items-center justify-center text-[#152F00] bg-[#A1E96F] text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                  >
+                    Next
+                    <ArrowRightIcon className="h-4" />
+                  </button>
                 ) : (
                   <button
                     type="submit"

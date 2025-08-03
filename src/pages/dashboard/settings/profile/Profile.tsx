@@ -59,10 +59,7 @@ export const Profile = () => {
         avatarData = selectedFile;
       }
 
-      console.log(avatarData);
-
       // Submit form with all values
-
       const [response] = await Promise.all([
         updateProfile({
           ...values,

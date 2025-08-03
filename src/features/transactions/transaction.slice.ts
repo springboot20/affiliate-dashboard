@@ -21,7 +21,6 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
 
     sendTransaction: build.mutation<Response, Record<string, any>>({
       query: (data) => {
-        console.log(data);
         return {
           url: "/transactions/paystack/transfer",
           method: "POST",
@@ -32,7 +31,6 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
 
     depositTransaction: build.mutation<Response, Record<string, any>>({
       query: (data) => {
-        console.log(data);
         return {
           url: "/transactions/paystack/deposit",
           method: "POST",
@@ -85,8 +83,6 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
           trxef: trxref?.toString(),
           reference: reference?.toString(),
         });
-
-        console.log(trxref, reference);
 
         return {
           url: `/transactions/paystack/verify-callback?${params.toString()}`,

@@ -87,20 +87,21 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
-  const handleOnStatusUpdate = useCallback((data: any) => {
-    console.log("📝 Request status updated:", data);
+  const handleOnStatusUpdate = useCallback(
+    (data: any) => {
+      dispatch(
+        updateNotificationStatus({
+          notificationId: data._id || data.requestId,
+          status: data.status,
+          adminNotes: data.adminNotes,
+        })
+      );
 
-    dispatch(
-      updateNotificationStatus({
-        notificationId: data._id || data.requestId,
-        status: data.status,
-        adminNotes: data.adminNotes,
-      })
-    );
-
-    // Invalidate relevant queries
-    dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification"]));
-  }, []);
+      // Invalidate relevant queries
+      dispatch(MessagingApiSlice.util.invalidateTags(["MessageNotification"]));
+    },
+    [dispatch]
+  );
 
   const handleOnNewAdminRequest = useCallback(
     (data: any) => {
@@ -169,7 +170,16 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket?.off(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
       socket?.off(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
     };
-  }, [socket, onConnected, onDisconnected]);
+  }, [
+    socket,
+    onConnected,
+    onDisconnected,
+    onSocketError,
+    handleOnNewAdminRequest,
+    handleOnNewAdminMessaegBroadCast,
+    handleOnStatusUpdate,
+    userRole,
+  ]);
 
   useEffect(() => {
     // Clean up existing socket
@@ -207,7 +217,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         socketRef.current = null;
       }
     };
-  }, [tokens?.accessToken, isAuthenticated]);
+  }, [tokens?.accessToken, isAuthenticated, tokens]);
 
   return (
     <SocketConext.Provider

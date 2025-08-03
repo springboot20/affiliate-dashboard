@@ -20,9 +20,6 @@ export const AppSwitcher: React.FC = () => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  console.log(preferred_view);
-  console.log(location);
-
   // Show loading while fetching profile data
   if (!ready || isLoading || !location) {
     return (

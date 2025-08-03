@@ -59,8 +59,6 @@ export const refreshToken = (data: { inComingRefreshToken: string }) =>
 export const verify_email = (data: { userId: string; token: string }) => {
   const { userId, token } = data;
 
-  console.log(data);
-
   return BankAppApiClient.post(
     `/auth/verify-email`,
     {},

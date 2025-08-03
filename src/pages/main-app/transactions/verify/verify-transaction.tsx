@@ -4,6 +4,7 @@ import { TransactionApiSlice } from "@/features/transactions/transaction.slice";
 import { SuccessState } from "./components/success";
 import { PendingState } from "./components/pending";
 import { FailedState } from "./components/failed";
+import { ErrorState } from "./components/error";
 import { TransactionProps } from "@/types/account";
 
 type TransactionStatus = "IN_PROGRESS" | "COMPLETED" | "FAILED" | "success";
@@ -61,7 +62,7 @@ export default function VerifyPaystackPayment() {
 
           retryCountRef.current = 0;
         } else {
-          throw new Error(response.message || "Verification failed");
+          setStatus("ERROR");
         }
       } catch (err: any) {
         const errData = err?.data?.data?.transaction || {};
@@ -135,8 +136,16 @@ export default function VerifyPaystackPayment() {
     switch (status) {
       case "COMPLETED":
         return <SuccessState {...props} />;
+
       case "FAILED":
         return <FailedState {...props} />;
+
+      case "ERROR":
+        return <ErrorState {...props} />;
+
+      case "IN_PROGRESS":
+        return <PendingState {...props} />;
+
       default:
         return <PendingState {...props} />;
     }

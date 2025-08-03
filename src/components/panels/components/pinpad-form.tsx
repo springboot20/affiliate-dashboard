@@ -26,8 +26,6 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
     setValues: setFieldValue,
   });
 
-  console.log(values.pin);
-
   const {
     isValid: isPinValid,
     isValidating: isValidatingPin,
@@ -64,8 +62,6 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
   useEffect(() => {
     const pins = values.pin.join("");
     const accountId = values.from_account || values?.account;
-
-    console.log(values?.account);
 
     if (pins.length === 4 && accountId) {
       validatePin(pins, accountId);

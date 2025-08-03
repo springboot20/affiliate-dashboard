@@ -45,8 +45,6 @@ export const AppSwitcherButton = React.forwardRef<
 
       updatePreferredView(newPreferredView);
 
-      console.log(isDashboard);
-
       // Navigate to the appropriate route
       if (isDashboard) {
         navigate("/app/overview");

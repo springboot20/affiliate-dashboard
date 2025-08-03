@@ -35,14 +35,12 @@ export const notificationSlice = createSlice({
       const { payload } = action;
 
       const notificationId = payload?.data?._id;
-      console.log(payload?.data?._id);
 
       if (notificationId) {
         const exists = state.unread_notifications.some((un) => {
           return un?.data?._id === notificationId;
         });
 
-        console.log(exists);
 
         if (!exists) {
           const newNotification = {
@@ -66,15 +64,11 @@ export const notificationSlice = createSlice({
           );
         }
       }
-
-      console.log(payload);
     },
 
     // // Set multiple notifications (from API fetch)
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
       const notifications = action.payload;
-
-      console.log(notifications);
 
       notifications.forEach((notification) => {
         const notificationId = notification?.data?._id || notification?._id;

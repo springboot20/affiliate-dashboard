@@ -30,7 +30,6 @@ export const AccountApiSlice = ApiService.injectEndpoints({
         { accountId: string; type: string; status: string; currency: string }
       >({
         query: ({ accountId, ...rest }) => {
-          console.log(rest);
           return {
             url: `/accounts/user-accounts/${accountId}`,
             method: "PATCH",
@@ -66,8 +65,6 @@ export const AccountApiSlice = ApiService.injectEndpoints({
           const params = new URLSearchParams({
             account_number: account_number.toString(),
           });
-
-          console.log(params);
 
           return {
             url: `/accounts/user-accounts/by-number?${params.toString()}`,

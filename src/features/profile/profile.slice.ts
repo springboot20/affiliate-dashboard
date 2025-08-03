@@ -35,7 +35,6 @@ export const ProfileApiSlice = ApiService.injectEndpoints({
 
     uploadAvatar: builder.mutation<Response, UploadAvatarRequest>({
       query: (data) => {
-        console.log(data);
         const formData = new FormData();
 
         Object.keys(data).forEach((key) => {

@@ -42,8 +42,6 @@ export const ProfileProvider: React.FC<ProfileContextProviderProps> = ({ childre
     skip: !isAuthenticated,
   });
 
-  console.log(profileData?.data);
-
   const handleSetLocation = useCallback((loc: string) => {
     setLocation(loc);
   }, []);
