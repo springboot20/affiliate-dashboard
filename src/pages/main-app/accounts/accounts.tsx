@@ -47,7 +47,7 @@ export default function Accounts() {
     { header: "id", accessor: "_id" },
     {
       header: "user",
-      accessor: "profile",
+      accessor: "user",
       // Since your implementation uses dot notation access, we need a different approach
       deepOneAccessor: ["firstname", "lastname"],
     },

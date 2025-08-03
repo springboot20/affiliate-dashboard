@@ -62,7 +62,7 @@ export default function VerifyPaystackPayment() {
 
           retryCountRef.current = 0;
         } else {
-          setStatus("ERROR");
+          throw new Error(response.message || "Verification failed");
         }
       } catch (err: any) {
         const errData = err?.data?.data?.transaction || {};
@@ -73,9 +73,12 @@ export default function VerifyPaystackPayment() {
         setStatus(handleNormalizeStatus(errData));
 
         // Retry with exponential backoff
-        if (retryCountRef.current < maxRetries) {
+        if (retryCountRef.current < maxRetries && !err?.data?.status) {
           retryCountRef.current += 1;
+          console.log(`Retrying verification (${retryCountRef.current}/${maxRetries})`);
           const delay = Math.pow(2, retryCountRef.current) * 1000;
+
+          console.log(delay);
 
           setTimeout(() => {
             verifyPaystackPayment(trxref, reference, true);
@@ -83,8 +86,6 @@ export default function VerifyPaystackPayment() {
         } else {
           setStatus("ERROR");
         }
-      } finally {
-        setIsVerifying(false);
       }
     },
     [dispatch, handleNormalizeStatus, isVerifying]
@@ -105,7 +106,7 @@ export default function VerifyPaystackPayment() {
       verifyPaystackPayment(trxref, reference, false);
     } else {
       // Handle missing parameters
-      setStatus("FAILED");
+      setStatus("ERROR");
       setError("Missing transaction parameters");
     }
   }, [verifyPaystackPayment]);

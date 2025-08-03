@@ -16,7 +16,7 @@ interface ISocketInstance {
   onDisconnected: () => void;
 }
 
-const SocketConext = createContext<ISocketInstance>({
+const SocketContext = createContext<ISocketInstance>({
   socket: null,
   connected: false,
   onConnected: () => {},
@@ -220,7 +220,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [tokens?.accessToken, isAuthenticated, tokens]);
 
   return (
-    <SocketConext.Provider
+    <SocketContext.Provider
       value={{
         socket,
         connected,
@@ -229,8 +229,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }}
     >
       {children}
-    </SocketConext.Provider>
+    </SocketContext.Provider>
   );
 };
 
-export const useSocket = () => useContext(SocketConext);
+export const useSocket = () => useContext(SocketContext);

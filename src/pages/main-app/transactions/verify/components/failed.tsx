@@ -62,9 +62,9 @@ export const FailedState = ({ transaction, onRetry, canRetry, isLoading }: Compo
       </div>
       <div className="space-y-3">
         <button
-          onClick={canRetry ? onRetry : undefined}
-          disabled={!canRetry || isLoading}
-          className="w-full bg-[#A1E96F] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#A1E96F]/90 transition-colors"
+          onClick={!canRetry ? onRetry : undefined}
+          disabled={canRetry || isLoading}
+          className="w-full bg-[#A1E96F] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#A1E96F]/90 transition-colors cursor-pointer"
         >
           Try Again
         </button>

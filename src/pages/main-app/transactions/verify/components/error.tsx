@@ -9,6 +9,8 @@ interface ComponentProps {
 }
 
 export const ErrorState = ({ onRetry, canRetry, reference }: ComponentProps) => {
+  console.log(canRetry);
+
   return (
     <div className="text-center">
       <div className="mb-6">
@@ -32,7 +34,7 @@ export const ErrorState = ({ onRetry, canRetry, reference }: ComponentProps) => 
       </div>
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <div className="flex items-start">
-          <BellAlertIcon className="w-5 h-5 text-blue-600 mr-3 mt-0.5" />
+          <BellAlertIcon className="w-8 h-8 text-blue-600 mr-3 mt-0.5" />
           <div className="text-left">
             <p className="text-blue-800 font-medium mb-1">What happens next?</p>
             <p className="text-blue-700 text-sm">
@@ -44,7 +46,7 @@ export const ErrorState = ({ onRetry, canRetry, reference }: ComponentProps) => 
       </div>
       <div className="space-y-3">
         <button
-          onClick={canRetry ? onRetry : undefined}
+          onClick={!canRetry ? onRetry : undefined}
           className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition-colors"
         >
           Check Again
