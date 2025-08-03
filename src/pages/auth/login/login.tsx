@@ -51,7 +51,6 @@ export const Login = () => {
         </div>
         <Formik initialValues={initialValues} validationSchema={loginSchema} onSubmit={onSubmit}>
           {({ errors, touched, isValid, isSubmitting }) => {
-            console.log(isSubmitting);
             return (
               <Form className="mt-10 w-full bg-white rounded-lg p-6 max-w-xl">
                 <fieldset>

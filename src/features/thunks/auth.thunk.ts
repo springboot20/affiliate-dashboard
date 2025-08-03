@@ -26,7 +26,6 @@ export const register = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         return rejectWithValue(error?.response?.data?.message);
       }

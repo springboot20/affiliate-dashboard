@@ -40,7 +40,6 @@ export const SendMoneyDetailForm = ({
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<AccountType>({} as AccountType);
 
   const [query, setQuery] = useState("");
-  console.log(values);
 
   const {
     isValid: isAccountValid,
@@ -57,7 +56,7 @@ export const SendMoneyDetailForm = ({
 
     // Validate the selected account number
     if (selectedAccount.account_number) {
-      setQuery(selectedAccount.account_number); 
+      setQuery(selectedAccount.account_number);
       validateAccountNumber(selectedAccount.account_number.toString());
     }
   };

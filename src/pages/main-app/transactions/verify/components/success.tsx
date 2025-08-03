@@ -23,8 +23,6 @@ export const SuccessState = ({ transaction }: ComponentProps) => {
     }).format(date);
   };
 
-  console.log(transaction);
-
   return (
     <div className="text-center">
       <div className="mb-6">
