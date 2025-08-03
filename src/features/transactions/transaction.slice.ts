@@ -61,6 +61,13 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       }),
     }),
 
+    deleteTransaction: build.mutation<Response, string>({
+      query: (transactionId) => ({
+        url: `/transactions/delete?transactionId=${transactionId}`,
+        method: "DELETE",
+      }),
+    }),
+
     userTransactions: build.query<Response, RequestQuery>({
       query: ({ limit = 10, page = 1, search = "", type = "" }) => {
         const params = new URLSearchParams({
@@ -101,4 +108,5 @@ export const {
   useGetAllAccountsQuery,
   useDepositTransactionMutation,
   useVerifyPaymentQuery,
+  useDeleteTransactionMutation,
 } = TransactionApiSlice;

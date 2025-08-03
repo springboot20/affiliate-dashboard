@@ -1,12 +1,17 @@
+import { DeleteModalComponent } from "@/components/modal/delete-modal";
 import { AppPaginationComponent } from "@/components/paginations/AppPagination";
 import { TableComponent } from "@/components/tables/table-component";
-import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
+import {
+  useDeleteTransactionMutation,
+  useUserTransactionsQuery,
+} from "@/features/transactions/transaction.slice";
 import { useSearchEngineOptimization } from "@/hooks/seo/useSearchEngineOptimization";
 import { classNames } from "@/utils";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { MagnifyingGlassIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type InitialFilterState = Record<string, any>;
 
@@ -59,6 +64,14 @@ export default function Transactions() {
   const [transactionType, setTransactionType] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
+  const [deleteTransaction, { isLoading: isDeletingTransaction }] = useDeleteTransactionMutation();
+  const [transactionDeleted, setTransactionDeleted] = useState(false);
+
+  const [open, setOpen] = useState<{ [key: string]: boolean }>({});
+
+  const onOpen = (id: string) => setOpen((prev) => ({ ...prev, [id]: true }));
+  const onClose = (id: string) => setOpen((prev) => ({ ...prev, [id]: false }));
+
   const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
     limit: TRANSACTION_LIMIT,
     page,
@@ -90,6 +103,28 @@ export default function Transactions() {
   const handlePreviousPage = () => {
     if (page > 1) {
       setPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: string) => {
+    try {
+      const response = await deleteTransaction(transactionId).unwrap();
+
+      setTransactionDeleted(true);
+
+      const { message } = response;
+      toast(message, { type: "success", className: "text-xs" });
+
+      setTimeout(() => {
+        setTransactionDeleted(false);
+        onClose(transactionId);
+      }, 1000);
+
+      refetch();
+    } catch (error: any) {
+      const message = error?.data?.message;
+      toast(message, { type: "error", className: "text-xs" });
+      onClose(transactionId!);
     }
   };
 
@@ -161,21 +196,39 @@ export default function Transactions() {
 
   const RenderAction = (row: any) => {
     const { data } = row;
-    
+
     return (
-      <div className="flex items-center space-x-3">
-        <button
-          title="view details"
-          type="button"
-          className="px-2 py-1.5 text-xs fomt-medium capitalize bg-green-500 text-white rounded-2xl"
-          onClick={() => navigate(`/app/transactions/detail/${data._id}`)}
-        >
-          view details
-        </button>
-        <button type="button" title="delete transaction">
-          <TrashIcon className="h-5 text-red-500" />
-        </button>
-      </div>
+      <Fragment>
+        <DeleteModalComponent
+          open={!!open[data?._id as string]}
+          itemDeleted={transactionDeleted}
+          deleteLoading={isDeletingTransaction}
+          handleDelete={() => handleDeleteTransaction(data?._id as string)}
+          onClose={() => {
+            onClose(data?._id as string);
+            refetch();
+          }}
+          title="transaction"
+        />
+
+        <div className="flex items-center space-x-3">
+          <button
+            title="view details"
+            type="button"
+            className="px-2 py-1.5 text-xs fomt-medium capitalize bg-green-500 text-white rounded-2xl"
+            onClick={() => navigate(`/app/transactions/detail/${data._id}`)}
+          >
+            view details
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpen(data?._id as string)}
+            title="delete transaction"
+          >
+            <TrashIcon className="h-5 text-red-500" />
+          </button>
+        </div>
+      </Fragment>
     );
   };
 
