@@ -10,6 +10,7 @@ export class LocalStorage {
       try {
         return JSON.parse(value);
       } catch (err: any) {
+        console.log(err)
         return null;
       }
     }
@@ -30,6 +31,30 @@ export class LocalStorage {
     localStorage.clear();
   }
 }
+
+export const shareTransaction = async (receiptData: Record<string, any>) => {
+  const shareData = {
+    title: `Transaction Receipt - ${receiptData.reference}`,
+    text: receiptData.shareText,
+    url: receiptData.shareUrl,
+  };
+
+  try {
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+      return { success: true, method: "native" };
+    } else {
+      // Fallback to clipboard
+      await navigator.clipboard.writeText(
+        `${shareData.title}\n${shareData.text}\n${shareData.url}`
+      );
+      return { success: true, method: "clipboard" };
+    }
+  } catch (error) {
+    console.error("Share failed:", error);
+    return { success: false, error };
+  }
+};
 
 export const formatMoney = (price: number, currency: "USD" | "NGN", format: string) => {
   return new Intl.NumberFormat(format, {

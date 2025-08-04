@@ -84,6 +84,18 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       },
     }),
 
+    downloadReceipt: build.mutation<any, string>({
+      query: (transactionId) => ({
+        url: `/transactions/receipt/download/${transactionId}`,
+        method: "GET",
+        responseHandler: "content-type", // Important for file downloads
+      }),
+    }),
+
+    getReceiptData: build.query<Response, string>({
+      query: (transactionId) => `/transactions/receipt/share/${transactionId}`,
+    }),
+
     verifyPayment: build.query<Response, RequestQuery>({
       query: ({ trxref, reference }) => {
         const params = new URLSearchParams({
@@ -109,4 +121,6 @@ export const {
   useDepositTransactionMutation,
   useVerifyPaymentQuery,
   useDeleteTransactionMutation,
+  useDownloadReceiptMutation,
+  useGetReceiptDataQuery,
 } = TransactionApiSlice;

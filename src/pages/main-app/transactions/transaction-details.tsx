@@ -1,6 +1,10 @@
 import { CreditCardIcon, UserIcon } from "@/components/icons/Icons";
-import { useGetTransactionDetailsQuery } from "@/features/transactions/transaction.slice";
-import { classNames, formatDate, formatMoney } from "@/utils";
+import {
+  useGetTransactionDetailsQuery,
+  useDownloadReceiptMutation,
+  useGetReceiptDataQuery,
+} from "@/features/transactions/transaction.slice";
+import { classNames, formatDate, formatMoney, shareTransaction } from "@/utils";
 import {
   ArrowDownLeftIcon,
   ArrowDownTrayIcon,
@@ -89,13 +93,92 @@ const getTypeConfig = (type: string) => {
 export default function TransactionDetails() {
   const navigate = useNavigate();
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [isSharing, setIsSharing] = useState<boolean>(false);
   const { transactionId } = useParams<{ transactionId: string }>();
 
   const { data } = useGetTransactionDetailsQuery(transactionId!, {
     skip: !transactionId,
   });
+  const [downloadMutation, { isLoading: isDownloading }] = useDownloadReceiptMutation();
+
+  const { data: receiptData } = useGetReceiptDataQuery(transactionId!, {
+    skip: !transactionId,
+  });
+
+  const downloadReceiptFile = async (transactionId: string, transactionRef: string) => {
+    try {
+      const result = await downloadMutation(transactionId).unwrap();
+
+      
+
+      // Create blob URL and trigger download
+      const blob = new Blob([result as BlobPart], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `receipt-${transactionRef}.pdf`;
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Download failed:", error);
+      return { success: false, error };
+    }
+  };
+
+  const handleDownloadReceipt = async () => {
+    if (!transactionId || !transactionData?.reference) return;
+    try {
+      const result = await downloadReceiptFile(transactionId, transactionData.reference);
+
+      if (!result.success) {
+        alert("Failed to download receipt. Please try again.");
+      }
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Failed to download receipt. Please try again.");
+    }
+  };
+
+  const handleShareTransaction = async () => {
+    if (!receiptInfo) return;
+    setIsSharing(true);
+    try {
+      const result = await shareTransaction(receiptInfo);
+
+      if (result.success) {
+        if (result.method === "clipboard") {
+          setShareMessage("Transaction details copied to clipboard!");
+          setTimeout(() => setShareMessage(null), 3000);
+        }
+      } else {
+        alert("Failed to share transaction. Please try again.");
+      }
+    } catch (error) {
+      console.error("Share error:", error);
+      alert("Failed to share transaction. Please try again.");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleRefreshStatus = () => {
+    // Trigger a refetch of transaction data
+    if (transactionId) {
+      // You might want to add a refetch method to your query
+      window.location.reload(); // Simple approach, or use RTK Query's refetch
+    }
+  };
 
   const transactionData = data?.data as any;
+  const receiptInfo = receiptData?.data;
 
   const statusConfig = getStatusConfig(transactionData?.status);
   const typeConfig = getTypeConfig(transactionData?.type);
@@ -126,6 +209,12 @@ export default function TransactionDetails() {
           <ArrowLeftIcon className="size-4 shrink-0" />
           back
         </button>
+
+        {shareMessage && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            {shareMessage}
+          </div>
+        )}
 
         <div className="max-w-full">
           <div className="grid grid-col-1 lg:grid-cols-3 gap-8">
@@ -331,15 +420,28 @@ export default function TransactionDetails() {
                   <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
                 </div>
                 <div className="p-2.5 space-y-3">
-                  <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <button
+                    onClick={handleDownloadReceipt}
+                    disabled={isDownloading}
+                    className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                  >
                     <ArrowDownTrayIcon className="w-5 h-5 text-gray-600" />
-                    <span className="text-gray-900">Download Receipt</span>
+                    <span className="text-gray-900">
+                      {isDownloading ? "Downloading..." : "Download Receipt"}
+                    </span>
                   </button>
-                  <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <button
+                    onClick={handleShareTransaction}
+                    disabled={isSharing}
+                    className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                  >
                     <ShareIcon className="w-5 h-5 text-gray-600" />
                     <span className="text-gray-900">Share Transaction</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <button
+                    onClick={handleRefreshStatus}
+                    className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                  >
                     <ArrowPathIcon className="w-5 h-5 text-gray-600" />
                     <span className="text-gray-900">Check Status</span>
                   </button>
@@ -363,19 +465,35 @@ export default function TransactionDetails() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-amber-600 rounded-full mt-2"></div>
+                      <div
+                        className={`w-2 h-2 rounded-full mt-2 ${
+                          transactionData?.status === "COMPLETED"
+                            ? "bg-green-600"
+                            : transactionData?.status === "FAILED"
+                            ? "bg-red-600"
+                            : "bg-amber-600"
+                        }`}
+                      ></div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Processing Payment</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {transactionData?.status === "COMPLETED"
+                            ? "Payment Completed"
+                            : transactionData?.status === "FAILED"
+                            ? "Payment Failed"
+                            : "Processing Payment"}
+                        </p>
                         <p className="text-xs text-gray-500">Current status</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-400">Completion</p>
-                        <p className="text-xs text-gray-400">Pending</p>
+                    {transactionData?.status !== "COMPLETED" && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-400">Completion</p>
+                          <p className="text-xs text-gray-400">Pending</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
