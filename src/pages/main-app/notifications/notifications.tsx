@@ -352,9 +352,7 @@ const NotificationItem = ({
     switch (notification.type) {
       case "NEW_REQUEST":
         return {
-          title: `${
-            notification.data?.userDetails?.username ?? notification.data?.user?.name
-          } is requesting for account update`,
+          title: `${notification.data?.userDetails?.firstname} ${notification.data?.userDetails?.lastname} is requesting for account update`,
           message:
             notification.data.message?.substring(0, 100) +
             (notification.data.message && notification.data.message.length > 100 ? "..." : ""),
@@ -391,7 +389,7 @@ const NotificationItem = ({
               checked={isSelected}
               onChange={() => onSelect(notification._id)}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
-              aria-label={`Select notification from ${notification.data?.userDetails?.username}`}
+              aria-label={`Select notification from ${notification.data?.userDetails?.firstname}`}
             />
           </div>
 

@@ -33,6 +33,7 @@ export const notificationSlice = createSlice({
   reducers: {
     setNotification: (state, action: PayloadAction<Notification>) => {
       const { payload } = action;
+      console.log(payload);
 
       const notificationId = payload?.data?._id;
 

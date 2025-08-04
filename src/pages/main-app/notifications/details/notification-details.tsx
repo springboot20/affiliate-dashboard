@@ -194,37 +194,41 @@ export default function NotificationDetails(): JSX.Element {
                       <div className="flex items-center gap-3">
                         <img
                           src={details?.user?.avatar?.url}
-                          alt={details?.username}
+                          alt={details?.user?.firstname}
                           className="w-10 h-10 rounded-full bg-gray-200 object-cover shrink-0"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">{details?.username}</p>
+                          <p className="font-medium text-gray-900">
+                            {details?.user?.firstname} {details?.user?.lastname}
+                          </p>
                           <p className="text-sm text-gray-600 flex items-center gap-1">
                             <EnvelopeIcon className="w-3 h-3" />
-                            {details?.userEmail}
+                            {details?.user?.email}
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
-                      <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                      Request Action
-                    </h3>
+                  {details?.action && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                        <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                        Request Action
+                      </h3>
 
-                    <div className="bg-gray-50 rounded-lg p-4 h-fit">
-                      <div
-                        className={classNames(
-                          "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border",
-                          getActionConfig(details?.action)?.color
-                        )}
-                      >
-                        {getActionConfig(details?.action).label}
+                      <div className="bg-gray-50 rounded-lg p-4 h-fit">
+                        <div
+                          className={classNames(
+                            "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border",
+                            getActionConfig(details?.action)?.color
+                          )}
+                        >
+                          {getActionConfig(details?.action).label}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Message Section */}
@@ -255,12 +259,13 @@ export default function NotificationDetails(): JSX.Element {
                       <div className="flex items-center gap-3">
                         <img
                           src={details?.reviewedBy?.avatar?.url}
-                          alt={details?.reviewedBy?.username}
+                          alt={details?.reviewedBy?.firstname}
                           className="w-10 h-10 rounded-full bg-gray-200 object-cover shrink-0"
                         />
                         <div>
                           <p className="font-medium text-gray-900">
-                            {details?.reviewedBy?.username}
+                            {details?.reviewedBy?.firstname}
+                            {details?.reviewedBy?.lastname}
                           </p>
                           <p className="text-sm text-gray-600 flex items-center gap-1">
                             <EnvelopeIcon className="w-3 h-3" />

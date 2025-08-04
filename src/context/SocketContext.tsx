@@ -105,6 +105,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const handleOnNewAdminRequest = useCallback(
     (data: any) => {
+      console.log(data);
       dispatch(
         setNotification({
           _id: data._id || data.data?._id,
@@ -122,6 +123,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const handleOnNewAdminMessaegBroadCast = useCallback(
     (data: any) => {
+      console.log(data);
       dispatch(
         setNotification({
           _id: data._id || data.data?._id,
@@ -145,8 +147,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     socket?.on(SocketEvents.CONNECTED_EVENT, onConnected);
     socket?.on(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
     socket?.on(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
-    socket.on(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
-    socket.on(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
+    socket.on(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
+      console.log("line 151: ", data);
+    });
     socket?.on(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
 
     socket.on("connect", () => {
@@ -157,8 +160,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
     });
 
-    socket?.on(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
-      console.log(data);
+    socket?.on(SocketEvents.ADMIN_MESSAGE_BROADCAST, (data) => {
+      console.log("line 164: ", data);
+      handleOnNewAdminMessaegBroadCast(data);
     });
 
     return () => {

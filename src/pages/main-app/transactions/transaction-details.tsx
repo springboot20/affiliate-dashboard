@@ -110,7 +110,7 @@ export default function TransactionDetails() {
     try {
       const result = await downloadMutation(transactionId).unwrap();
 
-      
+      console.log(result);
 
       // Create blob URL and trigger download
       const blob = new Blob([result as BlobPart], { type: "application/pdf" });
