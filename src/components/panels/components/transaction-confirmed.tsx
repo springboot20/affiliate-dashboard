@@ -97,7 +97,7 @@ export const TransactionConfirmed = ({
           <div className="text-center">
             <p className="text-sm text-gray-500 uppercase tracking-wide mb-2">Amount</p>
             <p className="text-3xl font-bold text-gray-800">
-              {formatMoney(transaction?.amount, "NGN", "ngn")}
+              {formatMoney(transaction?.amount, transaction?.currency === "NGN" ? "NGN" : "USD", transaction?.currency === "NGN"? "en-NG" : "en-US")}
             </p>
             <p className="text-sm text-gray-600 mt-1">{transaction?.description}</p>
           </div>
