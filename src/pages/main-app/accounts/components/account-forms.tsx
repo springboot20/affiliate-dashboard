@@ -159,7 +159,7 @@ export default function AccountForms() {
       >
         {(formik) => {
           return (
-            <Form className="py-24 lg:py-[8rem] max-w-xl mx-auto">
+            <Form className="py-24 lg:py-[8rem] max-w-xl mx-auto px-4">
               <button
                 title="back"
                 type="button"
