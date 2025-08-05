@@ -23,7 +23,7 @@ import {
   ShareIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const getStatusConfig = (status: string) => {
@@ -180,8 +180,11 @@ export default function TransactionDetails() {
   const transactionData = data?.data as any;
   const receiptInfo = receiptData?.data;
 
-  const statusConfig = getStatusConfig(transactionData?.status);
-  const typeConfig = getTypeConfig(transactionData?.type);
+  const statusConfig = useMemo(
+    () => getStatusConfig(transactionData?.status),
+    [transactionData?.status]
+  );
+  const typeConfig = useMemo(() => getTypeConfig(transactionData?.type), [transactionData?.type]);
   const StatusIcon = statusConfig.icon;
   const TypeIcon = typeConfig.icon;
   const createdDate = formatDate(transactionData?.createdAt);
