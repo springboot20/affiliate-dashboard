@@ -89,6 +89,9 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
       });
   };
 
+  const username = `${user?.firstname} ${user?.lastname}`;
+
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = scrollY;
@@ -199,7 +202,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                 <div className="mr-3 lg:mr-0">
                   <MenuButton className="flex items-center space-x-3 text-gray-900">
                     <span className="sr-only">Open auth menu</span>
-                    <div className={"text-sm text-gray-50"}>Welcome, {user?.username}</div>
+                    <div className={"text-sm text-gray-50"}>Welcome, {username}</div>
                     {user?.avatar?.url ? (
                       <div className="overflow-hidden size-7 rounded-full border border-gray-400">
                         <img

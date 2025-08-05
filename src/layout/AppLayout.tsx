@@ -57,6 +57,8 @@ const AppLayout = () => {
   };
   //  lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem]
 
+  const username = `${user?.firstname} ${user?.lastname}`;
+
   return (
     <Disclosure as="div">
       {({ open, close }) => (
@@ -143,7 +145,7 @@ const AppLayout = () => {
                       <Menu as="div" className="relative self-center">
                         <MenuButton className="flex items-center space-x-3 text-gray-900">
                           <span className="sr-only">Open auth menu</span>
-                          <div className={"text-sm text-gray-700"}>Welcome, {user?.username}</div>
+                          <div className={"text-sm text-gray-700"}>Welcome, {username}</div>
 
                           {user?.avatar?.url ? (
                             <div className="overflow-hidden size-7 rounded-full border border-gray-400">
