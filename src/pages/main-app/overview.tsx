@@ -155,130 +155,220 @@ export default function Overview() {
 
         <div className="relative pt-24 lg:pt-[8rem] max-w-7xl mx-auto px-4 2xl:px-0">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0">
-            <div className="text-white flex flex-col flex-start gap-y-2 sm:gap-y-4">
-              <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
-              <span className="font-medium text-sm lg:text-xl xl:text-3xl">
-                {isLoadingBalance ? (
-                  <span className="inline-flex items-center gap-2">
-                    <svg
-                      className="animate-spin h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Loading...
-                  </span>
-                ) : accountError ? (
-                  <span className="text-red-300">Error loading balance</span>
+            <div className="flex justify-between">
+              <div className="text-white flex flex-col flex-start gap-y-2 sm:gap-y-4">
+                <span className="font-normal text-xs sm:sm">TOTAL BALANCE</span>
+                <span className="font-medium text-sm lg:text-xl xl:text-3xl">
+                  {isLoadingBalance ? (
+                    <span className="inline-flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Loading...
+                    </span>
+                  ) : accountError ? (
+                    <span className="text-red-300">Error loading balance</span>
+                  ) : (
+                    formatMoney(
+                      currentAccountData?.wallet?.balance || 0,
+                      currentAccountData?.wallet?.currency === "USD" ? "USD" : "NGN",
+                      currentAccountData?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                    )
+                  )}
+                </span>
+              </div>
+              <div className="flex flex-col md:hidden gap-3">
+                {isLoadingAccounts ? (
+                  <span className="text-sm text-white">loading...</span>
+                ) : !accounts?.data?.docs?.length ? (
+                  <span className="text-white text-sm shrink-0">no accounts found</span>
                 ) : (
-                  formatMoney(
-                    currentAccountData?.wallet?.balance || 0,
-                    currentAccountData?.wallet?.currency === "USD" ? "USD" : "NGN",
-                    currentAccountData?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                  )
+                  <fieldset className="w-fit">
+                    <label
+                      className="text-xs mb-2 text-white block capitalize font-medium"
+                      htmlFor="account"
+                    >
+                      switch account {isAccountSwitching && "(Switching...)"}
+                    </label>
+                    <div className="relative flex items-center h-full">
+                      <select
+                        id="account"
+                        name="account"
+                        value={account}
+                        disabled={isAccountSwitching}
+                        className={classNames(
+                          "text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]",
+                          isAccountSwitching ? "opacity-50 cursor-not-allowed" : ""
+                        )}
+                        onChange={(event) => {
+                          const value = event.target.value;
+
+                          handleSelectAccount(value);
+                        }}
+                      >
+                        {React.Children.toArray(
+                          accounts?.data?.docs.length &&
+                            accounts?.data?.docs.map((doc: any) => {
+                              return (
+                                // doc?.status !== "CLOSED" &&
+                                // doc?.status !== "SUSPENDED" && (
+
+                                // )
+
+                                <option value={doc?._id}>
+                                  {doc?.type} account -{" "}
+                                  {formatMoney(
+                                    doc?.wallet?.balance || 0,
+                                    doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                    doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                  )}
+                                </option>
+                              );
+                            })
+                        )}
+                      </select>
+                      <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
+                        {isAccountSwitching ? (
+                          <svg
+                            className="animate-spin h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="fill-current h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </fieldset>
                 )}
-              </span>
+              </div>
             </div>
 
             <div className="flex flex-col items-start md:flex-row md:items-end w-full sm:w-auto gap-3">
-              {isLoadingAccounts ? (
-                <span className="text-sm text-white">loading...</span>
-              ) : !accounts?.data?.docs?.length ? (
-                <span className="text-white text-sm shrink-0">no accounts found</span>
-              ) : (
-                <fieldset className="w-fit">
-                  <label
-                    className="text-xs mb-2 text-white block capitalize font-medium"
-                    htmlFor="account"
-                  >
-                    switch account {isAccountSwitching && "(Switching...)"}
-                  </label>
-                  <div className="relative flex items-center h-full">
-                    <select
-                      id="account"
-                      name="account"
-                      value={account}
-                      disabled={isAccountSwitching}
-                      className={classNames(
-                        "text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]",
-                        isAccountSwitching ? "opacity-50 cursor-not-allowed" : ""
-                      )}
-                      onChange={(event) => {
-                        const value = event.target.value;
-
-                        handleSelectAccount(value);
-                      }}
+              <div className="w-full hidden md:inline-block md:w-fit">
+                {isLoadingAccounts ? (
+                  <span className="text-sm text-white">loading...</span>
+                ) : !accounts?.data?.docs?.length ? (
+                  <span className="text-white text-sm shrink-0">no accounts found</span>
+                ) : (
+                  <fieldset className="w-fit">
+                    <label
+                      className="text-xs mb-2 text-white block capitalize font-medium"
+                      htmlFor="account"
                     >
-                      {React.Children.toArray(
-                        accounts?.data?.docs.length &&
-                          accounts?.data?.docs.map((doc: any) => {
-                            return (
-                              // doc?.status !== "CLOSED" &&
-                              // doc?.status !== "SUSPENDED" && (
+                      switch account {isAccountSwitching && "(Switching...)"}
+                    </label>
+                    <div className="relative flex items-center h-full">
+                      <select
+                        id="account"
+                        name="account"
+                        value={account}
+                        disabled={isAccountSwitching}
+                        className={classNames(
+                          "text-xs px-2 py-1.5 appearance-none outline-0 rounded w-full sm:w-auto capitalize font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 border-0 focus:ring-[#A1E96F]",
+                          isAccountSwitching ? "opacity-50 cursor-not-allowed" : ""
+                        )}
+                        onChange={(event) => {
+                          const value = event.target.value;
 
-                              // )
+                          handleSelectAccount(value);
+                        }}
+                      >
+                        {React.Children.toArray(
+                          accounts?.data?.docs.length &&
+                            accounts?.data?.docs.map((doc: any) => {
+                              return (
+                                // doc?.status !== "CLOSED" &&
+                                // doc?.status !== "SUSPENDED" && (
 
-                              <option value={doc?._id}>
-                                {doc?.type} account -{" "}
-                                {formatMoney(
-                                  doc?.wallet?.balance || 0,
-                                  doc?.wallet?.currency === "USD" ? "USD" : "NGN",
-                                  doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
-                                )}
-                              </option>
-                            );
-                          })
-                      )}
-                    </select>
-                    <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
-                      {isAccountSwitching ? (
-                        <svg
-                          className="animate-spin h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
-                        </svg>
-                      )}
+                                // )
+
+                                <option value={doc?._id}>
+                                  {doc?.type} account -{" "}
+                                  {formatMoney(
+                                    doc?.wallet?.balance || 0,
+                                    doc?.wallet?.currency === "USD" ? "USD" : "NGN",
+                                    doc?.wallet?.currency === "USD" ? "en-US" : "en-NG"
+                                  )}
+                                </option>
+                              );
+                            })
+                        )}
+                      </select>
+                      <div className="pointer-events-none absolute right-0 pr-2 text-gray-700">
+                        {isAccountSwitching ? (
+                          <svg
+                            className="animate-spin h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="fill-current h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M5.293 7.293L9.293 11.293C9.683 11.683 10.317 11.683 10.707 11.293L14.707 7.293C15.098 6.902 14.855 6.268 14.293 6.268L5.707 6.268C5.145 6.268 4.902 6.902 5.293 7.293Z" />
+                          </svg>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </fieldset>
-              )}
+                  </fieldset>
+                )}
+              </div>
 
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
                 <button
@@ -407,8 +497,6 @@ export default function Overview() {
                 </div>
               </div>
             </div>
-
-            {/* </div> */}
           </div>
 
           <div className="mt-8 lg:mt-12">
