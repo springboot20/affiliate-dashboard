@@ -84,7 +84,7 @@ export const SendMoneyDetailForm = ({
           <select
             name="account"
             id="account"
-            // value={values.account}
+            value={values.account}
             onChange={(event) => {
               const selected = accounts?.data?.docs?.find((doc: any) => {
                 return doc._id === event.target.value;
@@ -145,6 +145,7 @@ export const SendMoneyDetailForm = ({
           <select
             name="bank"
             id="bank"
+            value={values.bank}
             onChange={(event) => {
               setFieldValue("bank", event.target.value);
             }}
@@ -185,7 +186,7 @@ export const SendMoneyDetailForm = ({
         </label>
         <div className="relative w-full">
           <SelectionComponent
-            options={beneficiaryOptions}
+            options={beneficiaryOptions.filter((opt) => opt._id !== values.account)}
             isLoading={isBeneficiaryLoading}
             onChange={handleBeneficiaryChange}
             placeholder="Search for beneficiary..."
