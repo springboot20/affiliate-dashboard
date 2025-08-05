@@ -97,7 +97,7 @@ export default function TransactionDetails() {
   const [isSharing, setIsSharing] = useState<boolean>(false);
   const { transactionId } = useParams<{ transactionId: string }>();
 
-  const { data } = useGetTransactionDetailsQuery(transactionId!, {
+  const { data, refetch } = useGetTransactionDetailsQuery(transactionId!, {
     skip: !transactionId,
   });
   const [downloadMutation, { isLoading: isDownloading }] = useDownloadReceiptMutation();
@@ -173,7 +173,7 @@ export default function TransactionDetails() {
     // Trigger a refetch of transaction data
     if (transactionId) {
       // You might want to add a refetch method to your query
-      window.location.reload(); // Simple approach, or use RTK Query's refetch
+      refetch(); // Simple approach, or use RTK Query's refetch
     }
   };
 
@@ -217,7 +217,7 @@ export default function TransactionDetails() {
         )}
 
         <div className="max-w-full">
-          <div className="grid grid-col-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               {/* Transaction Overview */}
               <div className="bg-white rounded-xl border border-gray-300 overflow-hidden">
@@ -323,7 +323,12 @@ export default function TransactionDetails() {
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                          {transactionData?.user?._id?.slice(-8)}...
+                          {transactionData?.user?._id
+                            ? `${transactionData.user._id.slice(
+                                0,
+                                4
+                              )}...${transactionData.user._id.slice(-4)}`
+                            : "N/A"}
                         </span>
                         <button
                           onClick={() => copyToClipboard(transactionData?.user?._id, "userId")}
@@ -386,7 +391,7 @@ export default function TransactionDetails() {
                         <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg border border-green-200">
                           <ArrowDownLeftIcon className="w-4 h-4 text-green-600" />
                           <span className="font-mono text-gray-900">
-                            {transactionData?.detail?.receiverAccountNumber}
+                            {transactionData?.detail?.receiverAccountNumber ?? "N/A"}
                           </span>
                           <button
                             title="copy"
