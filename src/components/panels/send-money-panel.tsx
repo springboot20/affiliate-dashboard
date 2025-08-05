@@ -159,6 +159,14 @@ export const SendMoneyPanelComponent = ({
     }));
   }, [page]);
 
+  const handleClose = () => {
+    onClose();
+    setStep(0);
+    setTab("transaction-details");
+    setTransactionsDetails(null);
+    setOpenReminder(false);
+  };
+
   const handleSendTransaction = async (
     values: InitialValues,
     { resetForm }: FormikHelpers<InitialValues>
@@ -188,14 +196,6 @@ export const SendMoneyPanelComponent = ({
         refetch();
       }, 1000);
     }
-  };
-
-  const handleClose = () => {
-    onClose();
-    setStep(0);
-    setTab("transaction-details");
-    setTransactionsDetails(null);
-    setOpenReminder(false);
   };
 
   return (
