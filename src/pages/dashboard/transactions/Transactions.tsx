@@ -1,29 +1,61 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import chip from "@/assets/Chip_Card.png";
 import chipGray from "@/assets/Chip_Card-gray.png";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  CardTypeBlackIcon,
-  CardTypeIcon,
-} from "@/components/icons/Icons";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { CardTypeBlackIcon, CardTypeIcon } from "@/components/icons/Icons";
+import { ArrowDownTrayIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { classNames, formatCardExpiry, formatCardNumber } from "@/utils";
 import { Pagination } from "@/components/paginations/Pagination";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useGetUserCardsQuery } from "@/features/cards/card.slice";
 import { CreditCardLoader } from "@/components/loaders/credit-card.loader";
 import DashboardChart from "@/components/statistics/DashboardChart";
+import {
+  useDeleteTransactionMutation,
+  useDownloadReceiptMutation,
+  useUserTransactionsQuery,
+} from "@/features/transactions/transaction.slice";
+import { DashboardTransactionTable } from "@/components/tables/dashboard-transactions-table";
+import { DeleteModalComponent } from "@/components/modal/delete-modal";
+import { toast } from "react-toastify";
 
 export const Transactions = () => {
   const [width, setWidth] = useState<number>(0);
   const cardSlider = useRef<HTMLDivElement>(null);
 
+  const LIMIT = 10;
   const [page, setPage] = useState<number>(1);
+  const [transactionDeleted, setTransactionDeleted] = useState(false);
+  const [open, setOpen] = useState<{ [key: string]: boolean }>({});
+
+  const columns = [
+    { header: "description", accessor: "description" },
+    { header: "transaction ID", accessor: "_id" },
+    { header: "type", accessor: "type" },
+    { header: "amount", accessor: "amount" },
+    { header: "status", accessor: "status" },
+    { header: "date", accessor: "createdAt", type: "Date" },
+  ];
 
   const { data, isLoading } = useGetUserCardsQuery();
+  const [deleteTransaction, { isLoading: isDeletingTransaction }] = useDeleteTransactionMutation();
+  const [downloadTransactionMutation, { isLoading: isDownloading }] = useDownloadReceiptMutation();
+
+  const {
+    data: transactionsData,
+    isLoading: isTransactionsLoading,
+    refetch,
+  } = useUserTransactionsQuery({
+    limit: LIMIT,
+    page,
+  });
+
+  console.log(isTransactionsLoading);
+
   const cards = useMemo(() => data?.data?.cards ?? [], [data]);
+  const transactions = useMemo(() => transactionsData?.data?.docs ?? [], [transactionsData]);
+
+  console.log(transactions);
 
   useEffect(() => {
     if (cardSlider.current !== null) {
@@ -41,8 +73,8 @@ export const Transactions = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const totalPages = data?.data?.totalPages ?? 1;
-  const hasNextPage = data?.data?.hasNextPage ?? false;
+  const totalPages = transactionsData?.data?.totalPages ?? 1;
+  const hasNextPage = transactionsData?.data?.hasNextPage ?? false;
 
   const handleNextPage = () => {
     if (hasNextPage) {
@@ -58,6 +90,116 @@ export const Transactions = () => {
 
   const handleGoToPage = (pageNumber: number) => {
     setPage(Math.max(1, Math.min(pageNumber, totalPages)));
+  };
+
+  const onOpen = (id: string) => setOpen((prev) => ({ ...prev, [id]: true }));
+  const onClose = (id: string) => setOpen((prev) => ({ ...prev, [id]: false }));
+
+  const handleDeleteTransaction = async (transactionId: string) => {
+    try {
+      const response = await deleteTransaction(transactionId).unwrap();
+
+      setTransactionDeleted(true);
+
+      const { message } = response;
+      toast(message, { type: "success", className: "text-xs" });
+
+      setTimeout(() => {
+        setTransactionDeleted(false);
+        onClose(transactionId);
+      }, 1000);
+
+      refetch();
+    } catch (error: any) {
+      const message = error?.data?.message;
+      toast(message, { type: "error", className: "text-xs" });
+      onClose(transactionId!);
+    }
+  };
+
+  const downloadReceiptFile = async (transactionId: string, transactionRef: string) => {
+    try {
+      const result = await downloadTransactionMutation(transactionId).unwrap();
+
+      console.log(result);
+
+      // Create blob URL and trigger download
+      const blob = new Blob([result as BlobPart], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `receipt-${transactionRef}.pdf`;
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Download failed:", error);
+      return { success: false, error };
+    }
+  };
+
+  const RenderAction = (row: any) => {
+    const transactionData = row;
+    const transactionId = row?._id;
+
+    console.log(row);
+
+    const handleDownloadReceipt = async () => {
+      if (!transactionId || !transactionData?.reference) return;
+      try {
+        const result = await downloadReceiptFile(transactionId, transactionData.reference);
+
+        console.log(result);
+
+        if (!result.success) {
+          alert("Failed to download receipt. Please try again.");
+        }
+      } catch (error) {
+        console.error("Download error:", error);
+        alert("Failed to download receipt. Please try again.");
+      }
+    };
+
+    return (
+      <Fragment>
+        <DeleteModalComponent
+          open={!!open[row?._id as string]}
+          itemDeleted={transactionDeleted}
+          deleteLoading={isDeletingTransaction}
+          handleDelete={() => handleDeleteTransaction(row?._id as string)}
+          onClose={() => {
+            onClose(row?._id as string);
+            refetch();
+          }}
+          title="transaction"
+        />
+
+        <div className="flex items-center space-x-3">
+          <button
+            title="view details"
+            type="button"
+            onClick={handleDownloadReceipt}
+            className="flex items-center gap-3 px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal"
+          >
+            <span className="font-medium">{isDownloading ? "Downloading..." : "Download"}</span>
+            <ArrowDownTrayIcon className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpen(row?._id as string)}
+            title="delete transaction"
+          >
+            <TrashIcon className="h-5 text-red-500" />
+          </button>
+        </div>
+      </Fragment>
+    );
   };
 
   return (
@@ -211,7 +353,7 @@ export const Transactions = () => {
           </h3>
 
           <div className="mt-4">
-            <TabGroup className="lg:hidden">
+            <TabGroup>
               <TabList className="rounded-none bg-transparent border-b border-gray-200 flex items-center justify-start gap-12">
                 <Tab as={"div"} className="relative focus:outline-none">
                   {({ selected }) => (
@@ -270,698 +412,17 @@ export const Transactions = () => {
 
               <TabPanels className="mt-4">
                 <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
-                    <li className="flex items-center justify-between border-b py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">spotify subscription</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">28 jan, 12.30 am</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$2,500</p>
-                    </li>
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">freepik sales</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">25 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$750</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">mobile service</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">20 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$150</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">wilson</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">15 jan, 03.29 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$1050</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">emilly</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">14 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$840</p>
-                    </li>
-                  </ul>
+                  <DashboardTransactionTable
+                    datum={transactions}
+                    isLoading={isTransactionsLoading}
+                    columns={columns}
+                    actions={RenderAction}
+                  />
                 </TabPanel>
 
-                <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
-                    <li className="flex items-center justify-between border-b py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
+                <TabPanel className="p-0 bg-transparent font-inter"></TabPanel>
 
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">spotify subscription</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">28 jan, 12.30 am</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$2,500</p>
-                    </li>
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">freepik sales</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">25 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$750</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">mobile service</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">20 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$150</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">wilson</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">15 jan, 03.29 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$1050</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">emilly</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">14 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$840</p>
-                    </li>
-                  </ul>
-                </TabPanel>
-
-                <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
-                    <li className="flex items-center justify-between border-b py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">spotify subscription</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">28 jan, 12.30 am</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$2,500</p>
-                    </li>
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">freepik sales</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">25 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$750</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">mobile service</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">20 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$150</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">wilson</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">15 jan, 03.29 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$1050</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">emilly</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">14 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$840</p>
-                    </li>
-                  </ul>
-                </TabPanel>
-              </TabPanels>
-            </TabGroup>
-
-            <TabGroup className="hidden lg:block">
-              <TabList className="rounded-none bg-transparent border-b border-gray-200 flex items-center justify-center lg:justify-start gap-12">
-                <Tab as={"div"} className="relative focus:outline-none">
-                  {({ selected }) => (
-                    <>
-                      <button
-                        className={classNames(
-                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
-                        )}
-                      >
-                        all transactions
-                      </button>
-                      {selected && (
-                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
-                      )}
-                    </>
-                  )}
-                </Tab>
-
-                <Tab as={"div"} className="relative focus:outline-none">
-                  {({ selected }) => (
-                    <>
-                      <button
-                        className={classNames(
-                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
-                        )}
-                      >
-                        income
-                      </button>
-                      {selected && (
-                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
-                      )}
-                    </>
-                  )}
-                </Tab>
-
-                <Tab as={"div"} className="relative focus:outline-none">
-                  {({ selected }) => (
-                    <>
-                      <button
-                        className={classNames(
-                          selected ? "text-affiliate-deep-blue" : "text-[#8BA3CB] border-none",
-                          "text-xs px-0 h-10 capitalize outline-none focus:outline-none"
-                        )}
-                      >
-                        expense
-                      </button>
-                      {selected && (
-                        <span className="absolute inline-block left-0 right-0 bottom-0 w-full h-1 rounded-t bg-affiliate-deep-blue"></span>
-                      )}
-                    </>
-                  )}
-                </Tab>
-              </TabList>
-
-              <TabPanels className="mt-4">
-                <TabPanel className="p-0 bg-transparent font-inter">
-                  <div className="overflow-x-auto bg-white p-5 rounded-2xl">
-                    <table className="!w-full">
-                      <thead>
-                        <tr>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Description
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Transaction ID
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Type
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Card
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Date
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Amount
-                          </th>
-                          <th className="px-3 py-4 text-[#718EBF] text-left whitespace-nowrap font-medium text-xs capitalize min-w-auto tracking-wider">
-                            Reciept
-                          </th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr className="hover:bg-gray-50">
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                                <ArrowUpIcon />
-                              </span>
-
-                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                                spotify subscription
-                              </p>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">Shopping</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              28 Jan, 12.30 AM
-                            </p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">-$2,500</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
-                              Download
-                            </button>
-                          </td>
-                        </tr>
-
-                        <tr className="hover:bg-gray-50">
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                                <ArrowDownIcon />
-                              </span>
-
-                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                                Freepik Sales
-                              </p>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              25 Jan, 10.40 PM
-                            </p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-green">+$750</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
-                              Download
-                            </button>
-                          </td>
-                        </tr>
-
-                        <tr className="hover:bg-gray-50">
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                                <ArrowUpIcon />
-                              </span>
-
-                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                                Mobile Service
-                              </p>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">Service</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              20 Jan, 10.40 PM
-                            </p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">-150</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
-                              Download
-                            </button>
-                          </td>
-                        </tr>
-
-                        <tr className="hover:bg-gray-50">
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                                <ArrowUpIcon />
-                              </span>
-
-                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                                Wilson
-                              </p>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              15 Jan, 03.29 PM
-                            </p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-red">-1050</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
-                              Download
-                            </button>
-                          </td>
-                        </tr>
-
-                        <tr className="hover:bg-gray-50">
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <span className="border border-[#718EBF] h-7 w-7 xl:w-9 xl:h-9 xl:border-2 flex items-center justify-center rounded-full">
-                                <ArrowDownIcon />
-                              </span>
-
-                              <p className="text-xs capitalize font-normal text-affiliate-black shrink-0 flex-grow">
-                                Emilly
-                              </p>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">#12548796</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">Transfer</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">1234 ****</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-normal text-affiliate-black">
-                              14 Jan, 10.40 PM
-                            </p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <p className="text-xs font-medium text-affiliate-green">+840</p>
-                          </td>
-
-                          <td className="px-3 py-2.5 whitespace-nowrap">
-                            <button className="px-3 py-1.5 rounded-3xl ring-2 ring-[#1814F3] text-[#1814F3] text-xs xl:text-sm font-normal">
-                              Download
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </TabPanel>
-
-                <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
-                    <li className="flex items-center justify-between border-b py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">spotify subscription</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">28 jan, 12.30 am</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$2,500</p>
-                    </li>
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">freepik sales</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">25 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$750</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">mobile service</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">20 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$150</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">wilson</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">15 jan, 03.29 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$1050</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">emilly</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">14 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$840</p>
-                    </li>
-                  </ul>
-                </TabPanel>
-
-                <TabPanel className="p-0 bg-transparent font-inter">
-                  <ul className="bg-white p-5 rounded-2xl shadow mt-4 w-full">
-                    <li className="flex items-center justify-between border-b py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">spotify subscription</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">28 jan, 12.30 am</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$2,500</p>
-                    </li>
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">freepik sales</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">25 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$750</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">mobile service</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">20 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$150</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5 border-b">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowUpIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">wilson</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">15 jan, 03.29 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-red">-$1050</p>
-                    </li>
-
-                    <li className="flex items-center justify-between py-3.5">
-                      <div className="flex items-center gap-3">
-                        <span className="border-2 border-[#718EBF] h-10 w-10 flex items-center justify-center rounded-full">
-                          <ArrowDownIcon />
-                        </span>
-
-                        <div>
-                          <h3 className="text-xs capitalize font-medium">emilly</h3>
-                          <p className="text-xs font-normal text-[#718EBF]">14 jan, 10.40 pm</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm font-medium text-affiliate-green">+$840</p>
-                    </li>
-                  </ul>
-                </TabPanel>
+                <TabPanel className="p-0 bg-transparent font-inter"></TabPanel>
               </TabPanels>
             </TabGroup>
             <Pagination
@@ -969,7 +430,7 @@ export const Transactions = () => {
               next={handleNextPage}
               prev={handlePreviousPage}
               hasNextPage={false}
-              totalPages={10}
+              totalPages={totalPages}
               goToPage={handleGoToPage}
             />
           </div>
