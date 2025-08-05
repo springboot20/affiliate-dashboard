@@ -18,6 +18,8 @@ import {
 import { DashboardTransactionTable } from "@/components/tables/dashboard-transactions-table";
 import { DeleteModalComponent } from "@/components/modal/delete-modal";
 import { toast } from "react-toastify";
+import { useGetAllStatsQuery } from "@/features/statistics/statistics.slice";
+import moment from "moment";
 
 export const Transactions = () => {
   const [width, setWidth] = useState<number>(0);
@@ -39,8 +41,8 @@ export const Transactions = () => {
 
   const { data, isLoading } = useGetUserCardsQuery();
   const [deleteTransaction, { isLoading: isDeletingTransaction }] = useDeleteTransactionMutation();
+  const { data: statistics } = useGetAllStatsQuery({});
   const [downloadTransactionMutation, { isLoading: isDownloading }] = useDownloadReceiptMutation();
-
   const {
     data: transactionsData,
     isLoading: isTransactionsLoading,
@@ -50,8 +52,9 @@ export const Transactions = () => {
     page,
   });
 
-  console.log(isTransactionsLoading);
+  console.log(statistics);
 
+  const transactionStatistics = useMemo(() => statistics?.data, [statistics?.data]);
   const cards = useMemo(() => data?.data?.cards ?? [], [data]);
   const transactions = useMemo(() => transactionsData?.data?.docs ?? [], [transactionsData]);
 
@@ -143,6 +146,31 @@ export const Transactions = () => {
       return { success: false, error };
     }
   };
+
+  const expenseTrendData = useMemo(() => {
+    const volumeTrend = transactionStatistics?.transactions?.volumeTrend ?? [];
+
+    console.log(volumeTrend);
+
+    const monthlyTotals: Record<string, number> = {};
+
+    volumeTrend.forEach((item: any) => {
+      const monthLabel = moment(item._id).format("MMM"); // "Aug", "Sep", etc.
+
+      if (monthlyTotals[monthLabel]) {
+        monthlyTotals[monthLabel] += item.volume;
+      } else {
+        monthlyTotals[monthLabel] = item.volume;
+      }
+    });
+
+    const categories = Object.keys(monthlyTotals); // ["Aug", "Sep", ...]
+    const series = Object.values(monthlyTotals); // [10000, 20000, ...]
+
+    return { categories, series };
+  }, [transactionStatistics]);
+
+  console.log(expenseTrendData);
 
   const RenderAction = (row: any) => {
     const transactionData = row;
@@ -300,8 +328,16 @@ export const Transactions = () => {
             <DashboardChart
               type="bar"
               options={{
+                chart: {
+                  id: "expense-chart",
+                },
                 xaxis: {
-                  categories: ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
+                  categories: expenseTrendData?.categories,
+                  labels: {
+                    style: {
+                      fontSize: "12px",
+                    },
+                  },
                 },
                 plotOptions: {
                   bar: {
@@ -313,16 +349,6 @@ export const Transactions = () => {
                   show: true,
                   borderColor: "#E5E7EB",
                   strokeDashArray: 4,
-                  xaxis: {
-                    lines: {
-                      show: true,
-                    },
-                  },
-                  yaxis: {
-                    lines: {
-                      show: true,
-                    },
-                  },
                   padding: {
                     top: 0,
                     right: 10,
@@ -330,15 +356,15 @@ export const Transactions = () => {
                     left: 10,
                   },
                 },
+                colors: ["#EDF0F7", "#16DBCC", "#539BFF", "#1814F3"],
                 legend: {
                   show: false,
                 },
-                colors: ["#EDF0F7", "#EDF0F7", "#EDF0F7", "#EDF0F7", "#16DBCC", "#EDF0F7"],
               }}
               series={[
                 {
-                  name: "",
-                  data: [500, 900, 600, 700, 900, 600],
+                  name: "Expenses",
+                  data: expenseTrendData?.series,
                 },
               ]}
               height="100%"
@@ -411,7 +437,7 @@ export const Transactions = () => {
               </TabList>
 
               <TabPanels className="mt-4">
-                <TabPanel className="p-0 bg-transparent font-inter">
+                <TabPanel className="p-0 bg-transparent font-inter overflow-x-auto !w-full">
                   <DashboardTransactionTable
                     datum={transactions}
                     isLoading={isTransactionsLoading}
@@ -420,21 +446,20 @@ export const Transactions = () => {
                   />
                 </TabPanel>
 
-                <TabPanel className="p-0 bg-transparent font-inter">
+                <TabPanel className="p-0 bg-transparent font-inter overflow-x-auto !w-full">
                   <DashboardTransactionTable
-                    datum={transactions.filter((txn: any) => txn.type.toLowerCase() === "deposit")}
+                    datum={transactions.filter((txn: any) => txn._id.toLowerCase() === "deposit")}
                     isLoading={isTransactionsLoading}
                     columns={columns}
                     actions={RenderAction}
                   />
                 </TabPanel>
 
-                <TabPanel className="p-0 bg-transparent font-inter">
+                <TabPanel className="p-0 bg-transparent font-inter overflow-x-auto !w-full">
                   <DashboardTransactionTable
                     datum={transactions.filter(
                       (txn: any) =>
-                        txn.type.toLowerCase() === "withdraw" ||
-                        txn.type.toLowerCase() === "transfer"
+                        txn._id.toLowerCase() === "withdraw" || txn._id.toLowerCase() === "transfer"
                     )}
                     isLoading={isTransactionsLoading}
                     columns={columns}
