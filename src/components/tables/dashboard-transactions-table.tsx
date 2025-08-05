@@ -137,12 +137,11 @@ export const DashboardTransactionTable = ({
     <table className="!w-full table-auto p-1 border-t border-[#D9DCE7] app">
       <thead>
         <tr>
-          {React.Children.toArray(
-            columns?.map((column) => {
-              return <th className="text-[#272727] capitalize">{column.header}</th>;
-            })
-          )}
-
+          {columns.map((column) => (
+            <th key={column.accessor} className="text-[#272727] capitalize">
+              {column.header}
+            </th>
+          ))}
           {actions && <th className="text-[#272727] capitalize">receipt</th>}
         </tr>
       </thead>
@@ -150,6 +149,11 @@ export const DashboardTransactionTable = ({
       <tbody>
         {React.Children.toArray(
           datum?.map((row) => {
+            const Icon = getIconConfig(row?.["type"])?.icon;
+            const textColor = getIconConfig(row?.["type"])?.color;
+            const statusColor = getStatusConfig(row?.["status"])?.color;
+            const typeColor = getTypeConfig(row?.["type"])?.color;
+
             return (
               <tr>
                 {React.Children.toArray(
@@ -170,13 +174,6 @@ export const DashboardTransactionTable = ({
                       const value = row?.[column.accessor];
                       cellContent = value !== undefined && value !== null ? value : "-";
                     }
-
-                    const Icon = getIconConfig(row?.["type"])?.icon;
-                    const textColor = getIconConfig(row?.["type"])?.color;
-                    const statusColor = getStatusConfig(row?.["status"])?.color;
-                    const typeColor = getTypeConfig(row?.["type"])?.color;
-
-                    console.log(row?.["type"]);
 
                     return (
                       <td

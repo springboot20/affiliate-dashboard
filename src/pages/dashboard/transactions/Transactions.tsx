@@ -420,9 +420,27 @@ export const Transactions = () => {
                   />
                 </TabPanel>
 
-                <TabPanel className="p-0 bg-transparent font-inter"></TabPanel>
+                <TabPanel className="p-0 bg-transparent font-inter">
+                  <DashboardTransactionTable
+                    datum={transactions.filter((txn: any) => txn.type.toLowerCase() === "deposit")}
+                    isLoading={isTransactionsLoading}
+                    columns={columns}
+                    actions={RenderAction}
+                  />
+                </TabPanel>
 
-                <TabPanel className="p-0 bg-transparent font-inter"></TabPanel>
+                <TabPanel className="p-0 bg-transparent font-inter">
+                  <DashboardTransactionTable
+                    datum={transactions.filter(
+                      (txn: any) =>
+                        txn.type.toLowerCase() === "withdraw" ||
+                        txn.type.toLowerCase() === "transfer"
+                    )}
+                    isLoading={isTransactionsLoading}
+                    columns={columns}
+                    actions={RenderAction}
+                  />
+                </TabPanel>
               </TabPanels>
             </TabGroup>
             <Pagination
