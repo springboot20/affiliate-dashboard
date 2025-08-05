@@ -200,9 +200,19 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                   <MenuButton className="flex items-center space-x-3 text-gray-900">
                     <span className="sr-only">Open auth menu</span>
                     <div className={"text-sm text-gray-50"}>Welcome, {user?.username}</div>
-                    <span className="flex justify-center items-center border rounded-full overflow-hidden relative h-8 w-8">
-                      <UserIcon className="text-gray-800 h-6 w-6 top-2 absolute" />
-                    </span>
+                    {user?.avatar?.url ? (
+                      <div className="overflow-hidden size-7 rounded-full border border-gray-400">
+                        <img
+                          src={user?.avatar?.url}
+                          alt={`${user?.lastname} ${user?.firstname}`}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+                    ) : (
+                      <span className="flex justify-center items-center border rounded-full overflow-hidden relative h-8 w-8">
+                        <UserIcon className="text-gray-800 h-6 w-6 top-2 absolute" />
+                      </span>
+                    )}
                   </MenuButton>
                 </div>
                 <Transition
