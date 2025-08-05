@@ -11,11 +11,20 @@ export const ApiService = createApi({
       const tokens = LocalStorage.get("tokens") as Token;
       const isAuthenticated = LocalStorage.get("authentified") as boolean;
 
+      headers.set("Accept", "application/pdf");
+
       if (tokens && isAuthenticated) {
         headers.set("Authorization", `Bearer ${tokens?.accessToken}`);
       }
 
       return headers;
+    },
+    responseHandler: (response) => {
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/pdf")) {
+        return response.blob(); // ✅ this tells RTK to handle blob
+      }
+      return response.json();
     },
   }),
   tagTypes: [

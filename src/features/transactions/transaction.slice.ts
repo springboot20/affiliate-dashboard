@@ -88,7 +88,6 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       query: (transactionId) => ({
         url: `/transactions/receipt/download/${transactionId}`,
         method: "GET",
-        responseHandler: "content-type", // Important for file downloads
       }),
     }),
 

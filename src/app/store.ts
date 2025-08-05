@@ -9,7 +9,16 @@ const store = configureStore({
     notifications: notificationReducer,
     [ApiService.reducerPath]: ApiService.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(ApiService.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action paths
+        ignoredActions: ["api/executeMutation/fulfilled", "api/executeQuery/fulfilled"],
+        // Ignore Blob values
+        ignoredActionPaths: ["payload"],
+        ignoredPaths: [], // optional
+      },
+    }).concat(ApiService.middleware),
   devTools: !import.meta.env.PROD,
 });
 

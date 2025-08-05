@@ -138,6 +138,8 @@ export default function TransactionDetails() {
     try {
       const result = await downloadReceiptFile(transactionId, transactionData.reference);
 
+      console.log(result);
+
       if (!result.success) {
         alert("Failed to download receipt. Please try again.");
       }
