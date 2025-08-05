@@ -6,7 +6,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   const location = useLocation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  if (!isAuthenticated) return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  if (!isAuthenticated) return <Navigate to="/auth/login" replace state={{ from: location }} />;
 
   return children;
 };
