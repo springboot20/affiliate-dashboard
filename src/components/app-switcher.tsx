@@ -26,7 +26,7 @@ export const AppSwitcher: React.FC = () => {
       <div className="h-screen flex justify-center items-center flex-col">
         <Loader />
         <p>
-          switcing app context from {location.split("/")[0]} to {preferred_view}
+          switching app context from {location.split("/")[0]} to {preferred_view}
         </p>
       </div>
     );
