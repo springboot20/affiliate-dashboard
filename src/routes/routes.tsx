@@ -221,15 +221,15 @@ export const router = createBrowserRouter([
             path: "verify-email",
             element: <EmailVerification />,
           },
+          {
+            path: "email-sent-message",
+            element: (
+              <PublicRoute>
+                <EmailSentMessage />
+              </PublicRoute>
+            ),
+          },
         ],
-      },
-      {
-        path: "email-sent-message",
-        element: (
-          <PublicRoute>
-            <EmailSentMessage />
-          </PublicRoute>
-        ),
       },
       {
         path: "forgot-password",

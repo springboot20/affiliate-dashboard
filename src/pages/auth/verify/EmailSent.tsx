@@ -1,13 +1,33 @@
 import { useAppSelector } from "@/app/hook";
 import sentMail from "@/assets/image-sent.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const EmailSentMessage = () => {
   const navigate = useNavigate();
-
   const {
     user: { email },
   } = useAppSelector((state) => state.auth.data);
+
+  const location = useLocation();
+
+  const { url } = location.state;
+
+  const hanleEmailVerification = async () => {
+    const verificationWindow = window.open(url, "_blank", "width=600,height=700");
+    if (verificationWindow !== null) {
+      const checkClosed = () => {
+        if ((verificationWindow as { closed: boolean })?.closed) {
+          toast.success("Email verirication opened.");
+        } else {
+          setTimeout(checkClosed, 1000);
+        }
+      };
+      checkClosed();
+    } else {
+      toast.error("Failed to open verification window. Please allow popups and try again.");
+    }
+  };
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -33,14 +53,25 @@ export const EmailSentMessage = () => {
 
           <div className="mx-auto">
             <p>Still can't find the email? No problem</p>
-            <button
-              onClick={async () => {
-                await Promise.resolve(setTimeout(() => navigate("/auth/send-email"), 2000));
-              }}
-              className="py-2.5 px-4 rounded-md capitalize bg-gray-800 focus:outline-none text-white mt-2"
-            >
-              resend verification email
-            </button>
+            <div className="flex items-center gap-3 mt-3">
+              <button
+                onClick={async () => {
+                  await Promise.resolve(setTimeout(() => navigate("/auth/send-email"), 2000));
+                }}
+                className="py-2.5 px-4 rounded-md capitalize bg-gray-800 focus:outline-none text-white mt-2"
+              >
+                resend email
+              </button>
+
+              <button
+                onClick={async () => {
+                  await hanleEmailVerification();
+                }}
+                className="py-2.5 px-4 rounded-md capitalize bg-gray-800 focus:outline-none text-white mt-2"
+              >
+                verify email
+              </button>
+            </div>
           </div>
         </div>
       </div>

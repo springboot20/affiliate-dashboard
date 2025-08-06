@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { classNames } from "../../../utils";
 import { register } from "@/features/thunks/auth.thunk";
 import { useAppDispatch } from "@/app/hook";
@@ -48,6 +48,7 @@ export const Register = () => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (values: RegisterState, { resetForm }: FormikHelpers<RegisterState>) => {
     setIsLoading(true);
@@ -57,25 +58,19 @@ export const Register = () => {
       const { confirmPassword: _, ...rest } = values;
       const response = await dispatch(register(rest)).unwrap();
       const { url } = response.data;
+      navigate("/auth/email/email-sent-message", {
+        state: {
+          url,
+        },
+        replace: true,
+      });
 
-      const verificationWindow = window.open(url, "_blank", "width=600,height=700");
-
-      if (verificationWindow !== null) {
-        const checkClosed = () => {
-          if ((verificationWindow as { closed: boolean })?.closed) {
-            toast.success("Registration completed! Please check your email for verification.");
-            setStep(0);
-            resetForm();
-            setIsLoading(false);
-          } else {
-            setTimeout(checkClosed, 1000);
-          }
-        };
-        checkClosed();
-      } else {
-        toast.error("Failed to open verification window. Please allow popups and try again.");
+      setTimeout(() => {
+        toast.success("Registration completed! Please check your email for verification.");
+        setStep(0);
+        resetForm();
         setIsLoading(false);
-      }
+      }, 1000);
     } catch (error: any) {
       toast.error(error || "Registration failed. Please try again.");
       console.error("Registration error:", error);
@@ -192,6 +187,7 @@ export const Register = () => {
                 {step === 0 && <RegisterUserDetails formik={formik} />}
                 {step === 1 && <RegisterUserCredentials formik={formik} />}
                 {step === 2 && <RegisterUserSecurity formik={formik} />}
+                {step === 3 && <RegisterUserSecurity formik={formik} />}
 
                 <div className="mt-4 flex items-center gap-3">
                   {step > 0 && (
