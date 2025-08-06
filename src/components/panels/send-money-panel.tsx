@@ -79,6 +79,8 @@ export const SendMoneyPanelComponent = ({
 
   const { data, isLoading } = useGetAllAccountsQuery(initialFilterState);
 
+  console.log(data);
+
   const all_accounts = data?.data?.docs as never[];
 
   const [openReminder, setOpenReminder] = useState(false);

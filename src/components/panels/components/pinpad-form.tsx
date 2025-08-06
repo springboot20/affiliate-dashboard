@@ -84,7 +84,7 @@ export const PinPadFormComponent = ({ formik }: { formik: FormikProps<InitialVal
         <h3 className="text-sm font-medium capitalize text-[#152F00]">enter transaction pin</h3>
       </header>
       <div className="relative">
-        <div className="flex items-center justify-center w-full sm:space-x-2 py-4">
+        <div className="flex items-center justify-center w-full gap-2.5 sm:gap-2 py-4">
           {React.Children.toArray(
             values.pin.map((_, index) => (
               <fieldset>
