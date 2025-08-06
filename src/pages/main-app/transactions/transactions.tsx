@@ -249,7 +249,15 @@ export default function Transactions() {
       <div className="max-w-7xl mx-auto px-4 2xl:px-0">
         <header className="py-4 border-b">
           <div className="h-full flex items-center xs:justify-between gap-4 flex-col xs:flex-row sm:gap-0">
-            <h1 className="lg:text-xl font-medium capitalize text-[#152F00]">transactions</h1>
+            <div className="flex items-center gap-4">
+              <h1 className="lg:text-xl font-medium capitalize text-[#152F00]">transactions</h1>
+              {filteredTransactions.length > 0 && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100">
+                  {filteredTransactions.length}{" "}
+                  {filteredTransactions.length === 1 ? "transaction" : "transactions"}
+                </span>
+              )}
+            </div>
 
             <div className="flex items-center xs:gap-3 flex-1 gap-0 xs:flex-none justify-between w-full xs:w-fit xs:justify-start">
               <fieldset>
