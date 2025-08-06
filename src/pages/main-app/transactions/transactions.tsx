@@ -6,7 +6,7 @@ import {
   useUserTransactionsQuery,
 } from "@/features/transactions/transaction.slice";
 import { useSearchEngineOptimization } from "@/hooks/seo/useSearchEngineOptimization";
-import { classNames } from "@/utils";
+import { classNames, LocalStorage } from "@/utils";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { MagnifyingGlassIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
@@ -63,6 +63,7 @@ export default function Transactions() {
   const [searchQuery, setSearchQuery] = useState("");
   const [transactionType, setTransactionType] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [account, setAccount] = useState<string>("");
 
   const [deleteTransaction, { isLoading: isDeletingTransaction }] = useDeleteTransactionMutation();
   const [transactionDeleted, setTransactionDeleted] = useState(false);
@@ -182,17 +183,28 @@ export default function Transactions() {
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
+  useEffect(() => {
+    const storedAccount = LocalStorage.get("current-account");
+
+    if (storedAccount) {
+      setAccount(storedAccount);
+    }
+  }, []);
+
   // Update page in filter state when page changes
   useEffect(() => {
     setInitialFilterState((prev) => ({
       ...prev,
       page,
+      accountId: account,
     }));
-  }, [page]);
+  }, [page, account]);
 
   useEffect(() => {
     refetch();
   }, [refetch, initialFilterState]);
+
+  console.log(transactions);
 
   const RenderAction = (row: any) => {
     const { data } = row;

@@ -46,6 +46,9 @@ export default function Overview() {
 
   const [openSendPanel, setOpenSendPanel] = useState(false);
   const [openAddPanel, setOpenAddPanel] = useState(false);
+  const { data: accounts, isFetching: isFetchingAccounts } = useGetUserAccountsQuery();
+  const [account, setAccount] = useState<string>("");
+  const [isAccountSwitching, setIsAccountSwitching] = useState(false);
   const {
     data,
     isLoading: transactionsLoading,
@@ -53,13 +56,10 @@ export default function Overview() {
   } = useUserTransactionsQuery({
     limit: 10,
     page: 1,
+    accountId: account,
   });
 
   const transactions = data?.data?.docs as any[];
-
-  const { data: accounts, isFetching: isFetchingAccounts } = useGetUserAccountsQuery();
-  const [account, setAccount] = useState<string>("");
-  const [isAccountSwitching, setIsAccountSwitching] = useState(false);
 
   useEffect(() => {
     const storedAccount = LocalStorage.get("current-account");
@@ -75,7 +75,8 @@ export default function Overview() {
   }, [accounts?.data?.docs]);
 
   const {
-    data: accountDetails,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    data: _,
     isLoading: isLoadingAccountDetails,
     isFetching: isFetchingAccountDetails,
     refetch: refetchAccount,
@@ -117,8 +118,6 @@ export default function Overview() {
     },
     [account, refetchAccount, refetchTransactions]
   );
-
-  console.log(accountDetails);
 
   const navigate = useNavigate();
 
@@ -184,7 +183,7 @@ export default function Overview() {
                       Loading...
                     </span>
                   ) : accountError ? (
-                    <span className="text-red-300">Error loading balance</span>
+                    <span className="text-red-300 text-xl">Error loading balance</span>
                   ) : (
                     formatMoney(
                       currentAccountData?.wallet?.balance || 0,

@@ -69,7 +69,7 @@ export default function EditAccount() {
   };
 
   return (
-    <div className="mt-24 lg:mt-[8rem] max-w-xl mx-auto">
+    <div className="mt-24 lg:mt-[8rem] max-w-xl mx-auto px-4">
       <button
         title="back"
         type="button"
@@ -171,7 +171,7 @@ export default function EditAccount() {
 
                 <div className="">
                   <div className="flex items-center gap-3">
-                    <h1>Link account to account: </h1>
+                    <h1>Link account to card(s): </h1>
                     <button
                       type="button"
                       onClick={() => setLinkAccountToCard((prev) => !prev)}
