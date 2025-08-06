@@ -251,10 +251,10 @@ export default function Transactions() {
           <div className="h-full flex items-center xs:justify-between gap-4 flex-col xs:flex-row sm:gap-0">
             <div className="flex items-center gap-4">
               <h1 className="lg:text-xl font-medium capitalize text-[#152F00]">transactions</h1>
-              {filteredTransactions.length > 0 && (
+              {filteredTransactions?.length > 0 && (
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100">
-                  {filteredTransactions.length}{" "}
-                  {filteredTransactions.length === 1 ? "transaction" : "transactions"}
+                  {filteredTransactions?.length}{" "}
+                  {filteredTransactions?.length === 1 ? "transaction" : "transactions"}
                 </span>
               )}
             </div>
