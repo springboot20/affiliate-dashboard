@@ -1,4 +1,5 @@
 import { CustomErrorMessage } from "@/components/Error";
+import { UserIcon } from "@/components/icons/Icons";
 import { SelectionComponent } from "@/components/selecltion/AccountSelection";
 import { useValidateAccountNumber } from "@/hooks/useValidateAccountNumber";
 import { AccountType } from "@/types/account";
@@ -7,9 +8,10 @@ import {
   CheckCircleIcon,
   CurrencyDollarIcon,
   ExclamationCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { ErrorMessage, Field, FormikProps } from "formik";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 type InitialValues = {
   account?: string;
@@ -36,9 +38,7 @@ export const SendMoneyDetailForm = ({
 
   const MAX_NARRATION_COUNT = 150;
   const [descriptionCount, setDescriptionCount] = useState(MAX_NARRATION_COUNT);
-
-  const [selectedBeneficiary, setSelectedBeneficiary] = useState<AccountType>({} as AccountType);
-
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<AccountType | null>(null);
   const [query, setQuery] = useState("");
 
   const {
@@ -73,6 +73,44 @@ export const SendMoneyDetailForm = ({
       resetValidation();
     }
   };
+
+  const beneficiaryBadge = useMemo(() => {
+    const user = selectedBeneficiary?.user;
+
+    return (
+      <span
+        key={user?._id}
+        className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 dark:bg-white/5 text-gray-800 dark:text-white rounded-full mt-3"
+      >
+        <div className="flex items-center gap-1">
+          {user?.avatar?.url ? (
+            <div className="overflow-hidden size-7 rounded-full border border-gray-400">
+              <img
+                src={user?.avatar?.url}
+                alt={`${user?.lastname} ${user?.firstname}`}
+                className="h-full w-full object-cover object-center"
+              />
+            </div>
+          ) : (
+            <span className="shrink-0 flex justify-center items-center size-7 border border-gray-400 bg-gray-50 rounded-full">
+              <UserIcon className="h-4 fill-gray-600" />
+            </span>
+          )}
+          {`${user?.firstname} ${user?.lastname}`}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedBeneficiary(null);
+            setQuery("");
+          }}
+          className="text-gray-600 dark:text-white cursor-pointer bg-gray-50 dark:bg-white/10 dark:ring-white/15 flex items-center justify-center h-6 w-6 rounded-full"
+        >
+          <XMarkIcon className="h-4" strokeWidth={2.5} />
+        </button>
+      </span>
+    );
+  }, [selectedBeneficiary?.user]);
 
   return (
     <div className="mt-4">
@@ -191,10 +229,13 @@ export const SendMoneyDetailForm = ({
             onChange={handleBeneficiaryChange}
             placeholder="Search for beneficiary..."
             selectedId={selectedBeneficiary?._id}
-            selectedUser={selectedBeneficiary}
+            selectedUser={selectedBeneficiary as AccountType}
             query={query}
             handleSetQuery={handleSetQuery}
           />
+          {selectedBeneficiary && (
+            <div className="flex items-center gap-1.5 flex-wrap">{beneficiaryBadge}</div>
+          )}
 
           {/* Validation indicator */}
           <div className="absolute inset-y-0 right-2 flex items-center pr-3 pointer-events-none">
