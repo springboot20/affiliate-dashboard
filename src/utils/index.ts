@@ -10,7 +10,7 @@ export class LocalStorage {
       try {
         return JSON.parse(value);
       } catch (err: any) {
-        console.log(err)
+        console.log(err);
         return null;
       }
     }
