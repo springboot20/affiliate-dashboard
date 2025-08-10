@@ -1,10 +1,23 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { LocalStorage, removeCircularReferences } from "@/utils";
 
+type NotificationType =
+  | "NEW_REQUEST"
+  | "STATUS_UPDATE"
+  | "ADMIN_RESPONSE"
+  | "WARNING"
+  | "APPROVAL_REQUIRED"
+  | "DEADLINE_REMINDER"
+  | "SYSTEM_MAINTENANCE"
+  | "SECURITY_ALERT"
+  | "SYSTEM_UPDATE"
+  | "INFO"
+  | "TRANSACTION";
+
 export interface Notification {
   _id: string;
   data: any;
-  type: "NEW_REQUEST" | "STATUS_UPDATE" | "ADMIN_RESPONSE";
+  type: NotificationType;
   isRead: boolean;
   createdAt: string;
 }
@@ -41,7 +54,6 @@ export const notificationSlice = createSlice({
         const exists = state.unread_notifications.some((un) => {
           return un?.data?._id === notificationId;
         });
-
 
         if (!exists) {
           const newNotification = {
@@ -243,5 +255,5 @@ export const {
   deleteNotification,
   updateNotificationStatus,
   setUnreadCount,
-  markAllAsRead
+  markAllAsRead,
 } = notificationSlice.actions;
