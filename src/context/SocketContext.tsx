@@ -139,6 +139,22 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     [dispatch]
   );
 
+  const handleTransactionNotification = useCallback(
+    (data: any) => {
+      console.log(data);
+      dispatch(
+        setNotification({
+          _id: data._id || data.data?._id,
+          data: data.data || data,
+          type: data?.type || "NEW_REQUEST",
+          isRead: data?.isRead,
+          createdAt: data.createdAt,
+        })
+      );
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     if (!socket) return;
 
@@ -147,10 +163,17 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     socket?.on(SocketEvents.CONNECTED_EVENT, onConnected);
     socket?.on(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
     socket?.on(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
+
+    // Request Message Event
     socket.on(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
       console.log("line 151: ", data);
     });
     socket?.on(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
+
+    // Transaction Events
+    socket?.on(SocketEvents.TRANSFER_TRANSACTION, handleTransactionNotification);
+    socket?.on(SocketEvents.DEBIT_TRANSACTION, handleTransactionNotification);
+    socket?.on(SocketEvents.DEPOSIT_TRANSACTION, handleTransactionNotification);
 
     socket.on("connect", () => {
       if (["ADMIN", "MODERATOR"].includes(userRole)) {
@@ -160,19 +183,23 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
     });
 
-    socket?.on(SocketEvents.ADMIN_MESSAGE_BROADCAST, (data) => {
-      console.log("line 164: ", data);
-      handleOnNewAdminMessaegBroadCast(data);
-    });
+    socket?.on(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
 
     return () => {
       socket?.off("connect");
       socket?.off(SocketEvents.CONNECTED_EVENT, onConnected);
       socket?.off(SocketEvents.DISCONNECTED_EVENT, onDisconnected);
       socket?.off(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
+
+      // Request Message Event
       socket?.off(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
       socket?.off(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
       socket?.off(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
+
+      // Transaction Events
+      socket?.off(SocketEvents.TRANSFER_TRANSACTION, handleTransactionNotification);
+      socket?.off(SocketEvents.DEBIT_TRANSACTION, handleTransactionNotification);
+      socket?.off(SocketEvents.DEPOSIT_TRANSACTION, handleTransactionNotification);
     };
   }, [
     socket,
@@ -183,6 +210,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     handleOnNewAdminMessaegBroadCast,
     handleOnStatusUpdate,
     userRole,
+    handleTransactionNotification,
   ]);
 
   useEffect(() => {
@@ -237,4 +265,5 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSocket = () => useContext(SocketContext);
