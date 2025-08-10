@@ -448,7 +448,7 @@ export const Transactions = () => {
 
                 <TabPanel className="p-0 bg-transparent font-inter overflow-x-auto !w-full">
                   <DashboardTransactionTable
-                    datum={transactions.filter((txn: any) => txn._id.toLowerCase() === "deposit")}
+                    datum={transactions.filter((txn: any) => txn.type.toLowerCase() === "deposit")}
                     isLoading={isTransactionsLoading}
                     columns={columns}
                     actions={RenderAction}
@@ -459,7 +459,7 @@ export const Transactions = () => {
                   <DashboardTransactionTable
                     datum={transactions.filter(
                       (txn: any) =>
-                        txn._id.toLowerCase() === "withdraw" || txn._id.toLowerCase() === "transfer"
+                        txn.type.toLowerCase() === "withdraw" || txn.type.toLowerCase() === "transfer"
                     )}
                     isLoading={isTransactionsLoading}
                     columns={columns}

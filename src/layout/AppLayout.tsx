@@ -170,7 +170,7 @@ const AppLayout = () => {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <MenuItems className="absolute right-0 z-40 mt-4 w-52 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <MenuItems className="absolute right-0 z-40 mt-4 w-52 origin-top-right rounded-lg bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {isAuthenticated ? (
                               <>
                                 <MenuItem>
@@ -178,11 +178,11 @@ const AppLayout = () => {
                                 </MenuItem>
 
                                 <MenuItem>
-                                  {({ active }) => (
+                                  {({ focus }) => (
                                     <NavLink
                                       to="/dashboard/settings?tab=profile"
                                       className={classNames(
-                                        active ? "bg-gray-100" : "",
+                                        focus ? "bg-gray-100" : "",
                                         "flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium"
                                       )}
                                     >
@@ -208,12 +208,12 @@ const AppLayout = () => {
                                 </MenuItem>
 
                                 <MenuItem>
-                                  {({ active }) => (
+                                  {({ focus }) => (
                                     <button
                                       type="button"
                                       onClick={handleLogout}
                                       className={classNames(
-                                        active ? "bg-gray-100" : "",
+                                        focus ? "bg-gray-100" : "",
                                         "flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium"
                                       )}
                                     >
@@ -235,11 +235,11 @@ const AppLayout = () => {
                             ) : (
                               <>
                                 <MenuItem>
-                                  {({ active }) => (
+                                  {({ focus }) => (
                                     <NavLink
                                       to="/auth/register"
                                       className={classNames(
-                                        active ? "bg-gray-100" : "",
+                                        focus ? "bg-gray-100" : "",
                                         "flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium"
                                       )}
                                     >
@@ -249,11 +249,11 @@ const AppLayout = () => {
                                   )}
                                 </MenuItem>
                                 <MenuItem>
-                                  {({ active }) => (
+                                  {({ focus }) => (
                                     <NavLink
                                       to="/auth/login"
                                       className={classNames(
-                                        active ? "bg-gray-100" : "",
+                                        focus ? "bg-gray-100" : "",
                                         "flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium"
                                       )}
                                     >
