@@ -61,6 +61,7 @@ export const Register = () => {
       navigate("/auth/email/email-sent-message", {
         state: {
           url,
+          email: rest.email
         },
         replace: true,
       });

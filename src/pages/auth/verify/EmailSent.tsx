@@ -1,17 +1,13 @@
-import { useAppSelector } from "@/app/hook";
 import sentMail from "@/assets/image-sent.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const EmailSentMessage = () => {
   const navigate = useNavigate();
-  const {
-    user: { email },
-  } = useAppSelector((state) => state.auth.data);
 
   const location = useLocation();
 
-  const { url } = location.state;
+  const { url, email } = location.state;
 
   const hanleEmailVerification = async () => {
     const verificationWindow = window.open(url, "_blank", "width=600,height=700");
