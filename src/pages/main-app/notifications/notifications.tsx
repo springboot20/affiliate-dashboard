@@ -1,32 +1,32 @@
-import {
-  useDeleteRequestMessageMutation,
-  useGetUserMessageNotificatonsQuery,
-} from "@/features/messaging/message.slice";
+import { useDeleteRequestMessageMutation } from "@/features/messaging/message.slice";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import React, { useCallback, useEffect, useMemo, useState, type JSX } from "react";
+import React, { useCallback, useMemo, useState, type JSX } from "react";
 import {
   deleteNotification,
   Notification,
-  setNotifications,
   setReadNotification,
 } from "@/features/messaging/notification.reducer";
 import {
+  ArrowPathIcon,
+  ArrowUpIcon,
   BellIcon,
   CheckIcon,
   ClockIcon,
   EnvelopeIcon,
   ExclamationTriangleIcon,
+  EyeIcon,
   InformationCircleIcon,
+  ShieldExclamationIcon,
   TrashIcon,
+  WrenchScrewdriverIcon,
+  ArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import { classNames, formatTime } from "@/utils";
 import { PaginationComponent } from "@/components/paginations/PaginationComponent";
 import { toast } from "react-toastify";
-
-type InitialFilterState = Record<string, any>;
+import { Link } from "react-router-dom";
 
 export default function Notifications(): JSX.Element {
-  const TRANSACTION_LIMIT = 10;
   const { unread_notifications, notifications } = useAppSelector((state) => state.notifications);
   const [selectedNotifications, setSelectedNotifications] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
@@ -34,37 +34,7 @@ export default function Notifications(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [page, setPage] = useState(1);
-
-  const [initialFilterState, setInitialFilterState] = useState<InitialFilterState>({
-    limit: TRANSACTION_LIMIT,
-    page,
-  });
   const [deleteRequestMessageMutation] = useDeleteRequestMessageMutation();
-
-  const { data: notificationsData, isLoading } =
-    useGetUserMessageNotificatonsQuery(initialFilterState);
-  // Update page in filter state when page changes
-  useEffect(() => {
-    setInitialFilterState((prev) => ({
-      ...prev,
-      page,
-    }));
-  }, [page]);
-
-  useEffect(() => {
-    if (notificationsData?.success && notificationsData.data.docs) {
-      const formattedNotifications = notificationsData.data.docs.map((request: any) => {
-        return {
-          _id: request._id,
-          data: request,
-          type: "NEW_REQUEST" as const,
-          isRead: false, // You might want to track this on the backend
-          createdAt: request.createdAt,
-        };
-      });
-      dispatch(setNotifications(formattedNotifications));
-    }
-  }, [notificationsData, dispatch]);
 
   // Mark all notifications as read
   // const handleMarkAllAsRead = async () => {
@@ -76,8 +46,10 @@ export default function Notifications(): JSX.Element {
   //   }
   // };
 
-  const totalPages = notificationsData?.data?.totalPages ?? 1;
-  const hasNextPage = notificationsData?.data?.hasNextPage ?? false;
+  const notificationData = [...unread_notifications, ...notifications];
+
+  const totalPages = notificationData?.length ?? 1;
+  const hasNextPage = notificationData?.length > 1 ? true : false;
 
   const handleNextPage = () => {
     if (hasNextPage) {
@@ -152,16 +124,20 @@ export default function Notifications(): JSX.Element {
   // Delete notification
   const handleDeleteNotification = async (notificationId: string) => {
     try {
-      await deleteRequestMessageMutation(notificationId)
-        .unwrap()
-        .then((response) => {
-          toast.success(response?.message, { className: "text-sm" });
-        })
-        .catch((error: any) => {
-          const message = error?.data?.message;
+      const notification = notifications.find((n) => n._id === notificationId);
 
-          toast.error(message, { className: "text-sm" });
-        });
+      if (notification?.type !== "TRANSACTION") {
+        await deleteRequestMessageMutation(notificationId)
+          .unwrap()
+          .then((response) => {
+            toast.success(response?.message, { className: "text-sm" });
+          })
+          .catch((error: any) => {
+            const message = error?.data?.message;
+
+            toast.error(message, { className: "text-sm" });
+          });
+      }
       dispatch(deleteNotification({ notificationId }));
     } catch (error) {
       console.error("Failed to delete notification:", error);
@@ -184,16 +160,19 @@ export default function Notifications(): JSX.Element {
           if (selectedNotifications.has(so._id)) {
             dispatch(deleteNotification({ notificationId: so._id }));
             selectedNotifications.delete(so._id);
-            await deleteRequestMessageMutation(so._id)
-              .unwrap()
-              .then((response) => {
-                toast.success(response?.message, { className: "text-sm" });
-              })
-              .catch((error: any) => {
-                const message = error?.data?.message;
 
-                toast.error(message, { className: "text-sm" });
-              });
+            if (so.type !== "TRANSACTION") {
+              await deleteRequestMessageMutation(so._id)
+                .unwrap()
+                .then((response) => {
+                  toast.success(response?.message, { className: "text-sm" });
+                })
+                .catch((error: any) => {
+                  const message = error?.data?.message;
+
+                  toast.error(message, { className: "text-sm" });
+                });
+            }
           }
         });
       }
@@ -303,7 +282,7 @@ export default function Notifications(): JSX.Element {
         </div>
       </div>
 
-      {!isLoading && (
+      {notificationData?.length !== 0 && (
         <PaginationComponent
           page={page}
           totalPages={totalPages}
@@ -311,7 +290,7 @@ export default function Notifications(): JSX.Element {
           prev={handlePreviousPage}
           next={handleNextPage}
           setPage={setPage}
-          totalItems={notificationsData?.data?.totalMessages}
+          totalItems={notificationData?.length}
         />
       )}
     </div>
@@ -323,13 +302,31 @@ const NotificationIcon = ({ type }: { type: string }) => {
 
   switch (type) {
     case "NEW_REQUEST":
-      return <EnvelopeIcon className={iconProps} />;
+      return <EnvelopeIcon className={classNames(iconProps, "text-blue-600")} />;
+
     case "WARNING":
-      return <ExclamationTriangleIcon className={iconProps} />;
+      return <ExclamationTriangleIcon className={classNames(iconProps, "text-amber-600")} />;
+
+    case "APPROVAL_REQUIRED":
+      return <EyeIcon className={classNames(iconProps, "text-orange-600")} />;
+
+    case "DEADLINE_REMINDER":
+      return <ClockIcon className={classNames(iconProps, "text-indigo-600")} />;
+
+    case "SYSTEM_MAINTENANCE":
+      return <WrenchScrewdriverIcon className={classNames(iconProps, "text-gray-600")} />;
+
+    case "SECURITY_ALERT":
+      return <ShieldExclamationIcon className={classNames(iconProps, "text-red-600")} />;
+
+    case "SYSTEM_UPDATE":
+      return <ArrowPathIcon className={classNames(iconProps, "text-teal-600")} />;
+
     case "INFO":
-      return <InformationCircleIcon className={iconProps} />;
+      return <InformationCircleIcon className={classNames(iconProps, "text-blue-600")} />;
+
     default:
-      return <BellIcon className={iconProps} />;
+      return <BellIcon className={classNames(iconProps, "")} />;
   }
 };
 
@@ -349,24 +346,68 @@ const NotificationItem = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const getNotificationContent = useCallback(() => {
+    const title = `Transfer ${
+      ["TRANSFER", "WITHDRAW"].includes(notification.data?.type) ? "to" : "from"
+    } ${
+      ["TRANSFER", "WITHDRAW"].includes(notification.data?.type)
+        ? `${notification.data?.to?.firstname} ${notification.data?.to?.lastname}`
+        : `${notification.data?.from?.firstname} ${notification.data?.from?.lastname}`
+    }`;
+    const username = `${notification.data?.user?.firstname} ${notification.data?.user?.lastname}`;
+
+    console.log(notification);
+
     switch (notification.type) {
       case "NEW_REQUEST":
         return {
-          title: `${notification.data?.userDetails?.firstname} ${notification.data?.userDetails?.lastname} is requesting for account update`,
+          Icon: <NotificationIcon type={notification.type} />,
+          title: `${username} is requesting for account update`,
           message:
             notification.data.message?.substring(0, 100) +
             (notification.data.message && notification.data.message.length > 100 ? "..." : ""),
         };
+
+      case "TRANSACTION":
+        return {
+          Icon:
+            notification.type === "TRANSACTION" &&
+            ["TRANSFER", "WITHDRAW"]?.includes(notification.data?.type) ? (
+              <ArrowUpIcon className="size-5" />
+            ) : (
+              <ArrowDownIcon className="size-5" />
+            ),
+          title: title,
+          message:
+            notification.data.message?.substring(0, 100) +
+            (notification.data.message && notification.data.message.length > 100 ? "..." : ""),
+        };
+
       default:
         return {
           title: "New Notification",
+          Icon: <NotificationIcon type="NEW_REQUEST" />,
           message: "You have a new notification",
         };
     }
   }, [notification]);
 
-  const { title, message } = getNotificationContent();
-  const avatarUrl = notification?.data?.userDetails?.avatar?.url;
+  const { title, message, Icon } = getNotificationContent();
+  const avatarUrl = notification?.data?.user?.avatar?.url;
+
+  const urlState =
+    notification.type === "TRANSACTION"
+      ? {
+          transactionId: notification?._id,
+        }
+      : { messageId: notification?._id };
+
+  const params = new URLSearchParams({});
+
+  if (notification.type === "TRANSACTION") {
+    params.append("transactionId", notification?._id);
+  } else {
+    params.append("messageId", notification?._id);
+  }
 
   return (
     <li
@@ -389,7 +430,7 @@ const NotificationItem = ({
               checked={isSelected}
               onChange={() => onSelect(notification._id)}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
-              aria-label={`Select notification from ${notification.data?.userDetails?.firstname}`}
+              aria-label={`Select notification from ${notification.data?.user?.firstname}`}
             />
           </div>
 
@@ -400,13 +441,14 @@ const NotificationItem = ({
               notification.isRead ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-600"
             )}
           >
-            <NotificationIcon type={notification?.type} />
+            {Icon}
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <a
-              href={`/app/notifications/${notification?._id}`}
+            <Link
+              to={`/app/notifications/details/?${params.toString()}`}
+              state={{ ...urlState }}
               className="block hover:no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded-sm"
             >
               <div className="flex items-start justify-between">
@@ -433,14 +475,14 @@ const NotificationItem = ({
                   <div className="flex-shrink-0 ml-3">
                     <img
                       src={avatarUrl}
-                      alt={`${notification.data?.userDetails?.username}'s avatar`}
+                      alt={`${notification.data?.user?.username}'s avatar`}
                       className="h-8 w-8 rounded-full object-cover border border-gray-200"
                       loading="lazy"
                     />
                   </div>
                 )}
               </div>
-            </a>
+            </Link>
           </div>
         </div>
 

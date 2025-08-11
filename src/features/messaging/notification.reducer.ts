@@ -48,11 +48,11 @@ export const notificationSlice = createSlice({
       const { payload } = action;
       console.log(payload);
 
-      const notificationId = payload?.data?._id;
+      const notificationId = payload?.data?._id || payload?._id;
 
       if (notificationId) {
         const exists = state.unread_notifications.some((un) => {
-          return un?.data?._id === notificationId;
+          return un?.data?._id || un?._id === notificationId;
         });
 
         if (!exists) {
@@ -70,13 +70,9 @@ export const notificationSlice = createSlice({
           if (state.unread_notifications.length > 50) {
             state.unread_notifications = state.unread_notifications.slice(0, 50);
           }
-
-          LocalStorage.set(
-            "new_notifications",
-            removeCircularReferences(state.unread_notifications)
-          );
         }
       }
+      LocalStorage.set("new_notifications", removeCircularReferences(state.unread_notifications));
     },
 
     // // Set multiple notifications (from API fetch)

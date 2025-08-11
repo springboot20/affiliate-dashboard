@@ -55,11 +55,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "notifications",
-        element: <Notifications />,
-      },
-      {
-        path: "notifications/:notificationId",
-        element: <NotificationDetails />,
+        children: [
+          {
+            index: true,
+            element: <Notifications />,
+          },
+          {
+            path: "details",
+            element: <NotificationDetails />,
+          },
+        ],
       },
 
       {

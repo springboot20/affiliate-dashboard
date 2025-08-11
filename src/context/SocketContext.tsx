@@ -146,8 +146,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setNotification({
           _id: data._id || data.data?._id,
           data: data.data || data,
-          type: data?.type || "NEW_REQUEST",
-          isRead: data?.isRead,
+          type: "TRANSACTION",
+          isRead: !!data?.isRead,
           createdAt: data.createdAt,
         })
       );
@@ -167,13 +167,19 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Request Message Event
     socket.on(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
       console.log("line 151: ", data);
+      handleOnNewAdminRequest(data);
     });
     socket?.on(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
 
     // Transaction Events
-    socket?.on(SocketEvents.TRANSFER_TRANSACTION, handleTransactionNotification);
-    socket?.on(SocketEvents.DEBIT_TRANSACTION, handleTransactionNotification);
-    socket?.on(SocketEvents.DEPOSIT_TRANSACTION, handleTransactionNotification);
+    socket?.on(SocketEvents.DEBIT_TRANSACTION, (data) => {
+      console.log(data);
+      handleTransactionNotification(data);
+    });
+    socket?.on(SocketEvents.DEPOSIT_TRANSACTION, (data) => {
+      console.log(data);
+      handleTransactionNotification(data);
+    });
 
     socket.on("connect", () => {
       if (["ADMIN", "MODERATOR"].includes(userRole)) {
@@ -197,7 +203,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket?.off(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
 
       // Transaction Events
-      socket?.off(SocketEvents.TRANSFER_TRANSACTION, handleTransactionNotification);
       socket?.off(SocketEvents.DEBIT_TRANSACTION, handleTransactionNotification);
       socket?.off(SocketEvents.DEPOSIT_TRANSACTION, handleTransactionNotification);
     };
