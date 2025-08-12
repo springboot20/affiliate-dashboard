@@ -88,7 +88,7 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({ open, close 
       setPendingRequests(_pendingRequests);
       refetch();
     }
-  }, [socket, open, data]);
+  }, [socket, open, data, connected, refetch]);
 
   const {
     values,

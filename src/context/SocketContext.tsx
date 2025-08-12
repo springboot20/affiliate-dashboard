@@ -198,7 +198,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       socket?.off(SocketEvents.SOCKET_ERROR_EVENT, onSocketError);
 
       // Request Message Event
-      socket?.off(SocketEvents.NEW_ADMIN_REQUEST, handleOnNewAdminRequest);
+      socket?.off(SocketEvents.NEW_ADMIN_REQUEST, (data) => {
+        console.log(data);
+        handleOnNewAdminRequest(data);
+      });
       socket?.off(SocketEvents.REQUEST_STATUS_UPADATE, handleOnStatusUpdate);
       socket?.off(SocketEvents.ADMIN_MESSAGE_BROADCAST, handleOnNewAdminMessaegBroadCast);
 

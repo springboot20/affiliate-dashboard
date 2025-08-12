@@ -52,7 +52,7 @@ export const notificationSlice = createSlice({
 
       if (notificationId) {
         const exists = state.unread_notifications.some((un) => {
-          return un?.data?._id || un?._id === notificationId;
+          return (un?.data?._id || un?._id) === notificationId;
         });
 
         if (!exists) {
