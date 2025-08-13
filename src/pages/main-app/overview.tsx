@@ -11,6 +11,8 @@ import {
 import { classNames, formatMoney, LocalStorage } from "@/utils";
 import { useUserTransactionsQuery } from "@/features/transactions/transaction.slice";
 import { useSearchEngineOptimization } from "../../hooks/seo/useSearchEngineOptimization";
+import { useAppDispatch } from "@/app/hook";
+import { setCredentials } from "@/features/auth/auth.slice";
 
 interface Column {
   header: string;
@@ -21,6 +23,18 @@ interface Column {
 }
 
 const env = import.meta.env;
+
+const extractTokensFromUrl = () => {
+  const urlEncoded = new URLSearchParams(window.location.search);
+
+  const accessToken = urlEncoded.get("accessToken");
+  const refreshToken = urlEncoded.get("refreshToken");
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
 
 export default function Overview() {
   useSearchEngineOptimization({
@@ -58,6 +72,19 @@ export default function Overview() {
     page: 1,
     accountId: account,
   });
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const { accessToken, refreshToken } = extractTokensFromUrl();
+
+    if (accessToken !== null && refreshToken !== null) {
+      dispatch(
+        setCredentials({
+          tokens: { accessToken, refreshToken },
+        })
+      );
+    }
+  }, [dispatch]);
 
   const transactions = data?.data?.docs as any[];
 

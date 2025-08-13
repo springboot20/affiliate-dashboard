@@ -8,7 +8,7 @@ import {
 import { useSearchEngineOptimization } from "@/hooks/seo/useSearchEngineOptimization";
 import { classNames, LocalStorage } from "@/utils";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { MagnifyingGlassIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, TrashIcon, CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -244,6 +244,10 @@ export default function Transactions() {
     );
   };
 
+  const currentFilterLabel = filterOptions?.find((option) => option.value === filter)?.label;
+
+  console.log(filterOptions?.find((option) => option.value === filter));
+
   return (
     <section className="py-24 lg:py-[8rem]">
       <div className="max-w-7xl mx-auto px-4 2xl:px-0">
@@ -298,8 +302,8 @@ export default function Transactions() {
                         strokeLinecap="round"
                       />
                     </svg>
-
-                    <span>filter</span>
+                    <span className="truncate max-w-32">{currentFilterLabel}</span>
+                    <ChevronDownIcon className="h-4 w-4 shrink-0" />
                   </MenuButton>
                 </div>
 
