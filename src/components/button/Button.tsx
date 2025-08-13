@@ -1,4 +1,8 @@
+import { useAppDispatch } from "@/app/hook";
+import { signWithGoogle } from "@/features/thunks/auth.thunk";
 import { classNames } from "@/utils";
+import { toast } from "react-toastify";
+import GoogleImage from "@/assets/google-image.png";
 
 export const Button = ({
   type = "button",
@@ -45,3 +49,30 @@ export const Button = ({
     )}
   </button>
 );
+
+export const GoogleSignButton = () => {
+  const dispatch = useAppDispatch();
+
+  const handleGoogleSign = async () => {
+    try {
+      await dispatch(signWithGoogle()).unwrap();
+    } catch (error: any) {
+      toast.error(error);
+    }
+  };
+
+  return (
+    <button
+      className={classNames(
+        "flex items-center w-full gap-2 border border-gray-300 bg-white rounded-lg justify-center py-2 px-4 text-lg font-inter font-medium text-gray-700 mt-4"
+      )}
+      type="button"
+      onClick={async () => {
+        await handleGoogleSign();
+      }}
+    >
+      <img src={GoogleImage} alt="google image" className="size-10" />
+      <span>Continue with google</span>
+    </button>
+  );
+};

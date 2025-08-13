@@ -8,6 +8,7 @@ import {
   verify_email,
   BankAppApiClient,
   refreshToken,
+  signInWithGoogle,
 } from "@/api/axios.config";
 import type {
   RegisterPayloadAction,
@@ -128,6 +129,20 @@ export const verifyMail = createAsyncThunk(
     try {
       const response = await verify_email(data);
       return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error?.response?.data?.message);
+      }
+      return error;
+    }
+  }
+);
+
+export const signWithGoogle = createAsyncThunk(
+  "auth/sign-with-google",
+  async (_, { rejectWithValue }) => {
+    try {
+      await signInWithGoogle();
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(error?.response?.data?.message);

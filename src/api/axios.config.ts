@@ -73,3 +73,5 @@ export const verify_email = (data: { userId: string; token: string }) => {
 
 export const send_email = (data: { email: string }) =>
   BankAppApiClient.post(`/auth/send-email`, data);
+
+export const signInWithGoogle = () => BankAppApiClient.get(`/auth/google`);

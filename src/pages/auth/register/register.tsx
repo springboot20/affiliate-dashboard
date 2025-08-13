@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { classNames } from "../../../utils";
 import { register } from "@/features/thunks/auth.thunk";
 import { useAppDispatch } from "@/app/hook";
+import { GoogleSignButton } from "@/components/button/Button";
 
 import { Formik, Form, FormikHelpers, FormikProps } from "formik";
 import { RegisterState } from "@/types/formik/formik";
@@ -61,7 +62,7 @@ export const Register = () => {
       navigate("/auth/email/email-sent-message", {
         state: {
           url,
-          email: rest.email
+          email: rest.email,
         },
         replace: true,
       });
@@ -165,90 +166,100 @@ export const Register = () => {
           </p>
         </div>
 
-        <Formik
-          validateOnMount
-          initialValues={initialValues}
-          validationSchema={registerSchema}
-          onSubmit={onSubmit}
-        >
-          {(formik) => {
-            const handleNext = async (event: React.MouseEvent<HTMLButtonElement>) => {
-              const isValid = await validateCurrentStep(formik, step);
+        <div className="shrink-0 max-w-xl w-full">
+          <GoogleSignButton />
 
-              if (isValid) {
-                handleNextStep(event);
-              } else {
-                toast.error("Please fill in all required fields correctly.");
-                formik.setErrors(await formik.validateForm());
-              }
-            };
-            return (
-              <Form className="mt-10 bg-white rounded-lg p-4 sm:p-6 max-w-xl w-full">
-                {/* Render current step component */}
-                {step === 0 && <RegisterUserDetails formik={formik} />}
-                {step === 1 && <RegisterUserCredentials formik={formik} />}
-                {step === 2 && <RegisterUserSecurity formik={formik} />}
-                {step === 3 && <RegisterUserSecurity formik={formik} />}
+          <div className="flex items-center space-x-4 justify-center my-4">
+            <hr className="border-gray-300 block border-[1.5px] w-full" />
+            <span className="text-gray-700 text-lg capitalize font-medium">or</span>
+            <hr className="border-gray-300 block border-[1.5px] w-full" />
+          </div>
+          <Formik
+            validateOnMount
+            initialValues={initialValues}
+            validationSchema={registerSchema}
+            onSubmit={onSubmit}
+          >
+            {(formik) => {
+              const handleNext = async (event: React.MouseEvent<HTMLButtonElement>) => {
+                const isValid = await validateCurrentStep(formik, step);
 
-                <div className="mt-4 flex items-center gap-3">
-                  {step > 0 && (
-                    <button
-                      type="button"
-                      onClick={handlePrevStep}
-                      className="flex py-3 px-3 w-full gap-3 items-center justify-center text-white bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
-                    >
-                      <ArrowLeftIcon className="h-4" />
-                      Previous
-                    </button>
-                  )}
+                if (isValid) {
+                  handleNextStep(event);
+                } else {
+                  toast.error("Please fill in all required fields correctly.");
+                  formik.setErrors(await formik.validateForm());
+                }
+              };
+              
+              return (
+                <Form className="mt-5 bg-white rounded-lg p-4 sm:p-6 max-w-xl w-full">
+                  {/* Render current step component */}
+                  {step === 0 && <RegisterUserDetails formik={formik} />}
+                  {step === 1 && <RegisterUserCredentials formik={formik} />}
+                  {step === 2 && <RegisterUserSecurity formik={formik} />}
+                  {step === 3 && <RegisterUserSecurity formik={formik} />}
 
-                  {step < STEPS.length - 1 ? (
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      className="flex py-3 px-3 gap-3 w-full items-center justify-center text-white bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
-                    >
-                      Next
-                      <ArrowRightIcon className="h-4" />
-                    </button>
-                  ) : (
-                    <button
-                      disabled={!formik.isValid || isLoading}
-                      type="submit"
-                      className="disabled:bg-indigo-300 disabled:cursor-not-allowed block py-2.5 w-full bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 dark:disabled:bg-white/10 rounded-md transition shadow-md"
-                    >
-                      {formik.isSubmitting || isLoading ? (
-                        <div
-                          className={classNames(
-                            "p-2 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/30"
-                          )}
-                        >
-                          <span className="animation1 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
-                          <span className="animation2 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
-                          <span className="animation3 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
-                        </div>
-                      ) : (
-                        <span className="text-white text-sm font-medium uppercase tracking-wider">
-                          sign up
-                        </span>
-                      )}
-                    </button>
-                  )}
-                </div>
+                  <div className="mt-4 flex items-center gap-3">
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        onClick={handlePrevStep}
+                        className="flex py-3 px-3 w-full gap-3 items-center justify-center text-white bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                      >
+                        <ArrowLeftIcon className="h-4" />
+                        Previous
+                      </button>
+                    )}
 
-                {/* Form progress indicator */}
-                <div className="mt-4">
-                  <div className="bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-                    />
+                    {step < STEPS.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        className="flex py-3 px-3 gap-3 w-full items-center justify-center text-white bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 text-sm font-semibold rounded-md transition focus:outline-none focus:ring-0"
+                      >
+                        Next
+                        <ArrowRightIcon className="h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        disabled={!formik.isValid || isLoading}
+                        type="submit"
+                        className="disabled:bg-indigo-300 disabled:cursor-not-allowed block py-2.5 w-full bg-indigo-500 dark:bg-white/5 dark:border dark:border-white/10 dark:disabled:bg-white/10 rounded-md transition shadow-md"
+                      >
+                        {formik.isSubmitting || isLoading ? (
+                          <div
+                            className={classNames(
+                              "p-2 rounded-3xl bg-secondary w-fit inline-flex gap-1.5 bg-black/30"
+                            )}
+                          >
+                            <span className="animation1 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                            <span className="animation2 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                            <span className="animation3 mx-[0.5px] h-1 w-1 bg-white rounded-full"></span>
+                          </div>
+                        ) : (
+                          <span className="text-white text-sm font-medium uppercase tracking-wider">
+                            sign up
+                          </span>
+                        )}
+                      </button>
+                    )}
                   </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
+
+                  {/* Form progress indicator */}
+                  <div className="mt-4">
+                    <div className="bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
 
         <p className="mt-8 text-center text-sm text-gray-800">
           Already have an account?{" "}
