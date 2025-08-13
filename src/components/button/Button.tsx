@@ -1,7 +1,4 @@
-import { useAppDispatch } from "@/app/hook";
-import { signWithGoogle } from "@/features/thunks/auth.thunk";
 import { classNames } from "@/utils";
-import { toast } from "react-toastify";
 import GoogleImage from "@/assets/google-image.png";
 
 export const Button = ({
@@ -51,14 +48,47 @@ export const Button = ({
 );
 
 export const GoogleSignButton = () => {
-  const dispatch = useAppDispatch();
+  const env = import.meta.env;
 
-  const handleGoogleSign = async () => {
-    try {
-      await dispatch(signWithGoogle()).unwrap();
-    } catch (error: any) {
-      toast.error(error);
-    }
+  const url = env.MODE === "production" ? env?.["VITE_DEPLOYED_URL"] : env?.["VITE_LOCAL_BASE_URL"];
+
+  const handleGoogleSign = () => {
+    const googleLoginUrl = `${url}/auth/google`;
+
+    // Open Google login in a centered popup window
+    const width = 500;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+
+    window.open(
+      googleLoginUrl,
+      "googleAuth",
+      `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`
+    );
+
+    /**
+     * // Listen for data from popup
+    const listener = (event: MessageEvent) => {
+      if (event.origin !== import.meta.env.VITE_API_BASE_URL) return; // Security check
+      if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
+        console.log("Google login data:", event.data.payload);
+
+        // Save tokens to localStorage or cookies
+        localStorage.setItem("accessToken", event.data.payload.accessToken);
+        localStorage.setItem("refreshToken", event.data.payload.refreshToken);
+        localStorage.setItem("user", JSON.stringify(event.data.payload.user));
+
+        // Close popup listener
+        window.removeEventListener("message", listener);
+
+        // Close popup if still open
+        popup?.close();
+      }
+    };
+
+    window.addEventListener("message", listener);
+     */
   };
 
   return (
@@ -68,7 +98,7 @@ export const GoogleSignButton = () => {
       )}
       type="button"
       onClick={async () => {
-        await handleGoogleSign();
+        handleGoogleSign();
       }}
     >
       <img src={GoogleImage} alt="google image" className="size-10" />

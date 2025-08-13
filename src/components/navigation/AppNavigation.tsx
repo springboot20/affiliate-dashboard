@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { RootState } from "@/app/store";
 import { AppSwitcherButton } from "../app-switcher-button";
 import app_logo from "@/assets/app-logo.svg";
+import { truncate } from "lodash";
 
 type Routes = {
   title: string;
@@ -89,8 +90,9 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
       });
   };
 
-  const username = `${user?.firstname} ${user?.lastname}`;
-
+  const username = `${truncate(user?.firstname, { length: 10 })} ${truncate(user?.lastname, {
+    length: 10,
+  })}`;
 
   useEffect(() => {
     const handleScroll = () => {

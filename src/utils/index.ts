@@ -2,6 +2,14 @@ export const classNames = (...classes: (string | boolean | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 export const isBrowser = typeof window !== "undefined";
 
+export const truncate = (text: string, length: number) => {
+  if (text.length > length) {
+    return `${text.slice(0, length)}...`;
+  }
+
+  return text;
+};
+
 export class LocalStorage {
   static get(key: string) {
     if (!isBrowser) return;

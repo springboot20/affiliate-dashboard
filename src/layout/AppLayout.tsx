@@ -26,6 +26,7 @@ import { useAppSelector, useAppDispatch } from "@/app/hook";
 import { logout } from "@/features/thunks/auth.thunk";
 import { toast } from "react-toastify";
 import { AppSwitcherButton } from "@/components/app-switcher-button";
+import { truncate } from "lodash";
 
 const AppLayout = () => {
   const { pathname } = useLocation();
@@ -57,7 +58,9 @@ const AppLayout = () => {
   };
   //  lg:w-[calc(100%-17rem)] lg:left-[17rem] xl:w-[calc(100%-25rem)] xl:left-[25rem]
 
-  const username = `${user?.firstname} ${user?.lastname}`;
+  const username = `${truncate(user?.firstname, { length: 10 })} ${truncate(user?.lastname, {
+    length: 10,
+  })}`;
 
   return (
     <Disclosure as="div">

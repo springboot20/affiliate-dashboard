@@ -1,5 +1,5 @@
 import { EyeIcon, EyeSlashIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/app/hook";
 import { login } from "@/features/thunks/auth.thunk";
@@ -11,10 +11,27 @@ import { classNames } from "@/utils";
 import { Loader } from "@/components/Loader";
 import { toast } from "react-toastify";
 import { GoogleSignButton } from "@/components/button/Button";
+import { setCredentials } from "@/features/auth/auth.slice";
 
 const initialValues: LoginState = {
   email: "",
   password: "",
+};
+
+const extractTokensFromUrl = () => {
+  const urlEncoded = new URLSearchParams(window.location.search);
+
+  const accessToken = urlEncoded.get("accessToken");
+  const refreshToken = urlEncoded.get("refreshToken");
+  const user = JSON.parse(urlEncoded.get("user") || "{}");
+
+  console.log(user);
+
+  return {
+    accessToken,
+    refreshToken,
+    user,
+  };
 };
 
 export const Login = () => {
@@ -40,6 +57,21 @@ export const Login = () => {
       toast.error(error, { className: "text-xs" });
     }
   }
+
+  useEffect(() => {
+    const { accessToken, refreshToken, user } = extractTokensFromUrl();
+
+    if (accessToken !== null && refreshToken !== null) {
+      setTimeout(() => Promise.resolve(), 30000);
+
+      dispatch(
+        setCredentials({
+          tokens: { accessToken, refreshToken },
+          user,
+        })
+      );
+    }
+  }, [dispatch]);
 
   return (
     <>
