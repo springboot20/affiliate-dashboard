@@ -23,6 +23,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
           url: `/accounts/user-accounts/close/${accountId}`,
           method: "PATCH",
         }),
+        invalidatesTags: (_, __, { accountId }) => [{ type: "Account", id: accountId }],
       }),
 
       updateAccountStatus: build.mutation<
@@ -36,10 +37,22 @@ export const AccountApiSlice = ApiService.injectEndpoints({
             body: { ...rest },
           };
         },
+        invalidatesTags: (_, __, { accountId }) => [{ type: "Account", id: accountId }],
       }),
 
       getUserAccounts: build.query<Response, void>({
         query: () => "/accounts/user-accounts",
+        providesTags: (result) =>
+          result?.data?.docs?.length
+            ? [
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                ...result?.data.docs.map((account: Record<string, any>) => ({
+                  type: "Account" as const,
+                  id: account._id,
+                })),
+                { type: "Account", id: "ACCOUNT" },
+              ]
+            : [{ type: "Account", id: "ACCOUNT" }],
       }),
 
       validateAccountNumber: build.mutation<Response, string>({
@@ -48,6 +61,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
           body: { accountNumber },
           method: "POST",
         }),
+        invalidatesTags: (_, __, accountNumber) => [{ type: "Account", id: accountNumber }],
       }),
 
       getAccountDetails: build.query<Response, { accountId: string }>({
@@ -57,7 +71,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
             method: "GET",
           };
         },
-        providesTags: () => ["Account"],
+        providesTags: (_, __, { accountId }) => [{ type: "Account", id: accountId }],
       }),
 
       getAccountByNumber: build.query<Response, { account_number: string }>({
@@ -71,6 +85,7 @@ export const AccountApiSlice = ApiService.injectEndpoints({
             method: "GET",
           };
         },
+        providesTags: (_, __, { account_number }) => [{ type: "Account", id: account_number }],
       }),
     };
   },
