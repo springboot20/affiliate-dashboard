@@ -62,14 +62,14 @@ export default function ErrorRedirect() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 text-center">
+      <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 text-center">
         <div className="flex justify-center mb-4">
           <ExclamationTriangleIcon className="text-red-500 w-14 h-14" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800">Login Failed</h1>
         <p className="mt-2 text-gray-600">{message}</p>
 
-        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 shrink-0">
           <button
             onClick={handleRetry}
             className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg w-full transition-all"
