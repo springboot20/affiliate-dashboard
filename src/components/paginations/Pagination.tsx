@@ -40,7 +40,7 @@ export const Pagination = ({
                 onClick={() => goToPage(pageNumber)}
                 aria-current={isActive ? "page" : undefined}
                 className={classNames(
-                  `flex items-center justify-center text-xs font-medium h-6 w-6 rounded-md`,
+                  `flex items-center justify-center text-xs font-medium h-6 w-6 rounded-md cursor-pointer`,
                   isActive
                     ? "text-white bg-affiliate-deep-blue "
                     : "text-affiliate-deep-blue !bg-transparent !shadow-none"

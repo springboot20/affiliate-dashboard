@@ -43,7 +43,7 @@ export const AppPaginationComponent = ({
 
       <div className="flex items-center space-x-3">
         <button
-          className="flex items-center text-xs gap-2 font-medium text-gray-600"
+          className="flex items-center text-xs gap-2 font-medium text-gray-600 cursor-pointer"
           title="previous transaction"
           onClick={prev}
           disabled={page === 1}
@@ -72,7 +72,7 @@ export const AppPaginationComponent = ({
         </div>
 
         <button
-          className="flex items-center text-xs gap-2 font-medium text-gray-600"
+          className="flex items-center text-xs gap-2 font-medium text-gray-600 cursor-pointer"
           title="previous transaction"
           onClick={next}
           disabled={!hasNextPage}
