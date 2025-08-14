@@ -65,6 +65,9 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
     data: { tokens, user },
   } = useAppSelector((state: RootState) => state.auth);
 
+  const { totalUnreadCount } = useAppSelector((state: RootState) => state.notifications);
+  console.log(totalUnreadCount);
+
   const dispatch = useAppDispatch();
   // const navigate = useNavigate();
 
@@ -167,7 +170,7 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                 type="button"
                 title="notification"
                 onClick={() => navigate("/app/notifications")}
-                className="hidden md:flex items-center justify-center lg:mr-3"
+                className="hidden md:flex items-center justify-center lg:mr-3 relative"
               >
                 <svg
                   width="24"
@@ -198,6 +201,13 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                     strokeMiterlimit="10"
                   />
                 </svg>
+
+                {/* Badge for unread count */}
+                {totalUnreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                    {totalUnreadCount > 9 ? "9+" : totalUnreadCount}
+                  </span>
+                )}
               </button>
 
               <Menu as="div" className="relative">
@@ -239,37 +249,45 @@ export const AppNavigation: React.FC<{ open: boolean; onClose: () => void }> = (
                         type="button"
                         title="notification"
                         onClick={() => navigate("/app/notifications")}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium md:hidden"
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-800 font-medium md:hidden relative"
                       >
-                        <svg
-                          width="24"
-                          height="25"
-                          viewBox="0 0 24 25"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12.0201 3.83008C8.71009 3.83008 6.02009 6.52008 6.02009 9.83008V12.7201C6.02009 13.3301 5.76009 14.2601 5.45009 14.7801L4.30009 16.6901C3.59009 17.8701 4.08009 19.1801 5.38009 19.6201C9.69009 21.0601 14.3401 21.0601 18.6501 19.6201C19.8601 19.2201 20.3901 17.7901 19.7301 16.6901L18.5801 14.7801C18.2801 14.2601 18.0201 13.3301 18.0201 12.7201V9.83008C18.0201 6.53008 15.3201 3.83008 12.0201 3.83008Z"
-                            stroke="#000000"
-                            strokeWidth="1.5"
-                            strokeMiterlimit="10"
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M13.8699 4.11999C13.5599 4.02999 13.2399 3.95999 12.9099 3.91999C11.9499 3.79999 11.0299 3.86999 10.1699 4.11999C10.4599 3.37999 11.1799 2.85999 12.0199 2.85999C12.8599 2.85999 13.5799 3.37999 13.8699 4.11999Z"
-                            stroke="#000000"
-                            strokeWidth="1.5"
-                            strokeMiterlimit="10"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M15.02 19.9801C15.02 21.6301 13.67 22.9801 12.02 22.9801C11.2 22.9801 10.44 22.6401 9.90002 22.1001C9.36002 21.5601 9.02002 20.8001 9.02002 19.9801"
-                            stroke="#000000"
-                            strokeWidth="1.5"
-                            strokeMiterlimit="10"
-                          />
-                        </svg>
+                        <div className="relative">
+                          <svg
+                            width="24"
+                            height="25"
+                            viewBox="0 0 24 25"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12.0201 3.83008C8.71009 3.83008 6.02009 6.52008 6.02009 9.83008V12.7201C6.02009 13.3301 5.76009 14.2601 5.45009 14.7801L4.30009 16.6901C3.59009 17.8701 4.08009 19.1801 5.38009 19.6201C9.69009 21.0601 14.3401 21.0601 18.6501 19.6201C19.8601 19.2201 20.3901 17.7901 19.7301 16.6901L18.5801 14.7801C18.2801 14.2601 18.0201 13.3301 18.0201 12.7201V9.83008C18.0201 6.53008 15.3201 3.83008 12.0201 3.83008Z"
+                              stroke="#000000"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M13.8699 4.11999C13.5599 4.02999 13.2399 3.95999 12.9099 3.91999C11.9499 3.79999 11.0299 3.86999 10.1699 4.11999C10.4599 3.37999 11.1799 2.85999 12.0199 2.85999C12.8599 2.85999 13.5799 3.37999 13.8699 4.11999Z"
+                              stroke="#000000"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M15.02 19.9801C15.02 21.6301 13.67 22.9801 12.02 22.9801C11.2 22.9801 10.44 22.6401 9.90002 22.1001C9.36002 21.5601 9.02002 20.8001 9.02002 19.9801"
+                              stroke="#000000"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                            />
+                          </svg>
+                          {/* Badge for unread count */}
+                          {totalUnreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                              {totalUnreadCount > 9 ? "9+" : totalUnreadCount}
+                            </span>
+                          )}
+                        </div>
                         <span>notifications</span>
                       </button>
                     </MenuItem>
