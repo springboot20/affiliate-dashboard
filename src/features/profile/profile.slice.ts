@@ -31,6 +31,8 @@ export const ProfileApiSlice = ApiService.injectEndpoints({
         body: data,
         method: "PATCH",
       }),
+
+      invalidatesTags: () => [{ type: "Profile" }],
     }),
 
     uploadAvatar: builder.mutation<Response, UploadAvatarRequest>({
@@ -49,10 +51,12 @@ export const ProfileApiSlice = ApiService.injectEndpoints({
           method: "PATCH",
         };
       },
+      invalidatesTags: () => [{ type: "Profile" }],
     }),
 
     getProfile: builder.query<Response, void>({
       query: () => "/profiles",
+      providesTags: () => [{ type: "Profile" }],
     }),
   }),
 });
