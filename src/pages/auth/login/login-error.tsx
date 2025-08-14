@@ -1,4 +1,4 @@
-7 import {
+import {
   ArrowPathIcon,
   ExclamationTriangleIcon,
   LockClosedIcon,
