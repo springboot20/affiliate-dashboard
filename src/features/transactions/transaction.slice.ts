@@ -17,6 +17,17 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       query: ({ limit = 10, page = 1 }) => ({
         url: `/accounts/?limit=${limit}&page=${page}`,
       }),
+
+      providesTags: (result) =>
+        result?.data?.docs?.length
+          ? [
+              ...result.data.docs.map((account: Record<string, any>) => ({
+                type: "Account" as const,
+                id: account._id,
+              })),
+              { type: "Account", id: "ACCOUNT" },
+            ]
+          : [{ type: "Account", id: "ACCOUNT" }],
     }),
 
     sendTransaction: build.mutation<Response, Record<string, any>>({
@@ -53,12 +64,23 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
       query: () => ({
         url: "/transactions",
       }),
+      providesTags: (result) =>
+        result?.data?.docs?.length
+          ? [
+              ...result.data.docs.map((transaction: Record<string, any>) => ({
+                type: "Transaction" as const,
+                id: transaction._id,
+              })),
+              { type: "Transaction", id: "TRANSACTION" },
+            ]
+          : [{ type: "Transaction", id: "TRANSACTION" }],
     }),
 
     getTransactionDetails: build.query<Response, string>({
       query: (transactionId) => ({
         url: `/transactions/details?transactionId=${transactionId}`,
       }),
+      providesTags: (_, __, transactionId) => [{ type: "Transaction", id: transactionId }],
     }),
 
     deleteTransaction: build.mutation<Response, string>({
@@ -66,6 +88,7 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         url: `/transactions/delete?transactionId=${transactionId}`,
         method: "DELETE",
       }),
+      invalidatesTags: (_, __, transactionId) => [{ type: "Transaction", id: transactionId }],
     }),
 
     userTransactions: build.query<Response, RequestQuery>({
@@ -77,12 +100,22 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
 
         if (search) params.append("search", search);
         if (type) params.append("type", type);
-        if (accountId) params.append("accountId",accountId);
+        if (accountId) params.append("accountId", accountId);
 
         return {
           url: `/transactions/user?${params.toString()}`,
         };
       },
+      providesTags: (result) =>
+        result?.data?.docs?.length
+          ? [
+              ...result.data.docs.map((transaction: Record<string, any>) => ({
+                type: "Transaction" as const,
+                id: transaction._id,
+              })),
+              { type: "Transaction", id: "USER_TRANSACTION" },
+            ]
+          : [{ type: "Transaction", id: "USER_TRANSACTION" }],
     }),
 
     downloadReceipt: build.mutation<any, string>({
@@ -90,10 +123,13 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
         url: `/transactions/receipt/download/${transactionId}`,
         method: "GET",
       }),
+
+      invalidatesTags: (_, __, transactionId) => [{ type: "Transaction", id: transactionId }],
     }),
 
     getReceiptData: build.query<Response, string>({
       query: (transactionId) => `/transactions/receipt/share/${transactionId}`,
+      providesTags: (_, __, transactionId) => [{ type: "Transaction", id: transactionId }],
     }),
 
     verifyPayment: build.query<Response, RequestQuery>({
@@ -107,6 +143,7 @@ export const TransactionApiSlice = ApiService.injectEndpoints({
           url: `/transactions/paystack/verify-callback?${params.toString()}`,
         };
       },
+      providesTags: () => [{ type: "Transaction" }],
     }),
   }),
 });

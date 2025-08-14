@@ -36,6 +36,7 @@ export const ApiService = createApi({
     "MessageNotification",
     "UnreadCount",
     "Statistics",
+    "Transaction",
   ],
   endpoints: () => ({}),
 });
