@@ -1,36 +1,57 @@
+import { LocalStorage } from "@/utils";
 import {
   ArrowPathIcon,
   ExclamationTriangleIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function ErrorRedirect() {
   const env = import.meta.env;
-
+  const navigate = useNavigate();
   const [counter, setCounter] = useState(10);
-
+  const [isRetrying, setIsRetrying] = useState(false);
   const url = env.MODE === "production" ? env?.["VITE_DEPLOYED_URL"] : env?.["VITE_LOCAL_BASE_URL"];
 
   const [searchParams] = useSearchParams();
   const errorReason = searchParams.get("reason");
   const errorMessage = searchParams.get("message");
 
-  const message =
-    errorReason === "server-error"
-      ? "Something went wrong while logging in with Google. Please try again."
-      : errorMessage;
+  const getErrorMessage = () => {
+    switch (errorReason) {
+      case "server-error":
+        return errorMessage || "Something went wrong on our end. Please try again in a moment.";
+      case "auth-failed":
+        return "Google authentication failed. Please try again.";
+      case "wrong-login-method":
+        return errorMessage;
+      case "no-email":
+        return "Google didn't provide an email address. Please ensure your Google account has an email.";
+      case "user-not-found":
+        return "User account could not be created or found.";
+      default:
+        return errorMessage || "An unexpected error occurred during login.";
+    }
+  };
 
   const handleRetry = () => {
+    if (isRetrying) return;
+
     // Adjust based on your backend route
     const googleLoginUrl = `${url}/auth/google`;
+    setIsRetrying(true);
 
     // Open Google login in a centered popup window
     const width = 500;
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
+
+    LocalStorage.remove("accessToken");
+    LocalStorage.remove("refreshToken");
+
+    setTimeout(async () => await Promise.resolve(), 1000);
 
     window.open(
       googleLoginUrl,
@@ -40,22 +61,27 @@ export default function ErrorRedirect() {
   };
 
   const handleGoToLogin = () => {
-    window.location.href = "/auth/login"; // Adjust based on your login route
+    navigate("/auth/login");
   };
 
   useEffect(() => {
+    if (counter <= 0) {
+      handleRetry();
+    }
     const timer = setInterval(() => {
       setCounter((prev) => {
-        if (prev === 1) {
-          handleRetry();
-        }
-
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
   });
+
+  useEffect(() => {
+    return () => {
+      setCounter(0); // This will stop the timer
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -64,7 +90,7 @@ export default function ErrorRedirect() {
           <ExclamationTriangleIcon className="text-red-500 w-14 h-14" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800">Login Failed</h1>
-        <p className="mt-2 text-gray-600">{message}</p>
+        <p className="mt-2 text-gray-600">{getErrorMessage()}</p>
 
         <div className="mt-6 flex flex-col sm:flex-row gap-3 shrink-0">
           <button
@@ -81,9 +107,18 @@ export default function ErrorRedirect() {
           </button>
         </div>
 
-        <div className="mt-4 text-sm text-gray-500">
-          Redirecting to login in <span className="font-semibold">{counter}</span> seconds...
-        </div>
+        {!isRetrying && (
+          <div className="mt-4 text-sm text-gray-500">
+            Auto-retrying in <span className="font-semibold text-red-500">{counter}</span>{" "}
+            seconds...
+            <button
+              onClick={() => setCounter(0)}
+              className="ml-2 text-blue-500 hover:text-blue-600 underline"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
 
         <div className="mt-4 text-xs text-gray-400">Error Code: {errorReason}</div>
       </div>
