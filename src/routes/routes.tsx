@@ -32,6 +32,7 @@ import Notifications from "@/pages/main-app/notifications/notifications";
 import NotificationDetails from "@/pages/main-app/notifications/details/notification-details";
 import TestNotification from "@/pages/main-app/notifications/TestNotification";
 import VerifyPaystackPayment from "@/pages/main-app/transactions/verify/verify-transaction";
+import ErrorRedirect from "@/pages/auth/login/login-error";
 
 export const router = createBrowserRouter([
   {
@@ -209,11 +210,24 @@ export const router = createBrowserRouter([
 
       {
         path: "login",
-        element: (
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            ),
+          },
+          {
+            path: "error",
+            element: (
+              <PublicRoute>
+                <ErrorRedirect />
+              </PublicRoute>
+            ),
+          },
+        ],
       },
       {
         path: "email",

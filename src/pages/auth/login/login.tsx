@@ -24,6 +24,7 @@ const extractTokensFromUrl = () => {
   const accessToken = urlEncoded.get("accessToken");
   const refreshToken = urlEncoded.get("refreshToken");
   const user = JSON.parse(urlEncoded.get("user") || "{}");
+  const error = urlEncoded.get("error");
 
   console.log(user);
 
@@ -31,6 +32,7 @@ const extractTokensFromUrl = () => {
     accessToken,
     refreshToken,
     user,
+    error
   };
 };
 
