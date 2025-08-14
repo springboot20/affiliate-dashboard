@@ -14,16 +14,13 @@ export default function ErrorRedirect() {
   const url = env.MODE === "production" ? env?.["VITE_DEPLOYED_URL"] : env?.["VITE_LOCAL_BASE_URL"];
 
   const [searchParams] = useSearchParams();
-  const errorReason = searchParams.get("error") || searchParams.get("reason");
+  const errorReason = searchParams.get("reason");
+  const errorMessage = searchParams.get("message");
 
-  const errorMessages: Record<string, string> = {
-    "wrong-login-method":
-      "You have previously registered using another login method. Please use that method to access your account.",
-    GOOGLE_REGISTERED: "This Google account is already registered. Please log in instead.",
-    default: "Something went wrong while logging in with Google. Please try again.",
-  };
-
-  const message = errorMessages[errorReason!] || errorMessages.default;
+  const message =
+    errorReason === "server-error"
+      ? "Something went wrong while logging in with Google. Please try again."
+      : errorMessage;
 
   const handleRetry = () => {
     // Adjust based on your backend route
@@ -88,7 +85,7 @@ export default function ErrorRedirect() {
           Redirecting to login in <span className="font-semibold">{counter}</span> seconds...
         </div>
 
-        <div className="mt-4 text-xs text-gray-400">Error Code: {errorReason || "unknown"}</div>
+        <div className="mt-4 text-xs text-gray-400">Error Code: {errorReason}</div>
       </div>
     </div>
   );
