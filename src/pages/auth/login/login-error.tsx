@@ -1,4 +1,4 @@
-import {
+7 import {
   ArrowPathIcon,
   ExclamationTriangleIcon,
   LockClosedIcon,
@@ -72,13 +72,13 @@ export default function ErrorRedirect() {
         <div className="mt-6 flex flex-col sm:flex-row gap-3 shrink-0">
           <button
             onClick={handleRetry}
-            className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg w-full transition-all shrink-0"
+            className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg w-full transition-all"
           >
             <ArrowPathIcon className="w-4 h-4" /> Try Google Again
           </button>
           <button
             onClick={handleGoToLogin}
-            className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-lg w-full transition-all shrink-0"
+            className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-lg w-full transition-all"
           >
             <LockClosedIcon className="w-4 h-4" /> Use Another Method
           </button>
