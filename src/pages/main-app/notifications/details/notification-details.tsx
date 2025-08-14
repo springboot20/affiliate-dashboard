@@ -159,7 +159,7 @@ export default function NotificationDetails(): JSX.Element {
             onClick={() => navigate("/app/notifications")}
           >
             <ArrowLeftIcon className="size-4 shrink-0" />
-            back
+            Back
           </button>
 
           {details && (

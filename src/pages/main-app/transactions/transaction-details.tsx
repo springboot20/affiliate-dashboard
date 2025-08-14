@@ -212,7 +212,7 @@ export default function TransactionDetails() {
           onClick={() => navigate(-1)}
         >
           <ArrowLeftIcon className="size-4 shrink-0" />
-          back
+          Back
         </button>
 
         {shareMessage && (

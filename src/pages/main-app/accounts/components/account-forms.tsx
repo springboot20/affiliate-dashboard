@@ -167,7 +167,7 @@ export default function AccountForms() {
                 onClick={() => navigate("/app/accounts")}
               >
                 <ArrowLeftIcon className="size-4 shrink-0" />
-                back
+                Back
               </button>
 
               <StepIndicator _step={step} />

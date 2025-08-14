@@ -77,7 +77,7 @@ export default function EditAccount() {
         onClick={() => navigate("/app/accounts")}
       >
         <ArrowLeftIcon className="size-4 shrink-0" />
-        back
+        Back
       </button>
 
       <Formik
