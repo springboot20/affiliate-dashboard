@@ -23,7 +23,7 @@ export default function ErrorRedirect() {
     default: "Something went wrong while logging in with Google. Please try again.",
   };
 
-  const message = errorMessages[errorReason!];
+  const message = errorMessages[errorReason!] || errorMessages.default;
 
   const handleRetry = () => {
     // Adjust based on your backend route
